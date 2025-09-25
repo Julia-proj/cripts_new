@@ -103,7 +103,7 @@ function App() {
             <div id="hero-image" className={`transition-all duration-1000 delay-300 ${isVisible['hero-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <div className="relative">
                 <img 
-                  src="https://raw.githubusercontent.com/username/repo/main/images/hero.jpg" 
+                  src="/images/hero.jpg" 
                   alt="Beauty Scripts Hero" 
                   className="w-full h-auto rounded-2xl shadow-xl"
                   onError={(e) => {
