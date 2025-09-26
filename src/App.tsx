@@ -5,30 +5,37 @@ import {
   XCircle,
   ArrowRight,
   ChevronDown,
-  Gift,
 } from "lucide-react";
 
-// TODO: вставь свою ссылку на Stripe
-const STRIPE_URL = "#stripe-payment-link";
+// TODO: вставь ссылку на оплату Stripe
+const STRIPE_URL = "https://buy.stripe.com/...";
 
-export default function App() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+// простой таймер «ограниченного времени» (считает от загрузки страницы, напр. 48 часов)
+const useCountdown = (hours = 48) => {
+  const target = useMemo(() => Date.now() + hours * 60 * 60 * 1000, [hours]);
+  const [remain, setRemain] = useState(target - Date.now());
 
-  // ====== ТАЙМЕР - 20 минут с момента захода на страницу ======
-  const deadline = useMemo(() => Date.now() + 20 * 60 * 1000, []);
-  const [remaining, setRemaining] = useState(deadline - Date.now());
   useEffect(() => {
-    const t = setInterval(() => setRemaining((d) => Math.max(0, d - 1000)), 1000);
-    return () => clearInterval(t);
-  }, []);
-  const mm = String(Math.floor((remaining / 1000 / 60) % 60)).padStart(2, "0");
-  const ss = String(Math.floor((remaining / 1000) % 60)).padStart(2, "0");
+    const id = setInterval(() => setRemain(Math.max(0, target - Date.now())), 1000);
+    return () => clearInterval(id);
+  }, [target]);
 
-  const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
+  const total = Math.max(0, remain);
+  const hh = Math.floor(total / 1000 / 60 / 60);
+  const mm = Math.floor((total / 1000 / 60) % 60);
+  const ss = Math.floor((total / 1000) % 60);
+  return { hh, mm, ss, done: total <= 0 };
+};
+
+function App() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { hh, mm, ss } = useCountdown(48);
+
+  const toggleFaq = (i: number) => setOpenFaq((p) => (p === i ? null : i));
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HEADER */}
+      {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
@@ -46,22 +53,36 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
                 Скрипты, которые превращают сообщения{" "}
                 <span className="text-blue-600">в деньги</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Проверенная система общения с клиентами для бьюти-мастеров.
-                Результат: закрытые возражения, увеличенный средний чек,
-                экономия времени на переписке.
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed text-center lg:text-left">
+                Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени на переписке.
               </p>
-              <a
-                href={STRIPE_URL}
-                className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5"
-              >
-                Купить
-                <ArrowRight className="w-5 h-5" />
-              </a>
+              <div className="mb-6 flex justify-center lg:justify-start">
+                <a
+                  href={STRIPE_URL}
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5"
+                >
+                  Купить
+                  <ArrowRight className="w-5 h-5" />
+                </a>
+              </div>
+              <div className="flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  Доступ сразу
+                </span>
+                <div className="flex items-center gap-2">
+                  <div className="px-2 py-1 bg-black text-white rounded text-xs font-medium">
+                    Apple Pay
+                  </div>
+                  <div className="px-2 py-1 bg-blue-600 text-white rounded text-xs font-medium">
+                    Google Pay
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div>
@@ -84,17 +105,17 @@ export default function App() {
       {/* КАК ИЗМЕНИТСЯ РАБОТА С КЛИЕНТАМИ */}
       <section id="comparison" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-6">
+          <div className="text-center mb-4">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-              Как изменится <span className="text-blue-600">работа с клиентами</span>
+              Как изменится ваша <span className="text-blue-600">работа с клиентами</span>
             </h2>
-            <p className="text-gray-600 mt-3">
-              Сравните результаты до и после внедрения скриптов
-            </p>
           </div>
+          <p className="text-center text-gray-600 mb-12">
+            Сравните результаты до и после внедрения скриптов.
+          </p>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* СЕЙЧАС (красная заливка) */}
+            {/* Сейчас */}
             <div className="bg-white rounded-2xl p-8 border border-gray-200">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
@@ -102,27 +123,22 @@ export default function App() {
                   Сейчас
                 </div>
               </div>
-              <ul className="space-y-4 text-gray-800">
-                <li className="flex items-start gap-3">
-                  <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                  <span>«Сколько стоит?» → отвечаете только ценой и тишина.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                  <span>«Подумаю» → не знаете, что ответить — клиент уходит.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                  <span>«Переписка 30+ минут» → клиент остывает — теряете заявку.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <XCircle className="w-5 h-5 text-red-500 mt-0.5" />
-                  <span>«10 заявок» → долгие диалоги — только 2–3 записи.</span>
-                </li>
+              <ul className="space-y-4 text-gray-700">
+                {[
+                  "«Сколько стоит?» → Отвечаете только ценой и тишина.",
+                  "«Подумаю» → Не знаете, что ответить — клиент уходит.",
+                  "«Переписка 30+ минут» → Клиент остывает — теряете заявку.",
+                  "«10 заявок» → Долгие диалоги — только 2–3 записи.",
+                ].map((t, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <XCircle className="w-5 h-5 mt-1 text-red-500 shrink-0" />
+                    <span>{t}</span>
+                  </li>
+                ))}
               </ul>
             </div>
 
-            {/* ПОСЛЕ (зелёная заливка) */}
+            {/* После */}
             <div className="bg-white rounded-2xl p-8 border border-gray-200">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
@@ -130,23 +146,18 @@ export default function App() {
                   После
                 </div>
               </div>
-              <ul className="space-y-4 text-gray-800">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                  <span>«Сколько стоит?» → презентуете ценность → запись.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                  <span>«Подумаю» → мягкое возражение → возвращаете к записи.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                  <span>«Переписка 5 минут» → готовые фразы → быстрая запись.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                  <span>«10 заявок» → чёткие диалоги → 6–7 записей.</span>
-                </li>
+              <ul className="space-y-4 text-gray-700">
+                {[
+                  "«Сколько стоит?» → Презентуете ценность → запись.",
+                  "«Подумаю» → Мягкое возражение → возвращаете к записи.",
+                  "«Переписка 5 минут» → Готовые фразы → быстрая запись.",
+                  "«10 заявок» → Чёткие диалоги → 6–7 записей.",
+                ].map((t, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 mt-1 text-green-600 shrink-0" />
+                    <span>{t}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -156,34 +167,52 @@ export default function App() {
       {/* ПОЧЕМУ ЭТО ВАЖНО */}
       <section id="why" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center mb-4">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
-            <p className="text-gray-600 mt-3">
-              Каждая потерянная заявка — это упущенная прибыль
-            </p>
           </div>
+          <p className="text-center text-gray-600 mb-12">
+            Каждая потерянная заявка — это упущенная прибыль.
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="text-center">
-              <img src="/images/money.png" alt="" className="mx-auto h-12 w-12 mb-4" />
-              <p className="font-semibold">Сливаются деньги на рекламу</p>
-              <p className="text-gray-600 mt-2">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-2xl p-8 border text-center">
+              <img
+                src="/images/money.png"
+                alt="Сливаются деньги"
+                className="h-10 w-10 mx-auto mb-4"
+              />
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Сливаются деньги на рекламу
+              </h3>
+              <p className="text-gray-600">
                 Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.
               </p>
             </div>
-            <div className="text-center">
-              <img src="/images/time.png" alt="" className="mx-auto h-12 w-12 mb-4" />
-              <p className="font-semibold">Тратится время впустую</p>
-              <p className="text-gray-600 mt-2">
+            <div className="bg-white rounded-2xl p-8 border text-center">
+              <img
+                src="/images/time.png"
+                alt="Тратится время"
+                className="h-10 w-10 mx-auto mb-4"
+              />
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Тратится время впустую
+              </h3>
+              <p className="text-gray-600">
                 По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
               </p>
             </div>
-            <div className="text-center">
-              <img src="/images/leads.png" alt="" className="mx-auto h-12 w-12 mb-4" />
-              <p className="font-semibold">Заявки уходят к конкуренту</p>
-              <p className="text-gray-600 mt-2">
+            <div className="bg-white rounded-2xl p-8 border text-center">
+              <img
+                src="/images/competitor.png"
+                alt="Заявки уходят к конкуренту"
+                className="h-10 w-10 mx-auto mb-4"
+              />
+              <h3 className="font-semibold text-gray-900 mb-2">
+                Заявки уходят к конкуренту
+              </h3>
+              <p className="text-gray-600">
                 Пока вы думаете, клиент записывается к тому, кто отвечает быстро и уверенно.
               </p>
             </div>
@@ -194,52 +223,52 @@ export default function App() {
       {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
       <section id="for" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center mb-4">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Кому подходят <span className="text-blue-600">скрипты</span>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 bg-white">
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/images/salon.png" alt="" className="h-8 w-8" />
-                <h3 className="text-xl font-semibold">Владельцам салонов и студий</h3>
+          <div className="grid md:grid-cols-2 gap-8">
+            {[
+              {
+                icon: "/images/salon.png",
+                title: "Владельцам салонов и студий",
+                text:
+                  "Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.",
+              },
+              {
+                icon: "/images/medical.png",
+                title: "Медицинским центрам",
+                text:
+                  "Админы закрывают заявки, врачи работают с реальными пациентами.",
+              },
+              {
+                icon: "/images/master.png",
+                title: "Мастерам-универсалам",
+                text:
+                  "Ответы на типовые ситуации → быстрее к записи, увереннее в чате.",
+              },
+              {
+                icon: "/images/specialist.png",
+                title: "Узким специалистам",
+                text:
+                  "Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.",
+              },
+            ].map((c, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-1 transition"
+              >
+                <div className="flex items-start gap-4">
+                  <img src={c.icon} alt="" className="h-10 w-10 mt-1" />
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
+                    <p className="text-gray-600 mt-3">{c.text}</p>
+                  </div>
+                </div>
               </div>
-              <p className="text-gray-600">
-                Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border p-8 bg-white">
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/images/medical.png" alt="" className="h-8 w-8" />
-                <h3 className="text-xl font-semibold">Медицинским центрам</h3>
-              </div>
-              <p className="text-gray-600">
-                Админы закрывают заявки, врачи работают с реальными пациентами.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border p-8 bg-white">
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/images/master.png" alt="" className="h-8 w-8" />
-                <h3 className="text-xl font-semibold">Мастерам-универсалам</h3>
-              </div>
-              <p className="text-gray-600">
-                Ответы на типовые ситуации → быстрее к записи, увереннее в чате.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border p-8 bg-white">
-              <div className="flex items-center gap-3 mb-4">
-                <img src="/images/specialist.png" alt="" className="h-8 w-8" />
-                <h3 className="text-xl font-semibold">Узким специалистам</h3>
-              </div>
-              <p className="text-gray-600">
-                Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -247,63 +276,145 @@ export default function App() {
       {/* ЧТО ВХОДИТ В СИСТЕМУ СКРИПТОВ */}
       <section id="whats-included" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center mb-4">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
-            <p className="text-gray-600 mt-3">Полный набор инструментов для увеличения продаж</p>
           </div>
+          <p className="text-center text-gray-600 mb-12">
+            Полный набор инструментов для увеличения продаж.
+          </p>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            <CardImage title="Готовые диалоги" img="/images/dialogs.png"
-              desc="Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово." />
-            <CardImage title="Закрытие возражений" img="/images/objections.png"
-              desc="«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления." />
-            <CardImage title="Под каждую услугу" img="/images/per-service.png"
-              desc="Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши." />
-            <CardImage title="Возврат клиентов" img="/images/return.png"
-              desc="Сценарии повторных записей и реактивации «спящей» базы без рекламы." />
-            <CardImage title="Гайд по внедрению" img="/images/guide.png"
-              desc="Старт за один день: пошаговый план + стандарты для команды." />
-            <CardImage title="Итог" img="/images/result.png"
-              desc="Больше записей, выше средний чек, меньше времени в переписке." />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "/images/dialogs.png",
+                title: "Готовые диалоги",
+                desc:
+                  "Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово.",
+              },
+              {
+                icon: "/images/objections.png",
+                title: "Закрытие возражений",
+                desc:
+                  "«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления.",
+              },
+              {
+                icon: "/images/services.png",
+                title: "Под каждую услугу",
+                desc:
+                  "Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши.",
+              },
+              {
+                icon: "/images/return.png",
+                title: "Возврат клиентов",
+                desc:
+                  "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
+              },
+              {
+                icon: "/images/guide.png",
+                title: "Гайд по внедрению",
+                desc:
+                  "Старт за один день: пошаговый план + стандарты для команды.",
+              },
+              {
+                icon: "/images/result.png",
+                title: "Итог",
+                desc:
+                  "Больше записей, выше средний чек, меньше времени в переписке.",
+              },
+            ].map((c, i) => (
+              <div
+                key={i}
+                className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg hover:-translate-y-1 transition"
+              >
+                <img src={c.icon} alt="" className="h-10 w-10 mb-5" />
+                <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
+                <p className="text-gray-600 mt-3">{c.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* БОНУСЫ ПРИ ПОКУПКЕ (празднично, но минималистично) */}
+      {/* БОНУСЫ (празднично, но минималистично) */}
       <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
-        {/* лёгкие «блёстки» */}
-        <div className="pointer-events-none absolute inset-0 opacity-40 animate-[float_8s_ease-in-out_infinite] bg-[radial-gradient(transparent_60%,rgba(255,255,255,0.7)_61%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-10"
+             style={{backgroundImage:"radial-gradient(circle at 20% 10%, #60a5fa 0, transparent 30%), radial-gradient(circle at 80% 30%, #34d399 0, transparent 30%), radial-gradient(circle at 50% 90%, #f59e0b 0, transparent 30%)"}}/>
         <div className="max-w-6xl mx-auto px-6 relative">
-          <div className="text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Бонусы при покупке</h2>
-            <p className="text-gray-600 mt-3">
-              Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами
-            </p>
+          <div className="text-center mb-2">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Бонусы при покупке 🎉</h2>
           </div>
+          <p className="text-center text-gray-600 mb-12">
+            Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами.
+          </p>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <Bonus color="orange" title="Гайд «Работа с клиентской базой»"
-              desc="Повторные записи без рекламы → возвращайте старых клиентов." old="27€" />
-            <Bonus color="green" title="Чек-лист «30+ источников клиентов»"
-              desc="Платные и бесплатные способы → где взять заявки уже сегодня." old="32€" />
-            <Bonus color="blue" title="Гайд «Продажи на консультации»"
-              desc="5 этапов продаж → мягкий апсейл дополнительных услуг." old="20€" />
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                color: "bg-orange-50",
+                iconColor: "text-orange-600",
+                title: "Гайд «Работа с клиентской базой»",
+                text:
+                  "Повторные записи без рекламы → возвращайте старых клиентов.",
+                old: "27€",
+              },
+              {
+                color: "bg-green-50",
+                iconColor: "text-green-600",
+                title: "Чек-лист «30+ источников клиентов»",
+                text:
+                  "Платные и бесплатные способы → где взять заявки уже сегодня.",
+                old: "32€",
+              },
+              {
+                color: "bg-blue-50",
+                iconColor: "text-blue-600",
+                title: "Гайд «Продажи на консультации»",
+                text: "5 этапов продаж → мягкий апсейл дополнительных услуг.",
+                old: "20€",
+              },
+            ].map((b, i) => (
+              <div key={i} className={`${b.color} rounded-2xl p-8 text-center shadow-sm`}>
+                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 bg-white`}>
+                  {/* «иконки подарков» разного цвета */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    className={`w-10 h-10 ${b.iconColor}`}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  >
+                    <path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8" />
+                    <path d="M4 8h16v4H4z" />
+                    <path d="M12 22V8" />
+                    <path d="M12 8c-1.5-3-6-3-6 0 0 1.1.9 2 2 2h4" />
+                    <path d="M12 8c1.5-3 6-3 6 0 0 1.1-.9 2-2 2h-4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">{b.title}</h3>
+                <p className="text-gray-600 mt-3 mb-4">{b.text}</p>
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-lg font-bold text-gray-400 line-through">
+                    {b.old}
+                  </span>
+                  <span className={`text-xl font-bold ${b.iconColor.replace("text-", "text-")}`}>0€</span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ЧТО ИЗМЕНИТСЯ СРАЗУ (как было) */}
+      {/* ЧТО ИЗМЕНИТСЯ СРАЗУ (оставляем по смыслу как было) */}
       <section id="immediate" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               <span className="text-blue-600">Что</span> изменится сразу
             </h2>
           </div>
-
-          <div className="space-y-6 mt-12">
+          <div className="space-y-6">
             {[
               "Перестанешь терять заявки из-за слабых ответов.",
               "Начнёшь закрывать больше записей уже с первого дня.",
@@ -311,79 +422,96 @@ export default function App() {
               "Станешь увереннее — на всё есть готовый ответ.",
             ].map((t, i) => (
               <div key={i} className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mt-1">
+                <span className="w-6 h-6 rounded-full flex items-center justify-center mt-1 bg-green-100">
                   <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                <span className="text-lg font-medium text-gray-800">{t}</span>
+                </span>
+                <span className="text-lg text-gray-800">{t}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* БЛОК ОПЛАТЫ / -70% С ТАЙМЕРОМ */}
-      <section id="pricing" className="py-20 bg-gradient-to-br from-blue-700 to-blue-500 text-white">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-3xl lg:text-5xl font-extrabold">Получите полную систему со скидкой 70%</h2>
-
-          <div className="mt-4 inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/10">
-            <span className="text-white/90">Скидка закончится через</span>
-            <span className="font-mono text-xl tabular-nums px-3 py-1 rounded bg-black/20">{mm}:{ss}</span>
+      {/* ОФФЕР – скидка 70% + таймер + платежные иконки */}
+      <section id="offer" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-2">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+              Получите полную систему со скидкой <span className="text-blue-600">70%</span>
+            </h2>
           </div>
+          <p className="text-center text-sm text-gray-500 mb-10">
+            <span className="inline-block rounded-full border px-3 py-1">
+              Специальное предложение на этой неделе • Предложение действует ограниченное время
+            </span>
+          </p>
 
-          <div className="mt-12 mx-auto max-w-3xl rounded-3xl bg-white/10 backdrop-blur p-8">
-            <div className="grid md:grid-cols-2 gap-8 text-left">
-              <div>
-                <h3 className="text-xl font-semibold">Состав</h3>
-                <ul className="mt-4 space-y-2 text-white/90">
-                  <li>• Все скрипты + бонусы</li>
-                  <li>• Полная система для увеличения продаж</li>
-                </ul>
-
-                <h3 className="text-xl font-semibold mt-6">Что входит</h3>
-                <ul className="mt-4 space-y-2">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1">✅</span> Готовые диалоги для всех ситуаций.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1">✅</span> Шаблоны под конкретную услугу.
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <img src="/images/gift.png" alt="" className="h-5 w-5 mt-1" />
-                    Бонус: гайд по работе с базой (27€).
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <img src="/images/gift.png" alt="" className="h-5 w-5 mt-1" />
-                    Бонус: 30+ источников клиентов (32€).
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <img src="/images/gift.png" alt="" className="h-5 w-5 mt-1" />
-                    Бонус: продажи на консультации (20€).
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1">✅</span> Пожизненный доступ и обновления.
-                  </li>
-                </ul>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* PriceCard */}
+            <div className="bg-white rounded-2xl p-8 border">
+              <div className="text-sm text-gray-500">Цена</div>
+              <div className="flex items-end gap-3 mt-3">
+                <span className="text-2xl text-gray-400 line-through">67€</span>
+                <span className="text-5xl font-extrabold text-blue-600">19€</span>
               </div>
 
-              <div className="md:text-right">
-                <div className="text-white/80">Цена</div>
-                <div className="text-2xl line-through">67€</div>
-                <div className="text-6xl font-extrabold mt-2">19€</div>
-
-                <a
-                  href={STRIPE_URL}
-                  className="mt-6 inline-block rounded-xl px-10 py-4 font-semibold bg-white text-blue-700 hover:opacity-90 transition shadow-lg animate-[pulse_2.2s_ease-in-out_infinite]"
-                >
-                  Получить со скидкой 70%
-                </a>
-
-                <div className="flex items-center justify-center md:justify-end gap-2 text-sm text-white/80 mt-4">
-                  <span className="px-2 py-1 bg-black/40 rounded">Apple Pay</span>
-                  <span className="px-2 py-1 bg-black/40 rounded">Google Pay</span>
-                  <span className="px-2 py-1 bg-black/40 rounded">Visa</span>
-                  <span className="px-2 py-1 bg-black/40 rounded">Mastercard</span>
+              <div className="mt-6">
+                <div className="text-xs uppercase text-gray-500">Ограниченное время</div>
+                <div className="mt-1 inline-flex items-center gap-2 rounded-md bg-blue-50 px-3 py-2 text-blue-700 font-semibold">
+                  ⏳ {String(hh).padStart(2, "0")}:{String(mm).padStart(2, "0")}:
+                  {String(ss).padStart(2, "0")}
                 </div>
+              </div>
+
+              <a
+                href={STRIPE_URL}
+                target="_blank"
+                rel="noopener"
+                aria-label="Купить полную систему со скидкой 70% — 19 евро"
+                className="mt-8 block w-full rounded-xl bg-blue-600 py-4 text-white font-semibold text-center hover:opacity-90 transition"
+              >
+                Получить со скидкой 70%
+              </a>
+
+              <div className="mt-4 flex items-center gap-3 justify-center opacity-70">
+                {/* монохромные иконки оплат */}
+                <span className="text-xs border rounded px-2 py-1">Apple Pay</span>
+                <span className="text-xs border rounded px-2 py-1">Google Pay</span>
+                <span className="text-xs border rounded px-2 py-1">Visa</span>
+                <span className="text-xs border rounded px-2 py-1">MasterCard</span>
+              </div>
+
+              <div className="mt-3 text-center text-xs text-gray-500">
+                Без скрытых платежей · Пожизненный доступ · Обновления включены
+              </div>
+            </div>
+
+            {/* WhatYouGet */}
+            <div className="bg-white rounded-2xl p-8 border">
+              <div className="text-sm text-gray-500 mb-3">Что входит</div>
+              <ul className="space-y-3">
+                {[
+                  "Готовые диалоги для всех ситуаций",
+                  "Шаблоны под конкретную услугу",
+                  "Бонус: гайд по работе с базой (27€)",
+                  "Бонус: 30+ источников клиентов (32€)",
+                  "Бонус: продажи на консультации (20€)",
+                  "Пожизненный доступ и обновления",
+                ].map((t, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 mt-0.5 text-green-600 shrink-0" />
+                    <span className="text-gray-800">{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Composition */}
+            <div className="bg-white rounded-2xl p-8 border">
+              <div className="text-sm text-gray-500 mb-3">Состав</div>
+              <div className="space-y-3">
+                <div className="rounded-md bg-gray-50 px-3 py-2">Все скрипты + бонусы</div>
+                <div className="rounded-md bg-gray-50 px-3 py-2">Полная система для увеличения продаж</div>
               </div>
             </div>
           </div>
@@ -393,162 +521,110 @@ export default function App() {
       {/* ОТЗЫВЫ */}
       <section id="reviews" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Отзывы клиентов</h2>
           </div>
 
-          {/* 4 фото-отзыва из /public/images */}
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mt-12">
-            <img src="/images/rev1.jpg" alt="review" className="rounded-xl border" />
-            <img src="/images/rev2.jpg" alt="review" className="rounded-xl border" />
-            <img src="/images/rev3.jpg" alt="review" className="rounded-xl border" />
-            <img src="/images/rev4.jpg" alt="review" className="rounded-xl border" />
+          {/* 4 фото-отзыва */}
+          <div className="grid md:grid-cols-4 gap-4 mb-10">
+            {["review1.jpg", "review2.jpg", "review3.jpg", "review4.jpg"].map((f) => (
+              <img
+                key={f}
+                src={`/images/${f}`}
+                alt="Отзыв"
+                className="rounded-xl border object-cover w-full h-56"
+              />
+            ))}
           </div>
 
-          {/* 6 ссылок на видео из Instagram */}
-          <div className="grid md:grid-cols-3 gap-4 mt-8 text-blue-600">
-            <a href="#" className="underline">Видео-отзыв 1</a>
-            <a href="#" className="underline">Видео-отзыв 2</a>
-            <a href="#" className="underline">Видео-отзыв 3</a>
-            <a href="#" className="underline">Видео-отзыв 4</a>
-            <a href="#" className="underline">Видео-отзыв 5</a>
-            <a href="#" className="underline">Видео-отзыв 6</a>
+          {/* 6 видео-ссылок из Instagram */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-blue-600 underline">
+            {[
+              "https://www.instagram.com/p/xxxxxxxxx/",
+              "https://www.instagram.com/p/xxxxxxxxx/",
+              "https://www.instagram.com/p/xxxxxxxxx/",
+              "https://www.instagram.com/p/xxxxxxxxx/",
+              "https://www.instagram.com/p/xxxxxxxxx/",
+              "https://www.instagram.com/p/xxxxxxxxx/",
+            ].map((url, i) => (
+              <a key={i} href={url} target="_blank" rel="noopener" className="truncate">
+                Видео-отзыв {i + 1}
+              </a>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ (оставила как было по смыслу) */}
+      {/* FAQ (оставляем как было по структуре) */}
       <section id="faq" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Частые вопросы</h2>
           </div>
 
-          <div className="space-y-4">
-            {[
-              {
-                q: "Сработает в моей нише?",
-                a: "Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
-              },
-              {
-                q: "Не будет ли звучать «по-скриптовому»?",
-                a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.",
-              },
-              {
-                q: "Зачем это админам?",
-                a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.",
-              },
-              {
-                q: "Когда будут результаты?",
-                a: "Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
-              },
-            ].map((faq, i) => (
-              <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
-                <button
-                  onClick={() => toggleFaq(i)}
-                  className="w-full px-8 py-6 text-left hover:bg-gray-50 flex justify-between items-center transition-colors"
-                >
-                  <span className="font-semibold text-lg text-gray-900">{faq.q}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`}
-                  />
-                </button>
-                {openFaq === i && (
-                  <div className="px-8 py-6 bg-gray-50 border-t border-gray-200">
-                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          {[
+            {
+              q: "Сработает в моей нише?",
+              a:
+                "Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
+            },
+            {
+              q: "Не будет ли звучать «по-скриптовому»?",
+              a:
+                "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.",
+            },
+            {
+              q: "Зачем это админам?",
+              a:
+                "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.",
+            },
+            {
+              q: "Когда будут результаты?",
+              a:
+                "Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
+            },
+          ].map((faq, i) => (
+            <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-white mb-4">
+              <button
+                onClick={() => toggleFaq(i)}
+                className="w-full px-8 py-6 text-left hover:bg-gray-50 flex justify-between items-center"
+              >
+                <span className="font-semibold text-lg text-gray-900">{faq.q}</span>
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-400 transition-transform ${
+                    openFaq === i ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {openFaq === i && (
+                <div className="px-8 py-6 bg-gray-50 border-t border-gray-200">
+                  <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* FOOTER + мобильный CTA */}
+      {/* Footer */}
       <footer className="py-12 bg-white border-t border-gray-200 text-center">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-xl font-bold text-gray-900 mb-4">Beauty Scripts</div>
+          <div className="text-xl font-bold text-gray-900 mb-2">Beauty Scripts</div>
           <p className="text-gray-500">© {new Date().getFullYear()} Все права защищены</p>
         </div>
       </footer>
 
+      {/* Sticky CTA (мобилка) */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 lg:hidden">
         <a
           href={STRIPE_URL}
-          className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-colors"
+          className="w-full bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:opacity-90 transition"
         >
-          Готовые скрипты — 19€ • Купить сейчас
+          Получить со скидкой 70% — 19€
         </a>
       </div>
     </div>
   );
 }
 
-/* ===== ВСПОМОГАТЕЛЬНЫЕ КОМПОНЕНТЫ ===== */
-
-function CardImage({
-  title,
-  desc,
-  img,
-}: {
-  title: string;
-  desc: string;
-  img: string;
-}) {
-  return (
-    <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-      <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6">
-        <img src={img} alt="" className="h-10 w-10" />
-      </div>
-      <h3 className="text-xl font-bold mb-3 text-gray-900">{title}</h3>
-      <p className="text-gray-600">{desc}</p>
-    </div>
-  );
-}
-
-function Bonus({
-  color,
-  title,
-  desc,
-  old,
-}: {
-  color: "orange" | "green" | "blue";
-  title: string;
-  desc: string;
-  old: string;
-}) {
-  const colorMap = {
-    orange: {
-      wrap: "bg-orange-50",
-      iconWrap: "bg-orange-100",
-      icon: "text-orange-600",
-      new: "text-orange-600",
-    },
-    green: {
-      wrap: "bg-green-50",
-      iconWrap: "bg-green-100",
-      icon: "text-green-600",
-      new: "text-green-600",
-    },
-    blue: {
-      wrap: "bg-blue-50",
-      iconWrap: "bg-blue-100",
-      icon: "text-blue-600",
-      new: "text-blue-600",
-    },
-  }[color];
-
-  return (
-    <div className={`${colorMap.wrap} rounded-2xl p-8 text-center`}>
-      <div className={`w-16 h-16 ${colorMap.iconWrap} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
-        <Gift className={`w-8 h-8 ${colorMap.icon}`} />
-      </div>
-      <h3 className="text-xl font-bold mb-3 text-gray-900">{title}</h3>
-      <p className="text-gray-600 mb-4">{desc}</p>
-      <div className="flex items-center justify-center gap-2">
-        <span className="text-lg font-bold text-gray-400 line-through">{old}</span>
-        <span className={`text-xl font-bold ${colorMap.new}`}>0€</span>
-      </div>
-    </div>
-  );
-}
+export default App;
