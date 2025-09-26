@@ -49,18 +49,18 @@ export default function App() {
         </div>
       </header>
 
-      {/* HERO — шрифты/стили оставлены, тексты обновлены */}
+      {/* HERO */}
       <section className="pt-24 pb-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
                 Скрипты, которые превращают{" "}
-                <span className="text-blue-600">сообщения в деньги</span>
+                <span className="text-blue-600 font-extrabold">сообщения в деньги</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed text-center lg:text-left">
                 Проверенная система общения с клиентами для бьюти-мастеров.
-                Результат: закрытые возражения, увеличенный средний чек,
+                Результат: <span className="text-blue-600 font-semibold">закрытые возражения</span>, <span className="text-blue-600 font-semibold">увеличенный средний чек</span>,
                 экономия времени на переписке.
               </p>
               <div className="mb-6 text-center lg:text-left">
@@ -106,7 +106,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* СРАВНЕНИЕ: «Как изменится работа с клиентами» */}
+      {/* СРАВНЕНИЕ */}
       <section id="comparison" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-2">
@@ -120,7 +120,6 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            {/* Сейчас (красная заливка) */}
             <div className="bg-white rounded-2xl p-8 border border-gray-200">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
@@ -143,7 +142,6 @@ export default function App() {
               </ul>
             </div>
 
-            {/* После (зелёная заливка) */}
             <div className="bg-white rounded-2xl p-8 border border-gray-200">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
@@ -153,10 +151,10 @@ export default function App() {
               </div>
               <ul className="space-y-4 text-gray-800">
                 {[
-                  "«Сколько стоит?» → Презентуете ценность → запись.",
-                  "«Подумаю» → Мягкое возражение → возвращаете к записи.",
-                  "«Переписка 5 минут» → Готовые фразы → быстрая запись.",
-                  "«10 заявок» → Чёткие диалоги → 6–7 записей.",
+                  <>«Сколько стоит?» → <span className="text-blue-600 font-semibold">Презентуете ценность → запись</span>.</>,
+                  <>«Подумаю» → <span className="text-blue-600 font-semibold">Мягкое возражение → возвращаете к записи</span>.</>,
+                  <>«Переписка 5 минут» → <span className="text-blue-600 font-semibold">Готовые фразы → быстрая запись</span>.</>,
+                  <>«10 заявок» → <span className="text-blue-600 font-semibold">Чёткие диалоги → 6–7 записей</span>.</>,
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
                     <CheckCircle className="w-5 h-5 mt-1 text-green-600" />
@@ -169,7 +167,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ПОЧЕМУ ЭТО ВАЖНО — 3 карточки, иконки из /public/images */}
+      {/* ПОЧЕМУ ЭТО ВАЖНО */}
       <section id="why" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
@@ -182,7 +180,6 @@ export default function App() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            {/* Иконки: положи файлы в /public/images */}
             <div className="rounded-2xl border p-8 text-center">
               <img
                 src="/images/money.png"
@@ -191,7 +188,7 @@ export default function App() {
               />
               <h3 className="font-semibold text-lg">Сливаются деньги на рекламу</h3>
               <p className="mt-2 text-gray-600">
-                Платите за заявки, но конвертируете лишь 20–30%. Остальные —
+                Платите за заявки, но конвертируете лишь <span className="text-blue-600 font-semibold">20–30%</span>. Остальные —
                 выброшенный бюджет.
               </p>
             </div>
@@ -203,7 +200,7 @@ export default function App() {
               />
               <h3 className="font-semibold text-lg">Тратится время впустую</h3>
               <p className="mt-2 text-gray-600">
-                По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
+                По <span className="text-blue-600 font-semibold">30–40 минут</span> на переписку с каждым. Уходит 3–4 часа в день.
               </p>
             </div>
             <div className="rounded-2xl border p-8 text-center">
@@ -214,15 +211,15 @@ export default function App() {
               />
               <h3 className="font-semibold text-lg">Заявки уходят к конкуренту</h3>
               <p className="mt-2 text-gray-600">
-                Пока вы думаете, клиент записывается к тому, кто отвечает быстро
-                и уверенно.
+                Пока вы думаете, клиент записывается к тому, кто отвечает <span className="text-blue-600 font-semibold">быстро
+                и уверенно</span>.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* КОМУ ПОДХОДЯТ СКРИПТЫ — 2х2, иконки из /public/images */}
+      {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
       <section id="for" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
@@ -234,26 +231,22 @@ export default function App() {
               {
                 img: "/images/salon.png",
                 title: "Владельцам салонов и студий",
-                text:
-                  "Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.",
+                text: "Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.",
               },
               {
                 img: "/images/med.png",
                 title: "Медицинским центрам",
-                text:
-                  "Админы закрывают заявки, врачи работают с реальными пациентами.",
+                text: "Админы закрывают заявки, врачи работают с реальными пациентами.",
               },
               {
                 img: "/images/team.png",
                 title: "Мастерам-универсалам",
-                text:
-                  "Ответы на типовые ситуации → быстрее к записи, увереннее в чате.",
+                text: "Ответы на типовые ситуации → быстрее к записи, увереннее в чате.",
               },
               {
                 img: "/images/one.png",
                 title: "Узким специалистам",
-                text:
-                  "Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.",
+                text: "Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.",
               },
             ].map((c, i) => (
               <div
@@ -275,7 +268,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ЧТО ВХОДИТ В СИСТЕМУ — 3x2, иконки из /public/images */}
+      {/* ЧТО ВХОДИТ В СИСТЕМУ */}
       <section id="whats-included" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
@@ -292,38 +285,44 @@ export default function App() {
               {
                 img: "/images/xmind.png",
                 title: "Готовые диалоги",
-                desc:
-                  "Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово.",
+                desc: (
+                  <>Контакты до оплаты: приветствия, <span className="text-blue-600 font-semibold">презентация ценности</span>, запись — всё пошагово.</>
+                ),
               },
               {
                 img: "/images/target.png",
                 title: "Закрытие возражений",
-                desc:
-                  "«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления.",
+                desc: (
+                  <>«Дорого», «Подумаю», «У другого дешевле» — <span className="text-blue-600 font-semibold">мягкие ответы без давления</span>.</>
+                ),
               },
               {
                 img: "/images/salons.png",
                 title: "Под каждую услугу",
-                desc:
-                  "Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши.",
+                desc: (
+                  <>Маникюр, брови, ресницы, косметология, массаж — <span className="text-blue-600 font-semibold">учтена специфика каждой ниши</span>.</>
+                ),
               },
               {
                 img: "/images/bucle.png",
                 title: "Возврат клиентов",
-                desc:
-                  "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
+                desc: (
+                  <>Сценарии повторных записей и <span className="text-blue-600 font-semibold">реактивации «спящей» базы без рекламы</span>.</>
+                ),
               },
               {
                 img: "/images/phone.png",
                 title: "Гайд по внедрению",
-                desc:
-                  "Старт за один день: пошаговый план + стандарты для команды.",
+                desc: (
+                  <><span className="text-blue-600 font-semibold">Старт за один день</span>: пошаговый план + стандарты для команды.</>
+                ),
               },
               {
                 img: "/images/rocket.png",
                 title: "Итог",
-                desc:
-                  "Больше записей, выше средний чек, меньше времени в переписке.",
+                desc: (
+                  <>Больше записей, <span className="text-blue-600 font-semibold">выше средний чек</span>, меньше времени в переписке.</>
+                ),
               },
             ].map((i, k) => (
               <div key={k} className="rounded-2xl border p-8">
@@ -340,7 +339,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* БОНУСЫ — празднично, но минималистично; иконки не из GitHub */}
+      {/* БОНУСЫ */}
       <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
@@ -358,15 +357,13 @@ export default function App() {
               {
                 color: "orange",
                 title: "Гайд «Работа с клиентской базой»",
-                desc:
-                  "Повторные записи без рекламы → возвращайте старых клиентов.",
+                desc: "Повторные записи без рекламы → возвращайте старых клиентов.",
                 old: "27€",
               },
               {
                 color: "green",
                 title: "Чек-лист «30+ источников клиентов»",
-                desc:
-                  "Платные и бесплатные способы → где взять заявки уже сегодня.",
+                desc: "Платные и бесплатные способы → где взять заявки уже сегодня.",
                 old: "32€",
               },
               {
@@ -401,7 +398,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ЧТО ИЗМЕНИТСЯ СРАЗУ — оставляем как было по смыслу */}
+      {/* ЧТО ИЗМЕНИТСЯ СРАЗУ */}
       <section id="immediate" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
@@ -410,10 +407,10 @@ export default function App() {
 
           <div className="space-y-6 mt-12">
             {[
-              "Перестанешь терять заявки из-за слабых ответов.",
-              "Начнёшь закрывать больше записей уже с первого дня.",
-              "Повысишь средний чек через правильные предложения.",
-              "Станешь увереннее — на всё есть готовый ответ.",
+              <>Перестанешь терять заявки из-за <span className="text-blue-600 font-semibold">слабых ответов</span>.</>,
+              <>Начнёшь <span className="text-blue-600 font-semibold">закрывать больше записей</span> уже с первого дня.</>,
+              <>Повысишь средний чек через <span className="text-blue-600 font-semibold">правильные предложения</span>.</>,
+              <>Станешь увереннее — <span className="text-blue-600 font-semibold">на всё есть готовый ответ</span>.</>,
             ].map((t, i) => (
               <div
                 key={i}
@@ -429,7 +426,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* ОФФЕР -70% + таймер, акценты */}
+      {/* ОФФЕР */}
       <section id="offer" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
@@ -444,7 +441,6 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 mt-12">
-            {/* PriceCard */}
             <div className="rounded-3xl p-8 bg-gradient-to-b from-blue-600 to-blue-700 text-white shadow-lg">
               <div className="text-sm uppercase tracking-wide opacity-90">
                 Полный доступ
@@ -454,7 +450,6 @@ export default function App() {
                 <span className="text-5xl font-extrabold">19€</span>
               </div>
 
-              {/* Таймер */}
               <div className="mt-4">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2">
                   {!finished ? (
@@ -503,7 +498,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* WhatYouGet */}
             <div className="rounded-3xl p-8 border">
               <h3 className="text-lg font-bold text-gray-900">
                 Что входит
@@ -525,7 +519,6 @@ export default function App() {
               </ul>
             </div>
 
-            {/* Composition */}
             <div className="rounded-3xl p-8 border">
               <h3 className="text-lg font-bold text-gray-900">
                 Состав предложения
@@ -555,20 +548,20 @@ export default function App() {
         </div>
       </section>
 
-      {/* ОТЗЫВЫ — 4 фото + 6 ссылок на Instagram */}
+      {/* ОТЗЫВЫ */}
       <section id="reviews" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
             Отзывы клиентов
           </h2>
 
-          {/* 4 фото-отзыва из /public/images/reviews/… */}
+          {/* 4 фото-отзыва */}
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            {["review1.png", "review2.png", "review3.png", "reviews4.png"].map((n) => (
+            {["review1", "review2", "review3", "review4"].map((reviewName) => (
               <img
-                key={n}
-                src={`/images/reviews/${n}.jpg`}
-                alt={`Отзыв ${n}`}
+                key={reviewName}
+                src={`/images/reviews/${reviewName}.jpg`}
+                alt={`Отзыв ${reviewName}`}
                 className="w-full h-64 object-cover rounded-2xl border"
               />
             ))}
@@ -577,11 +570,11 @@ export default function App() {
           {/* 6 ссылок на видео из Instagram */}
           <div className="grid md:grid-cols-3 gap-4 mt-8">
             {[
-              "https://www.instagram.com/reel/DJjUiEnM-A_"
-              "#insta-video-2",https://www.instagram.com/reel/DJmUkiNsZe1"
-              "https://www.instagram.com/reel/DFX57cQobmS"
-              #https://www.instagram.com/reel/DJoAXfKs6tu"
-              "https://www.instagram.com/reel/DNG1lAPoCF7"
+              "https://www.instagram.com/reel/DJjUiEnM-A_",
+              "https://www.instagram.com/reel/DJmUkiNsZe1",
+              "https://www.instagram.com/reel/DFX57cQobmS",
+              "https://www.instagram.com/reel/DJoAXfKs6tu",
+              "https://www.instagram.com/reel/DNG1lAPoCF7",
               "https://www.instagram.com/reel/DGmY70NIwz7"
             ].map((href, i) => (
               <a
@@ -589,7 +582,7 @@ export default function App() {
                 href={href}
                 target="_blank"
                 rel="noopener"
-                className="rounded-xl border p-4 hover:bg-gray-50"
+                className="rounded-xl border p-4 hover:bg-gray-50 transition-colors"
               >
                 Видео-отзыв #{i + 1}
               </a>
@@ -598,7 +591,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* FAQ — оставлено близко к твоей версии */}
+      {/* FAQ */}
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
@@ -609,23 +602,19 @@ export default function App() {
             {[
               {
                 q: "Сработает в моей нише?",
-                a:
-                  "Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
+                a: "Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
               },
               {
                 q: "Не будет ли звучать «по-скриптовому»?",
-                a:
-                  "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.",
+                a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.",
               },
               {
                 q: "Зачем это админам?",
-                a:
-                  "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.",
+                a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.",
               },
               {
                 q: "Когда будут результаты?",
-                a:
-                  "Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
+                a: "Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
               },
             ].map((f, i) => (
               <div
