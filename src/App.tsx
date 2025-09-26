@@ -198,7 +198,7 @@ export default function App() {
             </div>
             <div className="rounded-2xl border p-8 text-center">
               <img
-                src="/images/time.png"
+                src="/images/clock.png"
                 alt="Тратится время"
                 className="mx-auto mb-6 w-16 h-16 object-contain"
               />
@@ -209,7 +209,7 @@ export default function App() {
             </div>
             <div className="rounded-2xl border p-8 text-center">
               <img
-                src="/images/competitor.png"
+                src="/images/door.png"
                 alt="Уходят к конкуренту"
                 className="mx-auto mb-6 w-16 h-16 object-contain"
               />
@@ -239,19 +239,19 @@ export default function App() {
                   "Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.",
               },
               {
-                img: "/images/medical.png",
+                img: "/images/med.png",
                 title: "Медицинским центрам",
                 text:
                   "Админы закрывают заявки, врачи работают с реальными пациентами.",
               },
               {
-                img: "/images/universal.png",
+                img: "/images/team.png",
                 title: "Мастерам-универсалам",
                 text:
                   "Ответы на типовые ситуации → быстрее к записи, увереннее в чате.",
               },
               {
-                img: "/images/specialist.png",
+                img: "/images/one.png",
                 title: "Узким специалистам",
                 text:
                   "Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.",
@@ -291,37 +291,37 @@ export default function App() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
             {[
               {
-                img: "/images/dialogs.png",
+                img: "/images/xmind.png",
                 title: "Готовые диалоги",
                 desc:
                   "Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово.",
               },
               {
-                img: "/images/objections.png",
+                img: "/images/target.png",
                 title: "Закрытие возражений",
                 desc:
                   "«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления.",
               },
               {
-                img: "/images/per-service.png",
+                img: "/images/salons.png",
                 title: "Под каждую услугу",
                 desc:
                   "Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши.",
               },
               {
-                img: "/images/return.png",
+                img: "/images/bucle.png",
                 title: "Возврат клиентов",
                 desc:
                   "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
               },
               {
-                img: "/images/guide.png",
+                img: "/images/phone.png",
                 title: "Гайд по внедрению",
                 desc:
                   "Старт за один день: пошаговый план + стандарты для команды.",
               },
               {
-                img: "/images/result.png",
+                img: "/images/business-startup_16807702.png",
                 title: "Итог",
                 desc:
                   "Больше записей, выше средний чек, меньше времени в переписке.",
