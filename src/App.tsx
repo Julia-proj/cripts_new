@@ -321,7 +321,7 @@ export default function App() {
                   "Старт за один день: пошаговый план + стандарты для команды.",
               },
               {
-                img: "/images/business-startup_16807702.png",
+                img: "/images/rocket",
                 title: "Итог",
                 desc:
                   "Больше записей, выше средний чек, меньше времени в переписке.",
