@@ -583,7 +583,7 @@ export default function App() {
               "#insta-video-3",https://www.instagram.com/reel/DFX57cQobmS
               "#insta-video-4",https://www.instagram.com/reel/DJoAXfKs6tu
               "#insta-video-5",https://www.instagram.com/reel/DNG1lAPoCF7
-              "#insta-video-6",https://www.instagram.com/reel/DGmY70NIwz7/?igsh=NjB6bHN6ZWI0dHV6
+              "#insta-video-6",https://www.instagram.com/reel/DGmY70NIwz7/?utm_source=ig_web_copy_link
             ].map((href, i) => (
               <a
                 key={i}
