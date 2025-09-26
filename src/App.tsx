@@ -250,7 +250,7 @@ export default function App() {
 
             <div className="rounded-2xl border p-8">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-orange-50">
-                <img src="/images/time.png" alt="" className="h-7 w-7" />
+                <img src="/images/clock.png" alt="" className="h-7 w-7" />
               </div>
               <h3 className="mb-2 text-center text-lg font-semibold">
                 Тратится время впустую
@@ -262,7 +262,7 @@ export default function App() {
 
             <div className="rounded-2xl border p-8">
               <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50">
-                <img src="/images/competitor.png" alt="" className="h-7 w-7" />
+                <img src="/images/door.png" alt="" className="h-7 w-7" />
               </div>
               <h3 className="mb-2 text-center text-lg font-semibold">
                 Заявки уходят к конкуренту
