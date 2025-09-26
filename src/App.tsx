@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  CheckCircle,
-  XCircle,
   ArrowRight,
+  CheckCircle,
   ChevronDown,
-} from 'lucide-react';
+} from "lucide-react";
 
-// ЗДЕСЬ ВСТАВИШЬ СВОЮ ССЫЛКУ НА STRIPE
+// !!! ВСТАВЬ свою ссылку на Stripe
 const STRIPE_URL = "#stripe-payment-link";
 
-function App() {
+export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({});
 
@@ -18,25 +17,23 @@ function App() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsVisible(prev => ({ ...prev, [entry.target.id]: true }));
+            setIsVisible((prev) => ({ ...prev, [entry.target.id]: true }));
           }
         });
       },
-      { threshold: 0.12 }
+      { threshold: 0.1 }
     );
-    document.querySelectorAll('[id]').forEach((el) => observer.observe(el));
+    document.querySelectorAll("[id]").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
-  const toggleFaq = (index: number) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
+  const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      {/* HEADER */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div className="mx-auto flex items-center justify-between max-w-7xl px-6 py-4">
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
           <a
             href={STRIPE_URL}
@@ -50,33 +47,45 @@ function App() {
       {/* HERO */}
       <section className="pt-24 pb-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div id="hero-text" className={`transition-all duration-700 ${isVisible['hero-text'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
-                Скрипты, которые превращают сообщения <span className="text-blue-600">в деньги</span>
+          <div className="grid items-center gap-16 lg:grid-cols-2">
+            <div id="hero-text" className={`transition-all duration-1000 ${isVisible["hero-text"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <h1 className="mb-6 text-4xl font-bold leading-tight text-gray-900 lg:text-5xl xl:text-6xl">
+                Скрипты, которые превращают сообщения{" "}
+                <span className="text-blue-600">в деньги</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed text-center lg:text-left">
-                Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени на переписке.
+              <p className="mb-8 text-xl leading-relaxed text-gray-600">
+                Проверенная система общения с клиентами для бьюти-мастеров.
+                Результат: закрытые возражения, увеличенный средний чек, экономия времени на переписке.
               </p>
-              <div className="mb-6 flex justify-center lg:justify-start">
+              <div className="mb-6">
                 <a
                   href={STRIPE_URL}
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-3 rounded-xl bg-gray-900 px-8 py-4 text-lg font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-800"
                 >
                   Купить
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="h-5 w-5" />
                 </a>
+              </div>
+              <div className="flex items-center gap-6 text-sm text-gray-500">
+                <span className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  Доступ сразу
+                </span>
+                <div className="flex items-center gap-2">
+                  <div className="rounded bg-black px-2 py-1 text-xs font-medium text-white">Apple Pay</div>
+                  <div className="rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white">Google Pay</div>
+                </div>
               </div>
             </div>
 
-            <div id="hero-image" className={`transition-all duration-700 delay-150 ${isVisible['hero-image'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+            <div id="hero-image" className={`transition-all duration-1000 delay-300 ${isVisible["hero-image"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <div className="relative">
                 <img
                   src="/images/hero.jpg"
                   alt="Beauty Scripts Hero"
-                  className="w-full h-auto rounded-2xl shadow-xl"
+                  className="h-auto w-full rounded-2xl shadow-xl object-cover"
                 />
-                <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg">
+                <div className="absolute -right-4 -top-4 rounded-xl bg-white p-4 shadow-lg">
                   <div className="text-2xl font-bold text-gray-900">19€</div>
                   <div className="text-sm text-gray-500">Полный доступ</div>
                 </div>
@@ -86,115 +95,161 @@ function App() {
         </div>
       </section>
 
-      {/* СРАВНЕНИЕ: «Как изменится ваша работа с клиентами» */}
-      <section id="comparison" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-4">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-              Как изменится ваша <span className="underline decoration-blue-200 decoration-4 underline-offset-4">работа с клиентами</span>
+      {/* КАК ИЗМЕНИТСЯ РАБОТА С КЛИЕНТАМИ (СЕЙЧАС / ПОСЛЕ) */}
+      <section id="comparison" className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mb-2 text-center">
+            <h2 className="mb-2 text-3xl font-bold text-gray-900 lg:text-4xl">
+              Как изменится ваша <span className="text-blue-600">работа с клиентами</span>
             </h2>
-            <p className="text-gray-600 mt-3">Сравните результаты до и после внедрения скриптов.</p>
+            <p className="text-gray-600">Сравните результаты до и после внедрения скриптов.</p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-10">
-            {/* Сейчас */}
-            <div className={`bg-white rounded-2xl p-8 border border-gray-200 transition-all duration-700 ${isVisible['comparison'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
-                  <XCircle className="w-4 h-4" />
+          <div className="mx-auto mb-2 grid max-w-5xl gap-8 lg:grid-cols-2">
+            {/* СЕЙЧАС (красная) */}
+            <div className={`rounded-2xl border border-gray-200 bg-white p-8 transition-all duration-1000 ${isVisible["comparison"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <div className="mb-6 text-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-sm font-medium text-red-600">
+                  <img src="/images/cross-red.png" alt="" className="h-4 w-4" />
                   Сейчас
                 </div>
               </div>
-              <ul className="space-y-4 text-gray-800">
-                {[
-                  ['«Сколько стоит?»', 'Отвечаете только ценой и тишина.'],
-                  ['«Подумаю»', 'Не знаете, что ответить — клиент уходит.'],
-                  ['«Переписка 30+ минут»', 'Клиент остывает — теряете заявку.'],
-                  ['«10 заявок»', 'Долгие диалоги — только 2–3 записи.'],
-                ].map((row, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <XCircle className="w-5 h-5 text-red-500 mt-1 shrink-0" />
-                    <span><strong>{row[0]}</strong> → {row[1]}</span>
-                  </li>
-                ))}
+              <ul className="space-y-4 text-gray-700">
+                <li className="flex items-start gap-3">
+                  <img src="/images/cross-red.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«Сколько стоит?» → отвечаете только ценой и тишина.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src="/images/cross-red.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«Подумаю» → не знаете, что ответить — клиент уходит.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src="/images/cross-red.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«Переписка 30+ минут» → клиент остывает — теряете заявку.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src="/images/cross-red.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«10 заявок» → долгие диалоги — только 2–3 записи.</span>
+                </li>
               </ul>
             </div>
 
-            {/* После */}
-            <div className={`bg-white rounded-2xl p-8 border border-gray-200 transition-all duration-700 delay-150 ${isVisible['comparison'] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-full font-medium text-sm">
-                  <CheckCircle className="w-4 h-4" />
+            {/* ПОСЛЕ (зелёная) */}
+            <div className={`rounded-2xl border border-gray-200 bg-white p-8 transition-all duration-1000 delay-200 ${isVisible["comparison"] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <div className="mb-6 text-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-medium text-green-600">
+                  <img src="/images/check-green.png" alt="" className="h-4 w-4" />
                   После
                 </div>
               </div>
-              <ul className="space-y-4 text-gray-800">
-                {[
-                  ['«Сколько стоит?»', 'Презентуете ценность → запись.'],
-                  ['«Подумаю»', 'Мягкое возражение → возвращаете к записи.'],
-                  ['«Переписка 5 минут»', 'Готовые фразы → быстрая запись.'],
-                  ['«10 заявок»', 'Чёткие диалоги → 6–7 записей.'],
-                ].map((row, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-600 mt-1 shrink-0" />
-                    <span><strong>{row[0]}</strong> → {row[1]}</span>
-                  </li>
-                ))}
+              <ul className="space-y-4 text-gray-700">
+                <li className="flex items-start gap-3">
+                  <img src="/images/check-green.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«Сколько стоит?» → презентуете ценность → запись.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src="/images/check-green.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«Подумаю» → мягкое возражение → возвращаете к записи.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src="/images/check-green.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«Переписка 5 минут» → готовые фразы → быстрая запись.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src="/images/check-green.png" alt="" className="mt-1 h-5 w-5 shrink-0" />
+                  <span>«10 заявок» → чёткие диалоги → 6–7 записей.</span>
+                </li>
               </ul>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Почему это важно */}
-          <div className="mt-16 text-center">
-            <h3 className="text-2xl font-bold text-gray-900">Почему это <span className="underline decoration-blue-200 decoration-4 underline-offset-4">важно</span></h3>
-            <p className="text-gray-600 mt-2">Каждая потерянная заявка — это упущенная прибыль</p>
+      {/* ПОЧЕМУ ЭТО ВАЖНО */}
+      <section id="why" className="bg-white py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mb-12 text-center">
+            <h2 className="mb-2 text-3xl font-bold text-gray-900 lg:text-4xl">
+              Почему это <span className="text-blue-600">важно</span>
+            </h2>
+            <p className="text-lg text-gray-600">Каждая потерянная заявка — это упущенная прибыль</p>
+          </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-10">
-              {[
-                {
-                  icon: '/images/money.png',
-                  title: 'Сливаются деньги на рекламу',
-                  text: 'Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.',
-                },
-                {
-                  icon: '/images/time.png',
-                  title: 'Тратится время впустую',
-                  text: 'По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.',
-                },
-                {
-                  icon: '/images/leads.png',
-                  title: 'Заявки уходят к конкуренту',
-                  text: 'Пока вы думаете, клиент записывается к тому, кто отвечает быстро и уверенно.',
-                },
-              ].map((c, i) => (
-                <div key={i} className="bg-white rounded-2xl p-8 border border-gray-100">
-                  <img src={c.icon} alt="" className="w-12 h-12 mx-auto mb-5" />
-                  <h4 className="font-bold text-gray-900">{c.title}</h4>
-                  <p className="text-gray-600 mt-3">{c.text}</p>
-                </div>
-              ))}
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="rounded-2xl border p-8">
+              <div className="mb-4 flex items-center justify-center">
+                <img src="/images/why-ads.png" alt="" className="h-12 w-12" />
+              </div>
+              <h3 className="mb-2 text-center text-lg font-semibold text-gray-900">
+                Сливаются деньги на рекламу
+              </h3>
+              <p className="text-center text-gray-600">
+                Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.
+              </p>
+            </div>
+            <div className="rounded-2xl border p-8">
+              <div className="mb-4 flex items-center justify-center">
+                <img src="/images/why-time.png" alt="" className="h-12 w-12" />
+              </div>
+              <h3 className="mb-2 text-center text-lg font-semibold text-gray-900">
+                Тратится время впустую
+              </h3>
+              <p className="text-center text-gray-600">
+                По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
+              </p>
+            </div>
+            <div className="rounded-2xl border p-8">
+              <div className="mb-4 flex items-center justify-center">
+                <img src="/images/why-competitor.png" alt="" className="h-12 w-12" />
+              </div>
+              <h3 className="mb-2 text-center text-lg font-semibold text-gray-900">
+                Заявки уходят к конкуренту
+              </h3>
+              <p className="text-center text-gray-600">
+                Пока вы думаете, клиент записывается к тому, кто отвечает быстро и уверенно.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Кому подходят скрипты (2x2) */}
-      <section id="target-audience" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-12 text-center text-gray-900">
-            Кому подходят <span className="underline decoration-blue-200 decoration-4 underline-offset-4">скрипты</span>
-          </h2>
+      {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
+      <section id="audience" className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <h2 className="mb-12 text-3xl font-bold text-gray-900 lg:text-4xl">
+              Кому подходят <span className="text-blue-600">скрипты</span>
+            </h2>
+          </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid gap-8 md:grid-cols-2">
             {[
-              { icon: '/images/salon.png', title: 'Владельцам салонов и студий', text: 'Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.' },
-              { icon: '/images/med.png', title: 'Медицинским центрам', text: 'Админы закрывают заявки, врачи работают с реальными пациентами.' },
-              { icon: '/images/master.png', title: 'Мастерам-универсалам', text: 'Ответы на типовые ситуации → быстрее к записи, увереннее в чате.' },
-              { icon: '/images/specialist.png', title: 'Узким специалистам', text: 'Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.' },
+              {
+                icon: "/images/a-salon.png",
+                title: "Владельцам салонов и студий",
+                text: "Стандарт ответов, скорость и контроль: все отвечают одинаково сильно.",
+              },
+              {
+                icon: "/images/a-med.png",
+                title: "Медицинским центрам",
+                text: "Админы закрывают заявки, врачи работают с реальными пациентами.",
+              },
+              {
+                icon: "/images/a-master.png",
+                title: "Мастерам-универсалам",
+                text: "Ответы на типовые ситуации → быстрее к записи, увереннее в чате.",
+              },
+              {
+                icon: "/images/a-pro.png",
+                title: "Узким специалистам",
+                text: "Ногти, брови, ресницы, волосы, косметология, перманент. Блоки под услугу.",
+              },
             ].map((c, i) => (
-              <div key={i} className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
-                <img src={c.icon} alt="" className="w-12 h-12 mb-6" />
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{c.title}</h3>
+              <div key={i} className="rounded-2xl border bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="mb-6 flex items-center gap-3">
+                  <img src={c.icon} alt="" className="h-7 w-7" />
+                  <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
+                </div>
                 <p className="text-gray-600">{c.text}</p>
               </div>
             ))}
@@ -202,78 +257,105 @@ function App() {
         </div>
       </section>
 
-      {/* Что входит в систему скриптов */}
-      <section id="whats-included" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-center text-gray-900">
-            Что входит в <span className="underline decoration-blue-200 decoration-4 underline-offset-4">систему скриптов</span>
-          </h2>
-          <p className="text-center text-gray-600 mb-12">Полный набор инструментов для увеличения продаж.</p>
+      {/* ЧТО ВХОДИТ В СИСТЕМУ СКРИПТОВ */}
+      <section id="included" className="bg-white py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <h2 className="mb-2 text-3xl font-bold text-gray-900 lg:text-4xl">
+              Что входит в <span className="text-blue-600">систему скриптов</span>
+            </h2>
+            <p className="mb-12 text-lg text-gray-600">Полный набор инструментов для увеличения продаж.</p>
+          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: '/images/dialogs.png', title: 'Готовые диалоги', text: 'Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово.' },
-              { icon: '/images/objections.png', title: 'Закрытие возражений', text: '«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления.' },
-              { icon: '/images/services.png', title: 'Под каждую услугу', text: 'Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши.' },
-              { icon: '/images/return.png', title: 'Возврат клиентов', text: 'Сценарии повторных записей и реактивации «спящей» базы без рекламы.' },
-              { icon: '/images/guide.png', title: 'Гайд по внедрению', text: 'Старт за один день: пошаговый план + стандарты для команды.' },
-              { icon: '/images/result.png', title: 'Итог', text: 'Больше записей, выше средний чек, меньше времени в переписке.' },
+              {
+                icon: "/images/i-dialogs.png",
+                title: "Готовые диалоги",
+                desc: "Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово.",
+              },
+              {
+                icon: "/images/i-objections.png",
+                title: "Закрытие возражений",
+                desc: "«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления.",
+              },
+              {
+                icon: "/images/i-services.png",
+                title: "Под каждую услугу",
+                desc: "Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши.",
+              },
+              {
+                icon: "/images/i-return.png",
+                title: "Возврат клиентов",
+                desc: "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
+              },
+              {
+                icon: "/images/i-guide.png",
+                title: "Гайд по внедрению",
+                desc: "Старт за один день: пошаговый план + стандарты для команды.",
+              },
+              {
+                icon: "/images/i-result.png",
+                title: "Итог",
+                desc: "Больше записей, выше средний чек, меньше времени в переписке.",
+              },
             ].map((c, i) => (
-              <div key={i} className="bg-white rounded-2xl p-8 hover:shadow-lg hover:-translate-y-1 transition-all">
-                <img src={c.icon} alt="" className="w-12 h-12 mb-6" />
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{c.title}</h3>
-                <p className="text-gray-600">{c.text}</p>
+              <div key={i} className="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-gray-50">
+                  <img src={c.icon} alt="" className="h-7 w-7" />
+                </div>
+                <h3 className="mb-2 text-xl font-bold text-gray-900">{c.title}</h3>
+                <p className="text-gray-600">{c.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* БОНУСЫ (празднично) */}
-      <section id="bonuses" className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-rose-50 via-purple-50 to-blue-50 pointer-events-none" />
-        <div className="absolute inset-0 animate-confetti pointer-events-none" />
-        <div className="max-w-6xl mx-auto px-6 relative">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-center text-gray-900">Бонусы при покупке 🎉</h2>
-          <p className="text-center text-gray-600 mb-12">Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами.</p>
+      {/* БОНУСЫ */}
+      <section id="bonuses" className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <h2 className="mb-2 text-3xl font-bold text-gray-900 lg:text-4xl">Бонусы при покупке 🎉</h2>
+            <p className="text-lg text-gray-600">Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами.</p>
+          </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
             {[
               {
-                title: 'Гайд «Работа с клиентской базой»',
-                text: 'Повторные записи без рекламы → возвращайте старых клиентов.',
-                old: '27€',
-                colorBox: 'bg-orange-50',
-                colorIcon: 'bg-orange-100',
-                priceColor: 'text-orange-600',
+                icon: "/images/b-guide-base.png",
+                title: "Гайд «Работа с клиентской базой»",
+                priceOld: "27€",
+                priceNew: "0€",
+                desc: "Повторные записи без рекламы → возвращайте старых клиентов.",
               },
               {
-                title: 'Чек-лист «30+ источников клиентов»',
-                text: 'Платные и бесплатные способы → где взять заявки уже сегодня.',
-                old: '32€',
-                colorBox: 'bg-green-50',
-                colorIcon: 'bg-green-100',
-                priceColor: 'text-green-600',
+                icon: "/images/b-checklist.png",
+                title: "Чек-Лист «30+ источников клиентов»",
+                priceOld: "32€",
+                priceNew: "0€",
+                desc: "Платные и бесплатные способы → где взять заявки уже сегодня.",
               },
               {
-                title: 'Гайд «Продажи на консультации»',
-                text: '5 этапов продаж → мягкий апсейл дополнительных услуг.',
-                old: '20€',
-                colorBox: 'bg-blue-50',
-                colorIcon: 'bg-blue-100',
-                priceColor: 'text-blue-600',
+                icon: "/images/b-guide-sales.png",
+                title: "Гайд «Продажи на консультации»",
+                priceOld: "20€",
+                priceNew: "0€",
+                desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.",
               },
             ].map((b, i) => (
-              <div key={i} className={`${b.colorBox} rounded-2xl p-8 text-center`}>
-                <div className={`w-16 h-16 ${b.colorIcon} rounded-2xl flex items-center justify-center mx-auto mb-6`}>
-                  {/* простая «искра» */}
-                  <div className="w-7 h-7 rounded-full animate-pulse-soft" />
+              <div
+                key={i}
+                className="rounded-2xl border bg-white p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-50 to-purple-50">
+                  <img src={b.icon} alt="" className="h-9 w-9" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{b.title}</h3>
-                <p className="text-gray-600 mb-4">{b.text}</p>
+                <h3 className="mb-3 text-xl font-bold text-gray-900">{b.title}</h3>
+                <p className="mb-4 text-gray-600">{b.desc}</p>
                 <div className="flex items-center justify-center gap-2">
-                  <span className="text-lg font-bold text-gray-400 line-through">{b.old}</span>
-                  <span className={`text-xl font-bold ${b.priceColor}`}>0€</span>
+                  <span className="text-lg font-bold text-gray-400 line-through">{b.priceOld}</span>
+                  <span className="text-xl font-bold text-green-600">{b.priceNew}</span>
                 </div>
               </div>
             ))}
@@ -281,141 +363,157 @@ function App() {
         </div>
       </section>
 
-      {/* «Получите полную систему со скидкой 70%» */}
-      <section id="pricing70" className="py-20 bg-gray-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 pointer-events-none" />
-        <div className="max-w-5xl mx-auto px-6 text-center relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 mb-5 shimmer">
-            <span className="w-2 h-2 rounded-full bg-red-400 animate-ping-slow" />
-            Лимитированное время
+      {/* ЧТО ИЗМЕНИТСЯ СРАЗУ (оставляем по сути как было) */}
+      <section id="immediate" className="bg-white py-20">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="text-center">
+            <h2 className="mb-12 text-3xl font-bold text-gray-900 lg:text-4xl">
+              Что <span className="text-blue-600">изменится</span> сразу
+            </h2>
           </div>
 
-          <h2 className="text-3xl lg:text-5xl font-bold mb-4">Получите полную систему со скидкой 70%</h2>
-          <p className="text-gray-300 mb-10">Все скрипты + бонусы. Полная система для увеличения продаж.</p>
+          <div className="space-y-6">
+            {[
+              "Перестанешь терять заявки из-за слабых ответов.",
+              "Начнёшь закрывать больше записей уже с первого дня.",
+              "Повысишь средний чек через правильные предложения.",
+              "Станешь увереннее — на всё есть готовый ответ.",
+            ].map((t, i) => (
+              <div
+                key={i}
+                className="flex items-start gap-4 rounded-2xl bg-gray-50 p-6 shadow-sm transition-all duration-500"
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100">
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                </div>
+                <span className="text-lg font-medium text-gray-800">{t}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="bg-white/5 rounded-3xl p-10 backdrop-blur">
-            <div className="text-5xl font-extrabold tracking-tight mb-6">
-              <span className="text-gray-400 line-through mr-3">67€</span>
-              <span>19€</span>
+      {/* ПРЕДЛОЖЕНИЕ / -70% + ЛЕГКАЯ АНИМАЦИЯ */}
+      <section id="pricing" className="relative overflow-hidden bg-gray-900 py-20 text-white">
+        <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-purple-600/10" />
+        <div className="relative mx-auto max-w-4xl px-6 text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1 text-sm font-medium">
+            <span className="animate-pulse">⏳</span> Ограниченное время
+          </div>
+          <h2 className="mb-4 text-3xl font-bold lg:text-5xl">
+            Получите полную систему со скидкой <span className="text-blue-400">70%</span>
+          </h2>
+
+          <div className="mx-auto mt-10 max-w-2xl rounded-3xl bg-white/5 p-8">
+            <div className="mb-6 text-4xl font-extrabold tracking-tight">
+              <span className="mr-3 align-middle text-2xl text-gray-400 line-through">67€</span>
+              <span className="align-middle text-white">19€</span>
             </div>
 
-            <ul className="text-left max-w-3xl mx-auto space-y-3 text-gray-200">
+            <ul className="mx-auto mb-8 grid gap-3 text-left text-gray-200 md:grid-cols-2">
               {[
-                'Готовые диалоги для всех ситуаций',
-                'Шаблоны под конкретную услугу',
-                'Бонус: гайд по работе с базой (27€)',
-                'Бонус: 30+ источников клиентов (32€)',
-                'Бонус: продажи на консультации (20€)',
-                'Пожизненный доступ и обновления',
-              ].map((t, i) => (
-                <li key={i} className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-400 mt-1 shrink-0" />
-                  <span>{t}</span>
+                "Все скрипты + бонусы",
+                "Полная система для увеличения продаж",
+                "Готовые диалоги для всех ситуаций",
+                "Шаблоны под конкретную услугу",
+                "Бонус: гайд по работе с базой (27€)",
+                "Бонус: 30+ источников клиентов (32€)",
+                "Бонус: продажи на консультации (20€)",
+                "Пожизненный доступ и обновления",
+              ].map((p, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="mt-1 inline-block h-2 w-2 rounded-full bg-white/70" />
+                  <span>{p}</span>
                 </li>
               ))}
             </ul>
 
             <a
               href={STRIPE_URL}
-              className="mt-8 inline-flex items-center gap-3 px-10 py-4 bg-white text-gray-900 rounded-xl text-lg font-semibold hover:bg-gray-100 transition-all hover:-translate-y-0.5"
+              className="inline-flex items-center gap-3 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-gray-900 transition-transform hover:-translate-y-0.5"
             >
               Получить со скидкой 70%
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="h-5 w-5" />
             </a>
 
-            <div className="mt-4 flex items-center justify-center gap-3 text-xs text-gray-300 opacity-80">
-              <span className="px-2 py-1 bg-black/60 rounded">Apple Pay</span>
-              <span className="px-2 py-1 bg-blue-600/70 rounded">Google Pay</span>
-              <span className="px-2 py-1 bg-white/10 rounded">Visa</span>
-              <span className="px-2 py-1 bg-white/10 rounded">MasterCard</span>
+            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-gray-300">
+              <span className="rounded bg-black px-2 py-1 text-xs font-medium text-white">Apple Pay</span>
+              <span className="rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white">Google Pay</span>
+              <span className="rounded bg-white/10 px-2 py-1 text-xs font-medium">Visa</span>
+              <span className="rounded bg-white/10 px-2 py-1 text-xs font-medium">MasterCard</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Что изменится сразу (оставил как было по сути) */}
-      <section id="immediate-changes" className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-12 text-center text-gray-900">Что изменится <span className="underline decoration-blue-200 decoration-4 underline-offset-4">сразу</span></h2>
-          <div className="space-y-6">
-            {[
-              'Перестанешь терять заявки из-за слабых ответов.',
-              'Начнёшь закрывать больше записей уже с первого дня.',
-              'Повысишь средний чек через правильные предложения.',
-              'Станешь увереннее — на всё есть готовый ответ.',
-            ].map((item, index) => (
-              <div key={index} className="flex items-start gap-4 bg-white p-6 rounded-2xl shadow-sm transition-all">
-                <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                <span className="text-lg font-medium text-gray-800">{item}</span>
-              </div>
-            ))}
+      {/* ОТЗЫВЫ */}
+      <section id="reviews" className="bg-white py-20">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="text-center">
+            <h2 className="mb-12 text-3xl font-bold text-gray-900 lg:text-4xl">Отзывы клиентов</h2>
           </div>
-        </div>
-      </section>
 
-      {/* Отзывы */}
-      <section id="reviews" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-12 text-center text-gray-900">Отзывы клиентов</h2>
-
-          {/* Простая «галерея-лента» — положи PNG/JPG в /public/images */}
-          <div className="flex gap-6 overflow-x-auto pb-4 snap-x">
+          {/* Простая «галерея»: положи файлы в /public/images/reviews/ */}
+          <div className="grid gap-6 md:grid-cols-3">
             {[
-              { img: '/images/rev1.jpg', name: 'Мария', link: 'https://instagram.com/...' },
-              { img: '/images/rev2.jpg', name: 'Анна', link: 'https://instagram.com/...' },
-              { img: '/images/rev3.jpg', name: 'Елена', link: 'https://instagram.com/...' },
+              { img: "/images/reviews/r1.jpg", ig: "https://instagram.com/..." },
+              { img: "/images/reviews/r2.jpg", ig: "https://instagram.com/..." },
+              { img: "/images/reviews/r3.jpg", ig: "https://instagram.com/..." },
             ].map((r, i) => (
-              <a key={i} href={r.link} target="_blank" rel="noreferrer" className="min-w-[260px] snap-start">
-                <div className="rounded-2xl border bg-white overflow-hidden hover:shadow-lg transition">
-                  <img src={r.img} alt={r.name} className="w-full h-48 object-cover" />
-                  <div className="p-4">
-                    <div className="font-semibold">{r.name}</div>
-                    <div className="text-sm text-gray-500">Видео/подтверждение в Instagram</div>
-                  </div>
-                </div>
+              <a
+                key={i}
+                href={r.ig}
+                target="_blank"
+                rel="noreferrer"
+                className="group overflow-hidden rounded-2xl border"
+              >
+                <img src={r.img} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
               </a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ (оставлено как было по стилю) */}
-      <section id="faq" className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold mb-12 text-center text-gray-900">Частые вопросы</h2>
+      {/* FAQ (оставляем логику аккордеона) */}
+      <section id="faq" className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-4xl px-6">
+          <div className="text-center">
+            <h2 className="mb-12 text-3xl font-bold text-gray-900 lg:text-4xl">Частые вопросы</h2>
+          </div>
 
           <div className="space-y-4">
             {[
               {
-                q: 'Сработает в моей нише?',
-                a: 'Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.',
+                q: "Сработает в моей нише?",
+                a: "Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
               },
               {
-                q: 'Не будет ли звучать «по-скриптовому»?',
-                a: 'Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.',
+                q: "Не будет ли звучать «по-скриптовому»?",
+                a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.",
               },
               {
-                q: 'Зачем это админам?',
-                a: 'Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.',
+                q: "Зачем это админам?",
+                a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.",
               },
               {
-                q: 'Когда будут результаты?',
-                a: 'Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.',
+                q: "Когда будут результаты?",
+                a: "Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
               },
-            ].map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
+            ].map((f, i) => (
+              <div key={i} className="overflow-hidden rounded-2xl border bg-white">
                 <button
-                  onClick={() => toggleFaq(index)}
-                  className="w-full px-8 py-6 text-left hover:bg-gray-50 flex justify-between items-center transition-colors"
+                  onClick={() => toggleFaq(i)}
+                  className="flex w-full items-center justify-between px-8 py-6 text-left transition-colors hover:bg-gray-50"
                 >
-                  <span className="font-semibold text-lg text-gray-900">{faq.q}</span>
-                  <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${openFaq === index ? 'rotate-180' : ''}`} />
+                  <span className="text-lg font-semibold text-gray-900">{f.q}</span>
+                  <ChevronDown
+                    className={`h-5 w-5 text-gray-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`}
+                  />
                 </button>
-                {openFaq === index && (
-                  <div className="px-8 py-6 bg-gray-50 border-t border-gray-200">
-                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                {openFaq === i && (
+                  <div className="border-t bg-gray-50 px-8 py-6">
+                    <p className="leading-relaxed text-gray-600">{f.a}</p>
                   </div>
                 )}
               </div>
@@ -424,67 +522,23 @@ function App() {
         </div>
       </section>
 
-      {/* Footer + мобильный CTA */}
-      <footer className="py-12 bg-white border-t border-gray-200 text-center">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-xl font-bold text-gray-900 mb-4">Beauty Scripts</div>
+      {/* FOOTER */}
+      <footer className="border-t bg-white py-12 text-center">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mb-4 text-xl font-bold text-gray-900">Beauty Scripts</div>
           <p className="text-gray-500">© {new Date().getFullYear()} Все права защищены</p>
         </div>
       </footer>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50 lg:hidden">
+      {/* STICKY CTA (мобилка) */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t bg-white p-4 lg:hidden">
         <a
           href={STRIPE_URL}
-          className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-colors"
+          className="block w-full rounded-xl bg-gray-900 py-4 px-6 text-center font-semibold text-white transition-colors hover:bg-gray-800"
         >
           Готовые скрипты — 19€ • Купить сейчас
         </a>
       </div>
-
-      {/* CSS-анимации через style-тэг (локально к компоненту) */}
-      <style>{`
-        .animate-pulse-soft {
-          animation: pulseSoft 2.2s ease-in-out infinite;
-          background: radial-gradient(closest-side, rgba(255,255,255,.9), rgba(255,255,255,.3));
-        }
-        @keyframes pulseSoft {
-          0%, 100% { transform: scale(1); opacity: .9; }
-          50% { transform: scale(1.06); opacity: 1; }
-        }
-        .animate-ping-slow {
-          animation: pingSlow 1.8s cubic-bezier(0,0,.2,1) infinite;
-        }
-        @keyframes pingSlow {
-          0% { transform: scale(1); opacity: 1; }
-          75%, 100% { transform: scale(2); opacity: 0; }
-        }
-        .shimmer {
-          position: relative;
-          overflow: hidden;
-        }
-        .shimmer::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          transform: translateX(-100%);
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
-          animation: shimmer 2.2s infinite;
-        }
-        @keyframes shimmer {
-          100% { transform: translateX(100%); }
-        }
-        /* Конфетти — очень лёгкий фон */
-        .animate-confetti {
-          background-image:
-            radial-gradient(2px 2px at 20% 30%, rgba(0,0,0,.06) 50%, transparent 51%),
-            radial-gradient(2px 2px at 60% 70%, rgba(0,0,0,.06) 50%, transparent 51%),
-            radial-gradient(2px 2px at 80% 40%, rgba(0,0,0,.06) 50%, transparent 51%),
-            radial-gradient(2px 2px at 35% 80%, rgba(0,0,0,.06) 50%, transparent 51%);
-          background-size: 180px 180px;
-        }
-      `}</style>
     </div>
   );
 }
-
-export default App;
