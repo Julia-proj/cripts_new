@@ -564,7 +564,7 @@ export default function App() {
 
           {/* 4 фото-отзыва из /public/images/reviews/… */}
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            {[review1, review2, review3, reviews4].map((n) => (
+            {["review1.png", "review2.png", "review3.png", "reviews4.png"].map((n) => (
               <img
                 key={n}
                 src={`/images/reviews/${n}.jpg`}
@@ -577,12 +577,12 @@ export default function App() {
           {/* 6 ссылок на видео из Instagram */}
           <div className="grid md:grid-cols-3 gap-4 mt-8">
             {[
-              "#insta-video-1",https://www.instagram.com/reel/DJjUiEnM-A_
-              "#insta-video-2",https://www.instagram.com/reel/DJmUkiNsZe1
-              "#insta-video-3",https://www.instagram.com/reel/DFX57cQobmS
-              "#insta-video-4",https://www.instagram.com/reel/DJoAXfKs6tu
-              "#insta-video-5",https://www.instagram.com/reel/DNG1lAPoCF7
-              "#insta-video-6",https://www.instagram.com/reel/DGmY70NIwz7/?utm_source=ig_web_copy_link
+              "https://www.instagram.com/reel/DJjUiEnM-A_"
+              "#insta-video-2",https://www.instagram.com/reel/DJmUkiNsZe1"
+              "https://www.instagram.com/reel/DFX57cQobmS"
+              #https://www.instagram.com/reel/DJoAXfKs6tu"
+              "https://www.instagram.com/reel/DNG1lAPoCF7"
+              "https://www.instagram.com/reel/DGmY70NIwz7"
             ].map((href, i) => (
               <a
                 key={i}
