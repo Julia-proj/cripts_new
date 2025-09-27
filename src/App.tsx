@@ -20,19 +20,20 @@ function useCountdown(hours = 12) {
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [viewersCount, setViewersCount] = useState(23);
+  const [viewersCount, setViewersCount] = useState(47);
   const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
   const { h, m, s, finished } = useCountdown(12);
 
   // Анимация счетчика посетителей
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomChange = Math.random() > 0.7;
-      if (randomChange) {
-        const delta = Math.random() > 0.5 ? 1 : -1;
-        setViewersCount(prev => Math.max(15, Math.min(35, prev + delta)));
-      }
-    }, 8000 + Math.random() * 12000);
+      setViewersCount(prev => {
+        const change = Math.random() > 0.5 ? 1 : -1;
+        const newCount = prev + change;
+        return Math.max(35, Math.min(67, newCount));
+      });
+    }, 8000 + Math.random() * 4000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -44,8 +45,8 @@ export default function App() {
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
           <div className="flex items-center gap-4">
             {/* Счетчик посетителей */}
-            <div className="hidden lg:flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border animate-pulse">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-3 py-1.5 rounded-full">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="font-medium">{viewersCount} человек на сайте</span>
             </div>
             <a
@@ -136,7 +137,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
-                  <img src="/images/wrong.png" alt="Cross" className="w-4 h-4" />
+                  <img src="/images/red.png" alt="Крестик" className="w-4 h-4" />
                   Сейчас
                 </div>
               </div>
@@ -148,7 +149,7 @@ export default function App() {
                   "«10 заявок» → Долгие диалоги — только 2–3 записи.",
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <img src="/images/wrong.png" alt="Cross" className="w-5 h-5 mt-1" />
+                    <span className="w-5 h-5 mt-1 text-red-500">✗</span>
                     <span>{t}</span>
                   </li>
                 ))}
@@ -158,7 +159,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
-                  <img src="/images/checkgreen.png" alt="Check" className="w-4 h-4" />
+                  <img src="/images/green.png" alt="Галочка" className="w-4 h-4" />
                   После
                 </div>
               </div>
@@ -170,7 +171,7 @@ export default function App() {
                   <>«10 заявок» → Чёткие диалоги → 6–7 записей.</>,
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <img src="/images/checkgreen.png" alt="Check" className="w-5 h-5 mt-1" />
+                    <span className="w-5 h-5 mt-1 text-green-600">✓</span>
                     <span>{t}</span>
                   </li>
                 ))}
@@ -263,7 +264,7 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition"
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -357,7 +358,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-              Бонусы при покупке <span className="text-2xl">🎁</span>
+              Бонусы при покупке <span className="align-middle">🎁</span>
             </h2>
             <p className="mt-3 text-gray-600">
               Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами
@@ -557,73 +558,71 @@ export default function App() {
             Отзывы клиентов
           </h2>
 
-          {/* Главный видео-отзыв (прогрев скриптов) */}
-          <div className="mt-12 text-center">
-            <div className="max-w-md mx-auto mb-8">
-              <div className="rounded-2xl border-2 border-blue-500 p-4 bg-white hover:shadow-lg transition-all duration-300">
-                <div className="text-lg font-bold text-blue-600 mb-3">
-                  🎥 Прогрев скриптов
-                </div>
-                <div className="relative bg-black rounded-xl overflow-hidden">
-                  <iframe
-                    src="https://www.instagram.com/reel/DJjUiEnM-A_/embed"
-                    width="100%"
-                    height="400"
-                    frameBorder="0"
-                    scrolling="no"
-                    allowTransparency={true}
-                    className="w-full"
-                  ></iframe>
-                </div>
-              </div>
-            </div>
-          </div>
-
           {/* 4 фото-отзыва */}
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-12">
             {[1, 2, 3, 4].map((reviewNum) => (
-              <div 
-                key={reviewNum}
-                className="rounded-2xl overflow-hidden border hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-              >
+              <div key={reviewNum} className="group cursor-pointer">
                 <img
                   src={`/images/reviews/review${reviewNum}.jpg`}
                   alt={`Отзыв ${reviewNum}`}
-                  className="w-full h-64 object-cover"
+                  className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-105"
                 />
               </div>
             ))}
           </div>
 
-          {/* Остальные видео-отзывы */}
-          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8">
-            {[
-              "https://www.instagram.com/reel/DJmUkiNsZe1",
-              "https://www.instagram.com/reel/DFX57cQobmS",
-              "https://www.instagram.com/reel/DJoAXfKs6tu",
-              "https://www.instagram.com/reel/DNG1lAPoCF7",
-              "https://www.instagram.com/reel/DGmY70NIwz7"
-            ].map((href, i) => (
-              <div
-                key={i}
-                className="rounded-xl border p-4 hover:bg-blue-50 transition-all duration-300 bg-white hover:shadow-md hover:-translate-y-1"
-              >
-                <div className="relative bg-gray-100 rounded-lg overflow-hidden mb-3">
+          {/* Видео секция */}
+          <div className="mt-16">
+            {/* Главное видео по центру */}
+            <div className="text-center mb-8">
+              <div className="max-w-md mx-auto">
+                <div className="bg-white rounded-2xl border-2 border-blue-500 p-2 hover:shadow-xl transition-all duration-300 hover:scale-105">
                   <iframe
-                    src={`${href}/embed`}
+                    src="https://www.instagram.com/reel/DJjUiEnM-A_/embed"
                     width="100%"
-                    height="200"
+                    height="600"
                     frameBorder="0"
                     scrolling="no"
                     allowTransparency={true}
-                    className="w-full"
-                  ></iframe>
-                </div>
-                <div className="text-sm font-medium text-gray-800 text-center">
-                  Видео-отзыв #{i + 2}
+                    className="rounded-xl"
+                    title="Главный видео-отзыв"
+                  />
+                  <div className="p-4">
+                    <div className="text-lg font-bold text-blue-600 mb-2">
+                      🎥 Прогрев скриптов
+                    </div>
+                    <p className="text-gray-600">Как работают скрипты в реальности</p>
+                  </div>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Остальные видео-отзывы по бокам */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              {[
+                "https://www.instagram.com/reel/DJmUkiNsZe1",
+                "https://www.instagram.com/reel/DFX57cQobmS",
+                "https://www.instagram.com/reel/DJoAXfKs6tu",
+                "https://www.instagram.com/reel/DNG1lAPoCF7"
+              ].map((href, i) => (
+                <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden">
+                  <iframe
+                    src={`${href}/embed`}
+                    width="100%"
+                    height="300"
+                    frameBorder="0"
+                    scrolling="no"
+                    allowTransparency={true}
+                    title={`Видео-отзыв ${i + 1}`}
+                  />
+                  <div className="p-3">
+                    <div className="text-sm font-medium text-gray-800">
+                      Отзыв #{i + 1}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -656,11 +655,11 @@ export default function App() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50"
+                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300"
               >
                 <button
                   onClick={() => toggleFaq(i)}
-                  className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-all duration-300 hover:shadow-sm"
+                  className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-colors"
                 >
                   <span className="font-semibold text-lg text-gray-900">
                     {f.q}
