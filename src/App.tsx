@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 // TODO: вставь свою ссылку Stripe
 const STRIPE_URL = "https://buy.stripe.com/...";
 
-// Простой таймер «ограниченного времени» (по умолчанию ~72 часа)
-function useCountdown(hours = 72) {
+// Простой таймер «ограниченного времени» (по умолчанию ~12 часов)
+function useCountdown(hours = 12) {
   const [end] = useState(() => Date.now() + hours * 3600 * 1000);
   const [left, setLeft] = useState(end - Date.now());
   useEffect(() => {
@@ -20,8 +20,21 @@ function useCountdown(hours = 72) {
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [viewersCount, setViewersCount] = useState(23);
   const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
-  const { h, m, s, finished } = useCountdown(72);
+  const { h, m, s, finished } = useCountdown(12);
+
+  // Анимация счетчика посетителей
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomChange = Math.random() > 0.7;
+      if (randomChange) {
+        const delta = Math.random() > 0.5 ? 1 : -1;
+        setViewersCount(prev => Math.max(15, Math.min(35, prev + delta)));
+      }
+    }, 8000 + Math.random() * 12000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -29,16 +42,23 @@ export default function App() {
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
-          <a
-            href={STRIPE_URL}
-            target="_blank"
-            rel="noopener"
-            className="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors"
-            aria-label="Купить скрипты"
-            onClick={() => console.log("offer_cta_click")}
-          >
-            Купить
-          </a>
+          <div className="flex items-center gap-4">
+            {/* Счетчик посетителей */}
+            <div className="hidden lg:flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border animate-pulse">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+              <span className="font-medium">{viewersCount} человек на сайте</span>
+            </div>
+            <a
+              href={STRIPE_URL}
+              target="_blank"
+              rel="noopener"
+              className="px-6 py-2.5 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-all hover:scale-105"
+              aria-label="Купить скрипты"
+              onClick={() => console.log("offer_cta_click")}
+            >
+              Купить
+            </a>
+          </div>
         </div>
       </header>
 
@@ -61,7 +81,7 @@ export default function App() {
                   href={STRIPE_URL}
                   target="_blank"
                   rel="noopener"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-lg"
                 >
                   Купить <span className="inline-block ml-2">→</span>
                 </a>
@@ -113,10 +133,10 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
-                  <span className="w-4 h-4">✗</span>
+                  <img src="/images/red.png" alt="Cross" className="w-4 h-4" />
                   Сейчас
                 </div>
               </div>
@@ -128,17 +148,17 @@ export default function App() {
                   "«10 заявок» → Долгие диалоги — только 2–3 записи.",
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <span className="w-5 h-5 mt-1 text-red-500">✗</span>
+                    <img src="/images/red.png" alt="Cross" className="w-5 h-5 mt-1" />
                     <span>{t}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
-                  <span className="w-4 h-4">✓</span>
+                  <img src="/images/green.png" alt="Check" className="w-4 h-4" />
                   После
                 </div>
               </div>
@@ -150,7 +170,7 @@ export default function App() {
                   <>«10 заявок» → Чёткие диалоги → 6–7 записей.</>,
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <span className="w-5 h-5 mt-1 text-green-600">✓</span>
+                    <img src="/images/green.png" alt="Check" className="w-5 h-5 mt-1" />
                     <span>{t}</span>
                   </li>
                 ))}
@@ -337,7 +357,7 @@ export default function App() {
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-              Бонусы при покупке <span className="align-middle">🎉</span>
+              Бонусы при покупке <span className="text-2xl">🎁</span>
             </h2>
             <p className="mt-3 text-gray-600">
               Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами
@@ -367,7 +387,7 @@ export default function App() {
             ].map((b, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-8 text-center bg-white shadow-sm border"
+                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
                 <div className="mb-6">
                   <img
@@ -537,56 +557,73 @@ export default function App() {
             Отзывы клиентов
           </h2>
 
+          {/* Главный видео-отзыв (прогрев скриптов) */}
+          <div className="mt-12 text-center">
+            <div className="max-w-md mx-auto mb-8">
+              <div className="rounded-2xl border-2 border-blue-500 p-4 bg-white hover:shadow-lg transition-all duration-300">
+                <div className="text-lg font-bold text-blue-600 mb-3">
+                  🎥 Прогрев скриптов
+                </div>
+                <div className="relative bg-black rounded-xl overflow-hidden">
+                  <iframe
+                    src="https://www.instagram.com/reel/DJjUiEnM-A_/embed"
+                    width="100%"
+                    height="400"
+                    frameBorder="0"
+                    scrolling="no"
+                    allowTransparency={true}
+                    className="w-full"
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* 4 фото-отзыва */}
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8">
             {[1, 2, 3, 4].map((reviewNum) => (
-              <img
+              <div 
                 key={reviewNum}
-                src={`/images/reviews/review${reviewNum}.jpg`}
-                alt={`Отзыв ${reviewNum}`}
-                className="w-full h-64 object-cover rounded-2xl border"
-              />
+                className="rounded-2xl overflow-hidden border hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+              >
+                <img
+                  src={`/images/reviews/review${reviewNum}.jpg`}
+                  alt={`Отзыв ${reviewNum}`}
+                  className="w-full h-64 object-cover"
+                />
+              </div>
             ))}
           </div>
 
-          {/* Главный видео-отзыв */}
-          <div className="mt-12 text-center">
-            <div className="max-w-md mx-auto mb-8">
-              <a
-                href="https://www.instagram.com/reel/DJjUiEnM-A_"
-                target="_blank"
-                rel="noopener"
-                className="block rounded-2xl border-2 border-blue-500 p-6 hover:bg-blue-50 transition-colors bg-white"
+          {/* Остальные видео-отзывы */}
+          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4 mt-8">
+            {[
+              "https://www.instagram.com/reel/DJmUkiNsZe1",
+              "https://www.instagram.com/reel/DFX57cQobmS",
+              "https://www.instagram.com/reel/DJoAXfKs6tu",
+              "https://www.instagram.com/reel/DNG1lAPoCF7",
+              "https://www.instagram.com/reel/DGmY70NIwz7"
+            ].map((href, i) => (
+              <div
+                key={i}
+                className="rounded-xl border p-4 hover:bg-blue-50 transition-all duration-300 bg-white hover:shadow-md hover:-translate-y-1"
               >
-                <div className="text-lg font-bold text-blue-600 mb-2">
-                  🎥 Главный видео-отзыв
+                <div className="relative bg-gray-100 rounded-lg overflow-hidden mb-3">
+                  <iframe
+                    src={`${href}/embed`}
+                    width="100%"
+                    height="200"
+                    frameBorder="0"
+                    scrolling="no"
+                    allowTransparency={true}
+                    className="w-full"
+                  ></iframe>
                 </div>
-                <p className="text-gray-600">Результаты после внедрения скриптов</p>
-              </a>
-            </div>
-
-            {/* Остальные видео-отзывы */}
-            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {[
-                "https://www.instagram.com/reel/DJmUkiNsZe1",
-                "https://www.instagram.com/reel/DFX57cQobmS",
-                "https://www.instagram.com/reel/DJoAXfKs6tu",
-                "https://www.instagram.com/reel/DNG1lAPoCF7",
-                "https://www.instagram.com/reel/DGmY70NIwz7"
-              ].map((href, i) => (
-                <a
-                  key={i}
-                  href={href}
-                  target="_blank"
-                  rel="noopener"
-                  className="rounded-xl border p-4 hover:bg-gray-50 transition-colors bg-white"
-                >
-                  <div className="text-sm font-medium text-gray-800">
-                    Видео-отзыв #{i + 2}
-                  </div>
-                </a>
-              ))}
-            </div>
+                <div className="text-sm font-medium text-gray-800 text-center">
+                  Видео-отзыв #{i + 2}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -623,7 +660,7 @@ export default function App() {
               >
                 <button
                   onClick={() => toggleFaq(i)}
-                  className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-colors"
+                  className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-all duration-300 hover:shadow-sm"
                 >
                   <span className="font-semibold text-lg text-gray-900">
                     {f.q}
@@ -659,7 +696,7 @@ export default function App() {
           href={STRIPE_URL}
           target="_blank"
           rel="noopener"
-          className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-colors"
+          className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-all hover:scale-105"
         >
           Готовые скрипты — 19€ • Купить сейчас
         </a>
