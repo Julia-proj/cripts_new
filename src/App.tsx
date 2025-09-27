@@ -136,7 +136,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
-                  <img src="/images/red.png" alt="Cross" className="w-4 h-4" />
+                  <img src="/images/wrong.png" alt="Cross" className="w-4 h-4" />
                   Сейчас
                 </div>
               </div>
@@ -148,7 +148,7 @@ export default function App() {
                   "«10 заявок» → Долгие диалоги — только 2–3 записи.",
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <img src="/images/red.png" alt="Cross" className="w-5 h-5 mt-1" />
+                    <img src="/images/wrong.png" alt="Cross" className="w-5 h-5 mt-1" />
                     <span>{t}</span>
                   </li>
                 ))}
@@ -158,7 +158,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
-                  <img src="/images/green.png" alt="Check" className="w-4 h-4" />
+                  <img src="/images/checkgreen.png" alt="Check" className="w-4 h-4" />
                   После
                 </div>
               </div>
@@ -170,7 +170,7 @@ export default function App() {
                   <>«10 заявок» → Чёткие диалоги → 6–7 записей.</>,
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <img src="/images/green.png" alt="Check" className="w-5 h-5 mt-1" />
+                    <img src="/images/checkgreen.png" alt="Check" className="w-5 h-5 mt-1" />
                     <span>{t}</span>
                   </li>
                 ))}
