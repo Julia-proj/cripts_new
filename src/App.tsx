@@ -137,7 +137,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
-                  <img src="/images/wrong.png" alt="Крестик" className="w-4 h-4" />
+                  <img src="/images/red.png" alt="Крестик" className="w-4 h-4" />
                   Сейчас
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
-                  <img src="/images/checkgreen.png" alt="Галочка" className="w-4 h-4" />
+                  <img src="/images/check.png" alt="Галочка" className="w-4 h-4" />
                   После
                 </div>
               </div>
