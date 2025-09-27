@@ -1,11 +1,4 @@
 import React, { useState, useEffect } from "react";
-import {
-  CheckCircle,
-  XCircle,
-  ArrowRight,
-  ChevronDown,
-  Gift,
-} from "lucide-react";
 
 // TODO: вставь свою ссылку Stripe
 const STRIPE_URL = "https://buy.stripe.com/...";
@@ -70,12 +63,12 @@ export default function App() {
                   rel="noopener"
                   className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5"
                 >
-                  Купить <ArrowRight className="w-5 h-5" />
+                  Купить <span className="inline-block ml-2">→</span>
                 </a>
               </div>
               <div className="flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
                 <span className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <span className="w-4 h-4 text-green-500">✓</span>
                   Доступ сразу
                 </span>
                 <div className="flex items-center gap-2">
@@ -123,7 +116,7 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
-                  <XCircle className="w-4 h-4" />
+                  <span className="w-4 h-4">✗</span>
                   Сейчас
                 </div>
               </div>
@@ -135,7 +128,7 @@ export default function App() {
                   "«10 заявок» → Долгие диалоги — только 2–3 записи.",
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <XCircle className="w-5 h-5 mt-1 text-red-500" />
+                    <span className="w-5 h-5 mt-1 text-red-500">✗</span>
                     <span>{t}</span>
                   </li>
                 ))}
@@ -145,19 +138,19 @@ export default function App() {
             <div className="bg-white rounded-2xl p-8 border border-gray-200">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
-                  <CheckCircle className="w-4 h-4" />
+                  <span className="w-4 h-4">✓</span>
                   После
                 </div>
               </div>
               <ul className="space-y-4 text-gray-800">
                 {[
-                  <>«Сколько стоит?» → <span className="text-blue-600 font-semibold">Презентуете ценность → запись</span>.</>,
-                  <>«Подумаю» → <span className="text-blue-600 font-semibold">Мягкое возражение → возвращаете к записи</span>.</>,
-                  <>«Переписка 5 минут» → <span className="text-blue-600 font-semibold">Готовые фразы → быстрая запись</span>.</>,
-                  <>«10 заявок» → <span className="text-blue-600 font-semibold">Чёткие диалоги → 6–7 записей</span>.</>,
+                  <>«Сколько стоит?» → Презентуете ценность → запись.</>,
+                  <>«Подумаю» → Мягкое возражение → возвращаете к записи.</>,
+                  <>«Переписка 5 минут» → Готовые фразы → быстрая запись.</>,
+                  <>«10 заявок» → Чёткие диалоги → 6–7 записей.</>,
                 ].map((t, i) => (
                   <li key={i} className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 mt-1 text-green-600" />
+                    <span className="w-5 h-5 mt-1 text-green-600">✓</span>
                     <span>{t}</span>
                   </li>
                 ))}
@@ -188,8 +181,8 @@ export default function App() {
               />
               <h3 className="font-semibold text-lg">Сливаются деньги на рекламу</h3>
               <p className="mt-2 text-gray-600">
-                Платите за заявки, но конвертируете лишь <span className="text-blue-600 font-semibold">20–30%</span>. Остальные —
-                выброшенный бюджет.
+                Платите за заявки, но конвертируете лишь 20–30%. Остальные —
+                <span className="text-red-800 font-semibold"> выброшенный бюджет</span>.
               </p>
             </div>
             <div className="rounded-2xl border p-8 text-center">
@@ -200,7 +193,7 @@ export default function App() {
               />
               <h3 className="font-semibold text-lg">Тратится время впустую</h3>
               <p className="mt-2 text-gray-600">
-                По <span className="text-blue-600 font-semibold">30–40 минут</span> на переписку с каждым. Уходит 3–4 часа в день.
+                По 30–40 минут на переписку с каждым. Уходит <span className="text-red-800 font-semibold">3–4 часа в день</span>.
               </p>
             </div>
             <div className="rounded-2xl border p-8 text-center">
@@ -211,8 +204,7 @@ export default function App() {
               />
               <h3 className="font-semibold text-lg">Заявки уходят к конкуренту</h3>
               <p className="mt-2 text-gray-600">
-                Пока вы думаете, клиент записывается к тому, кто отвечает <span className="text-blue-600 font-semibold">быстро
-                и уверенно</span>.
+                Пока вы думаете, клиент записывается <span className="text-red-800 font-semibold">к тому, кто отвечает быстро и уверенно</span>.
               </p>
             </div>
           </div>
@@ -286,42 +278,42 @@ export default function App() {
                 img: "/images/xmind.png",
                 title: "Готовые диалоги",
                 desc: (
-                  <>Контакты до оплаты: приветствия, <span className="text-blue-600 font-semibold">презентация ценности</span>, запись — всё пошагово.</>
+                  <>Контакты до оплаты: приветствия, <span className="text-blue-900 font-semibold">презентация ценности</span>, запись — всё пошагово.</>
                 ),
               },
               {
                 img: "/images/target.png",
                 title: "Закрытие возражений",
                 desc: (
-                  <>«Дорого», «Подумаю», «У другого дешевле» — <span className="text-blue-600 font-semibold">мягкие ответы без давления</span>.</>
+                  <>«Дорого», «Подумаю», «У другого дешевле» — <span className="text-blue-900 font-semibold">мягкие ответы без давления</span>.</>
                 ),
               },
               {
                 img: "/images/salons.png",
                 title: "Под каждую услугу",
                 desc: (
-                  <>Маникюр, брови, ресницы, косметология, массаж — <span className="text-blue-600 font-semibold">учтена специфика каждой ниши</span>.</>
+                  <>Маникюр, брови, ресницы, косметология, массаж — <span className="text-blue-900 font-semibold">учтена специфика каждой ниши</span>.</>
                 ),
               },
               {
                 img: "/images/bucle.png",
                 title: "Возврат клиентов",
                 desc: (
-                  <>Сценарии повторных записей и <span className="text-blue-600 font-semibold">реактивации «спящей» базы без рекламы</span>.</>
+                  <>Сценарии повторных записей и <span className="text-blue-900 font-semibold">реактивации «спящей» базы без рекламы</span>.</>
                 ),
               },
               {
                 img: "/images/phone.png",
                 title: "Гайд по внедрению",
                 desc: (
-                  <><span className="text-blue-600 font-semibold">Старт за один день</span>: пошаговый план + стандарты для команды.</>
+                  <><span className="text-blue-900 font-semibold">Старт за один день</span>: пошаговый план + стандарты для команды.</>
                 ),
               },
               {
                 img: "/images/rocket.png",
                 title: "Итог",
                 desc: (
-                  <>Больше записей, <span className="text-blue-600 font-semibold">выше средний чек</span>, меньше времени в переписке.</>
+                  <>Больше записей, <span className="text-blue-900 font-semibold">выше средний чек</span>, меньше времени в переписке.</>
                 ),
               },
             ].map((i, k) => (
@@ -355,19 +347,19 @@ export default function App() {
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             {[
               {
-                color: "orange",
+                image: "/images/bonus1.png",
                 title: "Гайд «Работа с клиентской базой»",
                 desc: "Повторные записи без рекламы → возвращайте старых клиентов.",
                 old: "27€",
               },
               {
-                color: "green",
+                image: "/images/bonus2.png",
                 title: "Чек-лист «30+ источников клиентов»",
                 desc: "Платные и бесплатные способы → где взять заявки уже сегодня.",
                 old: "32€",
               },
               {
-                color: "blue",
+                image: "/images/bonus3.png",
                 title: "Гайд «Продажи на консультации»",
                 desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.",
                 old: "20€",
@@ -375,12 +367,14 @@ export default function App() {
             ].map((b, i) => (
               <div
                 key={i}
-                className={`rounded-2xl p-8 text-center bg-white shadow-sm border`}
+                className="rounded-2xl p-8 text-center bg-white shadow-sm border"
               >
-                <div
-                  className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 bg-${b.color}-50`}
-                >
-                  <Gift className={`w-8 h-8 text-${b.color}-600`} />
+                <div className="mb-6">
+                  <img
+                    src={b.image}
+                    alt={`Бонус ${i + 1}`}
+                    className="w-32 h-40 mx-auto object-cover rounded-lg"
+                  />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">{b.title}</h3>
                 <p className="mt-2 text-gray-600">{b.desc}</p>
@@ -388,7 +382,7 @@ export default function App() {
                   <span className="text-lg font-bold text-gray-400 line-through">
                     {b.old}
                   </span>
-                  <span className={`text-xl font-bold text-${b.color}-600`}>
+                  <span className="text-xl font-bold text-green-600">
                     0€
                   </span>
                 </div>
@@ -402,22 +396,22 @@ export default function App() {
       <section id="immediate" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
-            Что <span className="text-blue-600">изменится</span> сразу
+            Что изменится сразу
           </h2>
 
           <div className="space-y-6 mt-12">
             {[
-              <>Перестанешь терять заявки из-за <span className="text-blue-600 font-semibold">слабых ответов</span>.</>,
-              <>Начнёшь <span className="text-blue-600 font-semibold">закрывать больше записей</span> уже с первого дня.</>,
-              <>Повысишь средний чек через <span className="text-blue-600 font-semibold">правильные предложения</span>.</>,
-              <>Станешь увереннее — <span className="text-blue-600 font-semibold">на всё есть готовый ответ</span>.</>,
+              <>Перестанешь терять заявки из-за <span className="text-green-600 font-semibold">слабых ответов</span>.</>,
+              <>Начнёшь <span className="text-green-600 font-semibold">закрывать больше записей</span> уже с первого дня.</>,
+              <>Повысишь средний чек через <span className="text-green-600 font-semibold">правильные предложения</span>.</>,
+              <>Станешь увереннее — <span className="text-green-600 font-semibold">на всё есть готовый ответ</span>.</>,
             ].map((t, i) => (
               <div
                 key={i}
                 className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl"
               >
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span className="w-4 h-4 text-green-600">✓</span>
                 </div>
                 <span className="text-lg font-medium text-gray-800">{t}</span>
               </div>
@@ -428,10 +422,10 @@ export default function App() {
 
       {/* ОФФЕР */}
       <section id="offer" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
-              Получите полную систему со скидкой{" "}
+              Полная система со скидкой{" "}
               <span className="text-blue-600">70%</span>
             </h2>
             <p className="mt-2 text-sm text-gray-500">
@@ -440,109 +434,97 @@ export default function App() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-3xl p-8 bg-gradient-to-b from-blue-600 to-blue-700 text-white shadow-lg">
-              <div className="text-sm uppercase tracking-wide opacity-90">
-                Полный доступ
-              </div>
-              <div className="mt-3 flex items-baseline gap-3">
-                <span className="text-gray-300 line-through text-2xl">67€</span>
-                <span className="text-5xl font-extrabold">19€</span>
-              </div>
+          <div className="max-w-lg mx-auto">
+            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden">
+              {/* Декоративные элементы */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <div className="relative z-10">
+                <div className="text-center">
+                  <div className="text-sm uppercase tracking-wide text-gray-300 mb-3">
+                    Полный доступ
+                  </div>
+                  
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <span className="text-gray-400 line-through text-2xl">67€</span>
+                    <span className="text-5xl font-extrabold text-white">19€</span>
+                  </div>
 
-              <div className="mt-4">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2">
-                  {!finished ? (
-                    <>
-                      <span className="text-white/80 text-sm">⏳ До конца:</span>
-                      <span className="font-semibold tabular-nums">
-                        {String(h).padStart(2, "0")}:
-                        {String(m).padStart(2, "0")}:
-                        {String(s).padStart(2, "0")}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="font-semibold">Время истекло</span>
-                  )}
+                  {/* Таймер */}
+                  <div className="mb-6">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2">
+                      <span className="w-4 h-4 text-white">🕐</span>
+                      {!finished ? (
+                        <>
+                          <span className="text-white text-sm font-medium">До конца:</span>
+                          <span className="font-bold tabular-nums text-white">
+                            {String(h).padStart(2, "0")}:
+                            {String(m).padStart(2, "0")}:
+                            {String(s).padStart(2, "0")}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="font-semibold text-white">Время истекло</span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* CTA кнопка */}
+                  <a
+                    href={STRIPE_URL}
+                    target="_blank"
+                    rel="noopener"
+                    className="block w-full text-center rounded-xl bg-blue-500 text-white font-bold py-4 px-6 hover:bg-blue-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl mb-4"
+                    aria-label="Купить полную систему со скидкой 70% — 19 евро"
+                    onClick={() => console.log("offer_cta_click")}
+                  >
+                    Получить со скидкой 70%
+                  </a>
+
+                  <div className="text-xs text-gray-300 mb-6">
+                    Без скрытых платежей · Пожизненный доступ · Обновления включены
+                  </div>
+
+                  {/* Что входит */}
+                  <div className="text-left mb-6">
+                    <h3 className="text-lg font-bold text-white mb-3 text-center">
+                      Что входит:
+                    </h3>
+                    <ul className="space-y-2 text-sm text-gray-200">
+                      {[
+                        "Готовые диалоги для всех ситуаций",
+                        "Шаблоны под конкретную услугу",
+                        "Бонус: гайд по работе с базой (27€)",
+                        "Бонус: 30+ источников клиентов (32€)",
+                        "Бонус: продажи на консультации (20€)",
+                        "Пожизненный доступ и обновления",
+                      ].map((t, i) => (
+                        <li key={i} className="flex gap-2 items-start">
+                          <span className="w-4 h-4 mt-0.5 text-green-400 flex-shrink-0">✓</span>
+                          <span>{t}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Способы оплаты */}
+                  <div className="flex items-center justify-center gap-2 text-xs">
+                    <div className="px-2 py-1 bg-black text-white rounded">
+                      Apple Pay
+                    </div>
+                    <div className="px-2 py-1 bg-white/20 text-white rounded">
+                      Google Pay
+                    </div>
+                    <div className="px-2 py-1 bg-white/20 text-white rounded">
+                      Visa
+                    </div>
+                    <div className="px-2 py-1 bg-white/20 text-white rounded">
+                      MasterCard
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              <a
-                href={STRIPE_URL}
-                target="_blank"
-                rel="noopener"
-                className="mt-6 inline-block w-full text-center rounded-xl bg-white text-blue-700 font-semibold py-4 hover:opacity-90 transition"
-                aria-label="Купить полную систему со скидкой 70% — 19 евро"
-                onClick={() => console.log("offer_cta_click")}
-              >
-                Получить со скидкой 70%
-              </a>
-
-              <div className="mt-3 text-xs text-white/90">
-                Без скрытых платежей · Пожизненный доступ · Обновления включены
-              </div>
-
-              <div className="mt-6 flex items-center gap-2 text-xs opacity-90">
-                <div className="px-2 py-1 bg-black text-white rounded">
-                  Apple Pay
-                </div>
-                <div className="px-2 py-1 bg-white/20 text-white rounded">
-                  Google Pay
-                </div>
-                <div className="px-2 py-1 bg-white/20 text-white rounded">
-                  Visa
-                </div>
-                <div className="px-2 py-1 bg-white/20 text-white rounded">
-                  MasterCard
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-3xl p-8 border">
-              <h3 className="text-lg font-bold text-gray-900">
-                Что входит
-              </h3>
-              <ul className="mt-4 space-y-3 text-gray-700">
-                {[
-                  "Готовые диалоги для всех ситуаций",
-                  "Шаблоны под конкретную услугу",
-                  "Бонус: гайд по работе с базой (27€)",
-                  "Бонус: 30+ источников клиентов (32€)",
-                  "Бонус: продажи на консультации (20€)",
-                  "Пожизненный доступ и обновления",
-                ].map((t, i) => (
-                  <li key={i} className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 mt-0.5 text-green-600" />
-                    <span>{t}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-3xl p-8 border">
-              <h3 className="text-lg font-bold text-gray-900">
-                Состав предложения
-              </h3>
-              <ul className="mt-4 space-y-3 text-gray-700">
-                <li className="flex gap-3">
-                  <span className="w-2 h-2 mt-2 rounded-full bg-gray-400" />
-                  <span>Все скрипты + бонусы</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="w-2 h-2 mt-2 rounded-full bg-gray-400" />
-                  <span>Полная система для увеличения продаж</span>
-                </li>
-              </ul>
-
-              <a
-                href={STRIPE_URL}
-                target="_blank"
-                rel="noopener"
-                className="mt-8 inline-flex items-center gap-2 text-blue-700 font-semibold hover:underline"
-                onClick={() => console.log("offer_cta_click")}
-              >
-                Перейти к оплате <ArrowRight className="w-4 h-4" />
-              </a>
             </div>
           </div>
         </div>
@@ -557,36 +539,54 @@ export default function App() {
 
           {/* 4 фото-отзыва */}
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            {["review1", "review2", "review3", "review4"].map((reviewName) => (
+            {[1, 2, 3, 4].map((reviewNum) => (
               <img
-                key={reviewName}
-                src={`/images/reviews/${reviewName}.jpg`}
-                alt={`Отзыв ${reviewName}`}
+                key={reviewNum}
+                src={`/images/reviews/review${reviewNum}.jpg`}
+                alt={`Отзыв ${reviewNum}`}
                 className="w-full h-64 object-cover rounded-2xl border"
               />
             ))}
           </div>
 
-          {/* 6 ссылок на видео из Instagram */}
-          <div className="grid md:grid-cols-3 gap-4 mt-8">
-            {[
-              "https://www.instagram.com/reel/DJjUiEnM-A_",
-              "https://www.instagram.com/reel/DJmUkiNsZe1",
-              "https://www.instagram.com/reel/DFX57cQobmS",
-              "https://www.instagram.com/reel/DJoAXfKs6tu",
-              "https://www.instagram.com/reel/DNG1lAPoCF7",
-              "https://www.instagram.com/reel/DGmY70NIwz7"
-            ].map((href, i) => (
+          {/* Главный видео-отзыв */}
+          <div className="mt-12 text-center">
+            <div className="max-w-md mx-auto mb-8">
               <a
-                key={i}
-                href={href}
+                href="https://www.instagram.com/reel/DJjUiEnM-A_"
                 target="_blank"
                 rel="noopener"
-                className="rounded-xl border p-4 hover:bg-gray-50 transition-colors"
+                className="block rounded-2xl border-2 border-blue-500 p-6 hover:bg-blue-50 transition-colors bg-white"
               >
-                Видео-отзыв #{i + 1}
+                <div className="text-lg font-bold text-blue-600 mb-2">
+                  🎥 Главный видео-отзыв
+                </div>
+                <p className="text-gray-600">Результаты после внедрения скриптов</p>
               </a>
-            ))}
+            </div>
+
+            {/* Остальные видео-отзывы */}
+            <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-4">
+              {[
+                "https://www.instagram.com/reel/DJmUkiNsZe1",
+                "https://www.instagram.com/reel/DFX57cQobmS",
+                "https://www.instagram.com/reel/DJoAXfKs6tu",
+                "https://www.instagram.com/reel/DNG1lAPoCF7",
+                "https://www.instagram.com/reel/DGmY70NIwz7"
+              ].map((href, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener"
+                  className="rounded-xl border p-4 hover:bg-gray-50 transition-colors bg-white"
+                >
+                  <div className="text-sm font-medium text-gray-800">
+                    Видео-отзыв #{i + 2}
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -628,11 +628,9 @@ export default function App() {
                   <span className="font-semibold text-lg text-gray-900">
                     {f.q}
                   </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-400 transition-transform ${
+                  <span className={`w-5 h-5 text-gray-400 transition-transform ${
                       openFaq === i ? "rotate-180" : ""
-                    }`}
-                  />
+                    }`}>⌄</span>
                 </button>
                 {openFaq === i && (
                   <div className="px-8 py-6 border-t border-gray-200">
