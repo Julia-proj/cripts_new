@@ -41,34 +41,40 @@ function ReviewLightbox({ isOpen, onClose, imageSrc, reviewNumber }) {
   );
 }
 
-// Hook для отслеживания скролла
-function useScrollProgress() {
+// Компонент для прогресс-бара
+function ScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const updateProgress = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const currentProgress = (window.scrollY / totalHeight) * 100;
-      setProgress(Math.min(100, Math.max(0, currentProgress)));
+      const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = (window.scrollY / scrollTotal) * 100;
+      setProgress(Math.min(100, scrolled));
     };
 
     window.addEventListener('scroll', updateProgress);
     return () => window.removeEventListener('scroll', updateProgress);
   }, []);
 
-  return progress;
+  return (
+    <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+      <div 
+        className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
 }
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState(null);
-  const [viewersCount, setViewersCount] = useState(8);
+  const [viewersCount, setViewersCount] = useState(9);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState("");
   const [lightboxReviewNumber, setLightboxReviewNumber] = useState(1);
   
   const toggleFaq = (i) => setOpenFaq(openFaq === i ? null : i);
   const { h, m, s, finished } = useCountdown(12);
-  const scrollProgress = useScrollProgress();
 
   // Динамический счетчик посетителей (4-15 человек)
   useEffect(() => {
@@ -100,12 +106,7 @@ export default function App() {
       />
 
       {/* Progress bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
-        <div 
-          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
+      <ScrollProgress />
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-40 border-b border-gray-100">
@@ -166,7 +167,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="animate-fade-in">
+            <div className="animate-fade-in-delay">
               <div className="relative group">
                 <div 
                   className="w-full h-96 bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-105 relative overflow-hidden"
@@ -200,7 +201,7 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-up">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,7 +227,7 @@ export default function App() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-up-delay">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,17 +259,17 @@ export default function App() {
       {/* ПОЧЕМУ ЭТО ВАЖНО */}
       <section id="why" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
             <p className="mt-3 text-gray-600">
-              Каждая потерянная заявка это упущенная прибыль
+              Каждая потерянная заявка: это упущенная прибыль
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
               <img
                 src="/images/money.png"
                 alt="Сливаются деньги"
@@ -280,7 +281,7 @@ export default function App() {
                 <span className="text-red-800 font-semibold"> выброшенный бюджет</span>.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in-delay">
               <img
                 src="/images/clock.png"
                 alt="Тратится время"
@@ -291,7 +292,7 @@ export default function App() {
                 По 30–40 минут на переписку с каждым. Уходит <span className="text-red-800 font-semibold">3–4 часа в день</span>.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in-delay-2">
               <img
                 src="/images/door.png"
                 alt="Уходят к конкуренту"
@@ -309,7 +310,7 @@ export default function App() {
       {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
       <section id="for" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -338,7 +339,8 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-slide-up"
+                style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -358,7 +360,7 @@ export default function App() {
       {/* ЧТО ВХОДИТ В СИСТЕМУ */}
       <section id="whats-included" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
@@ -406,7 +408,7 @@ export default function App() {
                 highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in" style={{ animationDelay: `${k * 0.1}s` }}>
                 <img
                   src={item.img}
                   alt=""
@@ -431,8 +433,13 @@ export default function App() {
       {/* БОНУСЫ */}
       <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-yellow-200/20 rounded-full animate-pulse" />
+          <div className="absolute bottom-10 right-10 w-24 h-24 bg-pink-200/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 w-16 h-16 bg-blue-200/20 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
         <div className="max-w-6xl mx-auto px-6 relative">
-          <div className="text-center">
+          <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Бонусы при покупке{" "}
               <span className="text-2xl align-middle animate-bounce inline-block">🎁</span>
@@ -465,7 +472,8 @@ export default function App() {
             ].map((b, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group"
+                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-zoom-in"
+                style={{ animationDelay: `${i * 0.2}s` }}
               >
                 <div className="mb-6">
                   <img
@@ -493,7 +501,7 @@ export default function App() {
       {/* ЧТО ИЗМЕНИТСЯ СРАЗУ */}
       <section id="immediate" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             Что изменится сразу
           </h2>
 
@@ -506,7 +514,8 @@ export default function App() {
             ].map((t, i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-up"
+                style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -523,14 +532,14 @@ export default function App() {
       {/* ОТЗЫВЫ */}
       <section id="reviews" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 animate-fade-in">
             Отзывы клиентов
           </h2>
 
           {/* 4 фото-отзыва */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="group cursor-pointer">
+              <div key={n} className="group cursor-pointer animate-zoom-in" style={{ animationDelay: `${n * 0.1}s` }}>
                 <img
                   src={`/images/reviews/review${n}.png`}
                   alt={`Отзыв ${n}`}
@@ -541,41 +550,51 @@ export default function App() {
             ))}
           </div>
 
-          {/* Новое расположение видео */}
-          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 max-w-6xl mx-auto">
+          {/* Новая компоновка видео: главное посередине, остальные по бокам */}
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-8">
             {/* Левые видео */}
-            <div className="flex flex-col gap-4 w-full lg:w-1/4">
-              {[
-                { src: "/videos/review1.mp4", title: "Отзыв #1", poster: "/images/video-poster-1.jpg" },
-                { src: "/videos/review2.mp4", title: "Отзыв #2", poster: "/images/video-poster-2.jpg" }
-              ].map((video, i) => (
-                <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden">
-                  <div className="relative bg-black">
-                    <video 
-                      className="w-full h-32 object-cover"
-                      controls
-                      poster={video.poster}
-                      preload="metadata"
-                    >
-                      <source src={video.src} type="video/mp4" />
-                      Ваш браузер не поддерживает видео.
-                    </video>
-                  </div>
-                  <div className="p-3">
-                    <div className="text-sm font-medium text-gray-800">
-                      {video.title}
-                    </div>
-                  </div>
+            <div className="flex flex-col gap-4">
+              <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden w-64">
+                <div className="relative bg-black">
+                  <video 
+                    className="w-full h-36 object-cover"
+                    controls
+                    poster="/images/video-poster-1.jpg"
+                    preload="metadata"
+                  >
+                    <source src="/videos/review1.mp4" type="video/mp4" />
+                    Ваш браузер не поддерживает видео.
+                  </video>
                 </div>
-              ))}
+                <div className="p-3">
+                  <div className="text-sm font-medium text-gray-800">Отзыв #1</div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden w-64">
+                <div className="relative bg-black">
+                  <video 
+                    className="w-full h-36 object-cover"
+                    controls
+                    poster="/images/video-poster-2.jpg"
+                    preload="metadata"
+                  >
+                    <source src="/videos/review2.mp4" type="video/mp4" />
+                    Ваш браузер не поддерживает видео.
+                  </video>
+                </div>
+                <div className="p-3">
+                  <div className="text-sm font-medium text-gray-800">Отзыв #2</div>
+                </div>
+              </div>
             </div>
 
             {/* Главное видео по центру */}
-            <div className="w-full lg:w-1/2">
-              <div className="bg-white rounded-2xl border-2 border-blue-500 p-2 hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden">
+            <div className="mx-4">
+              <div className="bg-white rounded-2xl border-2 border-blue-500 p-2 hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden max-w-md">
                 <div className="relative bg-black rounded-xl">
                   <video 
-                    className="w-full h-64 lg:h-80 object-cover rounded-xl"
+                    className="w-full h-80 object-cover rounded-xl"
                     controls
                     poster="/images/video-poster.jpg"
                     preload="metadata"
@@ -594,30 +613,40 @@ export default function App() {
             </div>
 
             {/* Правые видео */}
-            <div className="flex flex-col gap-4 w-full lg:w-1/4">
-              {[
-                { src: "/videos/review3.mp4", title: "Отзыв #3", poster: "/images/video-poster-3.jpg" },
-                { src: "/videos/review4.mp4", title: "Отзыв #4", poster: "/images/video-poster-4.jpg" }
-              ].map((video, i) => (
-                <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden">
-                  <div className="relative bg-black">
-                    <video 
-                      className="w-full h-32 object-cover"
-                      controls
-                      poster={video.poster}
-                      preload="metadata"
-                    >
-                      <source src={video.src} type="video/mp4" />
-                      Ваш браузер не поддерживает видео.
-                    </video>
-                  </div>
-                  <div className="p-3">
-                    <div className="text-sm font-medium text-gray-800">
-                      {video.title}
-                    </div>
-                  </div>
+            <div className="flex flex-col gap-4">
+              <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden w-64">
+                <div className="relative bg-black">
+                  <video 
+                    className="w-full h-36 object-cover"
+                    controls
+                    poster="/images/video-poster-3.jpg"
+                    preload="metadata"
+                  >
+                    <source src="/videos/review3.mp4" type="video/mp4" />
+                    Ваш браузер не поддерживает видео.
+                  </video>
                 </div>
-              ))}
+                <div className="p-3">
+                  <div className="text-sm font-medium text-gray-800">Отзыв #3</div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden w-64">
+                <div className="relative bg-black">
+                  <video 
+                    className="w-full h-36 object-cover"
+                    controls
+                    poster="/images/video-poster-4.jpg"
+                    preload="metadata"
+                  >
+                    <source src="/videos/review4.mp4" type="video/mp4" />
+                    Ваш браузер не поддерживает видео.
+                  </video>
+                </div>
+                <div className="p-3">
+                  <div className="text-sm font-medium text-gray-800">Отзыв #4</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -626,10 +655,10 @@ export default function App() {
       {/* ОФФЕР */}
       <section id="offer" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
               Полная система со скидкой{" "}
-              <span className="text-blue-600">70%</span>
+              <span className="text-blue-600 animate-pulse">70%</span>
             </h2>
             <p className="mt-2 text-sm text-gray-500">
               Специальное предложение на этой неделе • Предложение действует
@@ -638,10 +667,10 @@ export default function App() {
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105">
+            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-zoom-in">
               {/* Декоративные элементы */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
-              <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16 animate-pulse"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12 animate-pulse" style={{ animationDelay: '1s' }}></div>
               
               <div className="relative z-10">
                 <div className="text-center">
@@ -651,12 +680,12 @@ export default function App() {
                   
                   <div className="flex items-center justify-center gap-4 mb-6">
                     <span className="text-gray-400 line-through text-2xl">67€</span>
-                    <span className="text-5xl font-extrabold text-white">19€</span>
+                    <span className="text-5xl font-extrabold text-white animate-pulse">19€</span>
                   </div>
 
                   {/* Таймер */}
                   <div className="mb-6">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 hover:bg-orange-600 transition-colors">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-orange-500 px-4 py-2 hover:bg-orange-600 transition-colors animate-bounce">
                       <span className="text-white">⏰</span>
                       {!finished ? (
                         <>
@@ -678,7 +707,7 @@ export default function App() {
                     href={STRIPE_URL}
                     target="_blank"
                     rel="noopener"
-                    className="block w-full text-center rounded-xl bg-blue-500 text-white font-bold py-4 px-6 hover:bg-blue-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl mb-4"
+                    className="block w-full text-center rounded-xl bg-blue-500 text-white font-bold py-4 px-6 hover:bg-blue-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl mb-4 animate-pulse"
                     aria-label="Купить полную систему со скидкой 70% — 19 евро"
                     onClick={() => console.log("offer_cta_click")}
                   >
@@ -736,7 +765,7 @@ export default function App() {
       {/* FAQ */}
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             Частые вопросы
           </h2>
 
@@ -761,7 +790,8 @@ export default function App() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300"
+                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 animate-slide-up"
+                style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <button
                   onClick={() => toggleFaq(i)}
@@ -775,7 +805,7 @@ export default function App() {
                     }`}>⌄</span>
                 </button>
                 {openFaq === i && (
-                  <div className="px-8 py-6 border-t border-gray-200">
+                  <div className="px-8 py-6 border-t border-gray-200 animate-fade-in">
                     <p className="text-gray-700 leading-relaxed">{f.a}</p>
                   </div>
                 )}
@@ -786,13 +816,19 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-white border-t border-gray-200">
+      <footer className="py-12 bg-white border-t border-gray-200 text-center">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
-            <div className="text-xl font-bold text-gray-900 mb-4">
-              Beauty Scripts
+          <div className="text-xl font-bold text-gray-900 mb-4">
+            Beauty Scripts
+          </div>
+          <p className="text-gray-500">© {new Date().getFullYear()} Все права защищены</p>
+          
+          {/* Счетчик посетителей внизу страницы */}
+          <div className="mt-6 flex justify-center">
+            <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-4 py-2 rounded-full hover:bg-green-100 transition-all duration-300 hover:scale-105">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="font-medium">{viewersCount} человек на сайте</span>
             </div>
-            <p className="text-gray-500">© {new Date().getFullYear()} Все права защищены</p>
           </div>
         </div>
       </footer>
@@ -805,87 +841,55 @@ export default function App() {
           rel="noopener"
           className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-all hover:scale-105"
         >
-          Готовые скрипты — 19€ • Купить сейчас
+          Готовые скрипты 19€ • Купить сейчас
         </a>
       </div>
 
-      {/* Динамический счетчик посетителей внизу страницы */}
-      <div className="fixed bottom-20 lg:bottom-6 right-6 z-40">
-        <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-4 py-2 rounded-full shadow-lg hover:bg-green-100 transition-all duration-300 hover:scale-105 border border-green-200">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span className="font-medium">{viewersCount} человек на сайте</span>
-        </div>
-      </div>
+      {/* Добавляем CSS анимации */}
+      <style jsx>{`
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slide-up {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes zoom-in {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.8s ease-out;
+        }
+        
+        .animate-fade-in-delay {
+          animation: fade-in 0.8s ease-out 0.2s both;
+        }
+        
+        .animate-slide-up {
+          animation: slide-up 0.8s ease-out;
+        }
+        
+        .animate-slide-up-delay {
+          animation: slide-up 0.8s ease-out 0.2s both;
+        }
+        
+        .animate-zoom-in {
+          animation: zoom-in 0.8s ease-out;
+        }
+        
+        .animate-zoom-in-delay {
+          animation: zoom-in 0.8s ease-out 0.2s both;
+        }
+        
+        .animate-zoom-in-delay-2 {
+          animation: zoom-in 0.8s ease-out 0.4s both;
+        }
+      `}</style>
     </div>
   );
 }
-
-/* CSS для анимаций */
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out;
-  }
-
-  /* Intersection Observer для анимаций при скролле */
-  .scroll-animate {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease-out;
-  }
-
-  .scroll-animate.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Hover эффекты */
-  .hover-glow:hover {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-  }
-
-  /* Анимация для бонусов */
-  @keyframes sparkle {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50% { transform: scale(1.1) rotate(5deg); }
-  }
-
-  .bonus-sparkle:hover {
-    animation: sparkle 0.6s ease-in-out;
-  }
-`;
-document.head.appendChild(style);
-
-// Intersection Observer для анимаций при скролле
-useEffect(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
-
-  // Добавляем класс scroll-animate к элементам
-  const sections = document.querySelectorAll('section');
-  sections.forEach((section) => {
-    section.classList.add('scroll-animate');
-    observer.observe(section);
-  });
-
-  return () => observer.disconnect();
-}, []);
