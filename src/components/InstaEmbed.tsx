@@ -1,43 +1,41 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
+/**
+ * Аккуратный Instagram Reels embed без растягивания.
+ * - Контейнер с aspect-ratio 9/16 фиксирует пропорции.
+ * - iframe/blockquote растягиваются на ширину контейнера без деформации.
+ */
 export default function InstaEmbed({ url }: { url: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    // подключаем скрипт Instagram один раз
     const s = document.createElement("script");
     s.src = "https://www.instagram.com/embed.js";
     s.async = true;
     s.onload = () => (window as any).instgrm?.Embeds?.process();
     document.body.appendChild(s);
     return () => {
-      // не ломаем другие эмбед-ы при unmount
       try { s.remove(); } catch {}
     };
   }, []);
 
   return (
-    <div className="insta-wrap">
+    <div className="insta-card">
       <blockquote
-        ref={ref}
         className="instagram-media"
         data-instgrm-permalink={url}
         data-instgrm-version="14"
         style={{ background: "#fff", border: 0, margin: 0, padding: 0, width: "100%" }}
       />
       <style jsx>{`
-        .insta-wrap {
-          position: relative;
+        .insta-card{
           width: 100%;
-          max-width: 360px;     /* под формат рилсов */
-          aspect-ratio: 9 / 16; /* сохраняем карточку вертикальной */
+          max-width: 300px;     /* ширина карточки */
+          aspect-ratio: 9 / 16; /* не даём деформироваться */
           overflow: hidden;
-          margin: 0 auto;
+          border-radius: 16px;
         }
-        :global(.instagram-media) {
-          width: 100% !important;
-          min-width: auto !important;
-        }
+        /* Instagram сам встраивает внутренние обёртки — форсим ширину */
+        :global(.instagram-media){ width:100% !important; min-width:0 !important; }
+        :global(.instagram-media iframe){ width:100% !important; height:100% !important; }
       `}</style>
     </div>
   );
