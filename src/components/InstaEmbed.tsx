@@ -1,67 +1,44 @@
 import { useEffect, useRef } from "react";
 
-/**
- * Умный Instagram embed без деформации/растяжения.
- * - Базовый размер реального iframe Instagram ~ 360x640 (мин. ширина у них около 326px).
- * - Мы рендерим embed в "базовом масштабе" 360px и дальше аккуратно уменьшаем transform-ом,
- *   чтобы карточка была компактной и не тянула сетку (особенно на мобилке).
- *
- * Параметры:
- * - url: публичная ссылка на Reels/Post.
- * - maxWidth: желаемая видимая ширина карточки (например, 320 или 240).
- *   Высота подтянется сама через aspect-ratio 9/16.
- */
-export default function InstaEmbed({ url, maxWidth = 320 }: { url: string; maxWidth?: number }) {
-  const baseWidth = 360; // "нативная" ширина карточки инсты, от которой считаем масштаб
-  const scale = Math.min(1, maxWidth / baseWidth);
+type Props = { url: string; maxWidth?: number };
+
+export default function InstaEmbed({ url, maxWidth = 320 }: Props) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const s = document.createElement("script");
-    s.src = "https://www.instagram.com/embed.js";
-    s.async = true;
-    s.onload = () => (window as any).instgrm?.Embeds?.process();
-    document.body.appendChild(s);
-    return () => {
-      try { s.remove(); } catch {}
-    };
+    // грузим скрипт инсты один раз
+    const id = "ig-embed-script";
+    if (!document.getElementById(id)) {
+      const s = document.createElement("script");
+      s.id = id;
+      s.src = "https://www.instagram.com/embed.js";
+      s.async = true;
+      s.onload = () => (window as any).instgrm?.Embeds?.process();
+      document.body.appendChild(s);
+    } else {
+      (window as any).instgrm?.Embeds?.process();
+    }
   }, []);
 
   return (
-    <div className="insta-outer" style={{ width: `${maxWidth}px`, aspectRatio: "9/16" }}>
-      <div
-        className="insta-inner"
-        style={{
-          width: `${baseWidth}px`,
-          height: `${(baseWidth * 16) / 9}px`,
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-        }}
-      >
-        <blockquote
-          className="instagram-media"
-          data-instgrm-permalink={url}
-          data-instgrm-version="14"
-          style={{
-            background: "#fff",
-            border: 0,
-            margin: 0,
-            padding: 0,
-            width: "100%",
-            minWidth: 0,      // если вдруг инста навязывает min-width, мы прячем это внутри скейла
-            maxWidth: "100%", // не даём переполнить базовый контейнер
-          }}
-        />
-      </div>
-
+    <div className="ig-wrap" style={{ maxWidth }}>
+      <blockquote
+        ref={ref}
+        className="instagram-media"
+        data-instgrm-permalink={url}
+        data-instgrm-version="14"
+        style={{ background: "#fff", border: 0, margin: 0, padding: 0, width: "100%" }}
+      />
       <style jsx>{`
-        .insta-outer {
-          position: relative;
-          overflow: hidden; /* подстраховка на случай внутренних отступов инсты */
-          border-radius: 12px;
-          background: #fff;
+        .ig-wrap {
+          width: 100%;
+          aspect-ratio: 9 / 16; /* рилс */
+          overflow: hidden;
+          border-radius: 16px;
         }
-        .insta-inner {
-          /* здесь реальный embed в базовых размерах; мы его уменьшаем transform-ом */
+        :global(.instagram-media) {
+          width: 100% !important;
+          min-width: 0 !important;
         }
       `}</style>
     </div>
