@@ -462,17 +462,19 @@ export default function App() {
           </h2>
 
           {/* 4 фото-отзыва */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-            {[review1, review2, review3, review4].map((reviewNum) => (
-              <div key={reviewNum} className="group cursor-pointer">
-                <img
-                  src={`/images/reviews/review${reviewNum}.png`}
-                  alt={`Отзыв ${reviewNum}`}
-                  className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-105"
-                />
-              </div>
-            ))}
-          </div>
+          {/* 4 фото-отзыва */}
+<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+  {[1, 2, 3, 4].map((n) => (
+    <div key={n} className="group cursor-pointer">
+      <img
+        src={`/images/reviews/review${n}.png`}
+        alt={`Отзыв ${n}`}
+        className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-[1.01]"
+      />
+    </div>
+  ))}
+</div>
+
 
           {/* Главное видео по центру */}
           <div className="text-center mb-8">
