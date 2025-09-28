@@ -4,15 +4,15 @@ export default function InstaEmbed({ url }: { url: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://www.instagram.com/embed.js";
-    script.async = true;
-    script.onload = () => {
-      (window as any).instgrm?.Embeds?.process();
-    };
-    document.body.appendChild(script);
+    // подключаем скрипт Instagram один раз
+    const s = document.createElement("script");
+    s.src = "https://www.instagram.com/embed.js";
+    s.async = true;
+    s.onload = () => (window as any).instgrm?.Embeds?.process();
+    document.body.appendChild(s);
     return () => {
-      script.remove();
+      // не ломаем другие эмбед-ы при unmount
+      try { s.remove(); } catch {}
     };
   }, []);
 
@@ -29,8 +29,8 @@ export default function InstaEmbed({ url }: { url: string }) {
         .insta-wrap {
           position: relative;
           width: 100%;
-          max-width: 360px; /* под формат рилса */
-          aspect-ratio: 9/16;
+          max-width: 360px;     /* под формат рилсов */
+          aspect-ratio: 9 / 16; /* сохраняем карточку вертикальной */
           overflow: hidden;
           margin: 0 auto;
         }
