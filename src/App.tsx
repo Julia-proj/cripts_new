@@ -4,7 +4,7 @@ import InstaEmbed from "./components/InstaEmbed";
 // TODO: вставь свою ссылку Stripe
 const STRIPE_URL = "https://buy.stripe.com/...";
 
-/** ПУБЛИЧНЫЕ ссылки на Reels (очищены, закрыты кавычки, добавлен завершающий /) */
+/** ПУБЛИЧНЫЕ ссылки на Reels (очищены и с / на конце) */
 const INSTAGRAM_REELS: string[] = [
   "https://www.instagram.com/reel/DJjUiEnM-A_/",
   "https://www.instagram.com/reel/DJSHB73ogs1/",
@@ -44,7 +44,7 @@ function ReviewLightbox({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div className="max-w-2xl max-h-[90vh] relative" onClick={(e) => e.stopPropagation()}>
@@ -105,8 +105,7 @@ export default function App() {
         const newCount = prev + change;
         return Math.max(4, Math.min(15, newCount));
       });
-    }, 12000 + Math.random() * 8000); // Каждые 12-20 секунд
-
+    }, 12000 + Math.random() * 8000); // Каждые 12–20 секунд
     return () => clearInterval(interval);
   }, []);
 
@@ -129,9 +128,9 @@ export default function App() {
       {/* Progress bar */}
       <ScrollProgress />
 
-      {/* Floating online counter */}
-      <div className="fixed bottom-20 left-4 z-40 hidden lg:block">
-        <div className="flex items-center gap-2 text-sm text-gray-600 bg-white/90 backdrop-blur-md px-4 py-3 rounded-full shadow-lg border border-gray-200 hover:scale-105 transition-all duration-300">
+      {/* Floating online counter (ДЕСКТОП слева снизу, на мобиле скрыт) */}
+      <div className="fixed bottom-4 left-4 z-40 hidden lg:block">
+        <div className="flex items-center gap-2 text-sm text-gray-700 bg-white/95 backdrop-blur px-4 py-2.5 rounded-full shadow-lg border border-gray-200">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <span className="font-medium">{viewersCount} онлайн</span>
         </div>
@@ -142,11 +141,11 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
           <div className="flex items-center gap-4">
-            {/* Счетчик посетителей (мобильный) */}
-            <div className="flex lg:hidden items-center gap-2 text-sm text-gray-600 bg-green-50 px-3 py-1.5 rounded-full hover:bg-green-100 transition-all duration-300 hover:scale-105">
+            {/* Мобильный индикатор онлайн — убираем (не отвлекаем) */}
+            {/* <div className="flex lg:hidden items-center gap-2 text-sm text-gray-600 bg-green-50 px-3 py-1.5 rounded-full">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="font-medium">{viewersCount} онлайн</span>
-            </div>
+            </div> */}
             <a
               href={STRIPE_URL}
               target="_blank"
@@ -161,62 +160,41 @@ export default function App() {
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="pt-24 pb-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="animate-fade-in">
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
-                Скрипты, которые превращают{" "}
-                <span className="text-blue-600 font-extrabold">сообщения в деньги</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed text-center lg:text-left">
-                Проверенная система общения с клиентами для бьюти-мастеров. Результат:{" "}
-                <span className="text-blue-600 font-semibold">закрытые возражения</span>,{" "}
-                <span className="text-blue-600 font-semibold">увеличенный средний чек</span>, экономия времени на переписке.
-              </p>
-              <div className="mb-6 text-center lg:text-left">
-                <a
-                  href={STRIPE_URL}
-                  target="_blank"
-                  rel="noopener"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl transform"
-                >
-                  Купить <span className="inline-block ml-2 transition-transform hover:translate-x-1">→</span>
-                </a>
-              </div>
-              <div className="flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
-                <span className="flex items-center gap-2 hover:text-green-600 transition-colors">
-                  <span className="w-4 h-4 text-green-500">✓</span>
-                  Доступ сразу
-                </span>
-                <div className="flex items-center gap-2">
-                  <div className="px-2 py-1 bg-black text-white rounded text-xs font-medium hover:scale-105 transition-transform">
-                    Apple Pay
-                  </div>
-                  <div className="px-2 py-1 bg-blue-600 text-white rounded text-xs font-medium hover:scale-105 transition-transform">
-                    Google Pay
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="animate-slide-in-right">
-              <div className="relative group">
-                <div
-                  className="w-full h-96 bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-105 relative overflow-hidden"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(rgba(255,255,255,0.0), rgba(255,255,255,0.0)), url('/images/hero.jpg')",
-                  }}
-                >
-                  {/* мягкий цветовой вуаль для премиум-ощущения + читаемость текста рядом */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/8 to-purple-600/8 rounded-2xl" />
-                </div>
-                <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
-                  <div className="text-2xl font-bold text-gray-900">19€</div>
-                  <div className="text-sm text-gray-500">Полный доступ</div>
-                </div>
+      {/* HERO — ФОН + ТЕКСТ (бездеформационный, читабельно) */}
+      <section
+        className="relative min-h-[92svh] flex items-center"
+        style={{
+          backgroundImage: "url('/images/hero.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "right center",
+        }}
+      >
+        {/* Градиент для читаемости (на мобиле сильнее) */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/10 md:via-white/70 md:to-transparent" />
+        <div className="relative z-10 max-w-7xl mx-auto px-6 py-28 w-full">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight mb-6 text-gray-900">
+              Скрипты, которые превращают{" "}
+              <span className="text-blue-600">сообщения в деньги</span>
+            </h1>
+            <p className="text-lg md:text-xl text-gray-700 mb-8 leading-relaxed">
+              Проверенная система общения с клиентами для бьюти-мастеров. Результат:{" "}
+              <span className="text-red-600 font-semibold">закрытые возражения</span>,{" "}
+              <span className="text-blue-600 font-semibold">увеличенный средний чек</span>,{" "}
+              экономия времени на переписке.
+            </p>
+            <div className="flex items-center gap-4 flex-wrap">
+              <a
+                href={STRIPE_URL}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-3 px-7 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl"
+              >
+                Купить <span className="inline-block ml-1">→</span>
+              </a>
+              <div className="flex items-center gap-2 text-xs">
+                <div className="px-2 py-1 bg-black text-white rounded">Apple Pay</div>
+                <div className="px-2 py-1 bg-blue-600 text-white rounded">Google Pay</div>
               </div>
             </div>
           </div>
@@ -224,7 +202,7 @@ export default function App() {
       </section>
 
       {/* СРАВНЕНИЕ */}
-      <section id="comparison" className="py-20 bg-gray-50">
+      <section id="comparison" className="py-16 md:py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-2 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
@@ -290,7 +268,7 @@ export default function App() {
       </section>
 
       {/* ПОЧЕМУ ЭТО ВАЖНО */}
-      <section id="why" className="py-20 bg-white">
+      <section id="why" className="py-16 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
@@ -327,7 +305,7 @@ export default function App() {
       </section>
 
       {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
-      <section id="for" className="py-20 bg-gray-50">
+      <section id="for" className="py-16 md:py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             Кому подходят <span className="text-blue-600">скрипты</span>
@@ -372,7 +350,7 @@ export default function App() {
       </section>
 
       {/* ЧТО ВХОДИТ В СИСТЕМУ */}
-      <section id="whats-included" className="py-20 bg-white">
+      <section id="whats-included" className="py-16 md:py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
@@ -445,7 +423,7 @@ export default function App() {
       </section>
 
       {/* БОНУСЫ */}
-      <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
+      <section id="bonuses" className="py-16 md:py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center animate-fade-in">
@@ -500,7 +478,7 @@ export default function App() {
       </section>
 
       {/* ЧТО ИЗМЕНИТСЯ СРАЗУ */}
-      <section id="immediate" className="py-20 bg-white">
+      <section id="immediate" className="py-16 md:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             <span className="text-blue-600">Что изменится сразу</span>
@@ -530,14 +508,14 @@ export default function App() {
       </section>
 
       {/* ОТЗЫВЫ */}
-      <section id="reviews" className="py-20 bg-gray-50">
+      <section id="reviews" className="py-16 md:py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 animate-fade-in">
             Отзывы клиентов
           </h2>
 
-        {/* 4 фото-отзыва */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+          {/* 4 фото-отзыва */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 md:mb-16">
             {[1, 2, 3, 4].map((n) => (
               <div key={n} className="group cursor-pointer animate-zoom-in">
                 <img
@@ -550,10 +528,14 @@ export default function App() {
             ))}
           </div>
 
-          {/* Видео отзывы (Instagram embeds) */}
-          <div className="flex gap-4 justify-center items-start flex-wrap">
+          {/* Reels — компактная лента с карточками без деформации */}
+          <div className="reels-row flex gap-4 overflow-x-auto pb-2 md:pb-4 justify-start md:justify-center">
             {INSTAGRAM_REELS.map((url, i) => (
-              <div key={i} className="bg-white rounded-xl border p-2 shadow-sm hover:shadow-md transition">
+              <div
+                key={i}
+                className="flex-shrink-0 bg-white border rounded-2xl p-2 shadow-sm hover:shadow-md transition scroll-snap-align"
+                style={{ width: "240px" }} /* единая ширина карточек */
+              >
                 <InstaEmbed url={url} />
               </div>
             ))}
@@ -562,7 +544,7 @@ export default function App() {
       </section>
 
       {/* ОФФЕР */}
-      <section id="offer" className="py-20 bg-white">
+      <section id="offer" className="py-16 md:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
@@ -575,14 +557,13 @@ export default function App() {
 
           <div className="max-w-lg mx-auto">
             <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-zoom-in">
-              {/* Декоративные элементы */}
+              {/* Декор */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
 
               <div className="relative z-10">
                 <div className="text-center">
                   <div className="text-sm uppercase tracking-wide text-gray-300 mb-3">Полный доступ</div>
-
                   <div className="flex items-center justify-center gap-4 mb-6">
                     <span className="text-gray-400 line-through text-2xl">67€</span>
                     <span className="text-5xl font-extrabold text-white">19€</span>
@@ -605,7 +586,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* CTA кнопка */}
+                  {/* CTA */}
                   <a
                     href={STRIPE_URL}
                     target="_blank"
@@ -641,7 +622,7 @@ export default function App() {
                     </ul>
                   </div>
 
-                  {/* Способы оплаты */}
+                  {/* Платежи */}
                   <div className="flex items-center justify-center gap-2 text-xs">
                     <div className="px-2 py-1 bg-black text-white rounded">Apple Pay</div>
                     <div className="px-2 py-1 bg-white/20 text-white rounded">Google Pay</div>
@@ -656,7 +637,7 @@ export default function App() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 bg-white">
+      <section id="faq" className="py-16 md:py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">Частые вопросы</h2>
 
@@ -711,7 +692,7 @@ export default function App() {
         </a>
       </div>
 
-      {/* CSS для анимаций */}
+      {/* CSS для анимаций и рилс-ленты */}
       <style jsx>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(20px); }
@@ -738,6 +719,7 @@ export default function App() {
         .animate-slide-in-right { animation: slide-in-right 0.8s ease-out; }
         .animate-slide-up { animation: slide-up 0.6s ease-out; }
         .animate-zoom-in { animation: zoom-in 0.6s ease-out; }
+
         .sparkle-effect { position: relative; overflow: hidden; }
         .sparkle-effect::before {
           content: '';
@@ -751,6 +733,10 @@ export default function App() {
           50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
           100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
         }
+
+        /* Лента рилсов: плавный горизонтальный скролл + снап */
+        .reels-row { scroll-snap-type: x mandatory; }
+        .reels-row > * { scroll-snap-align: start; }
       `}</style>
     </div>
   );
