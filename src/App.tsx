@@ -463,7 +463,7 @@ export default function App() {
 
           {/* 4 фото-отзыва */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-            {[1, 2, 3, 4].map((reviewNum) => (
+            {[review1, review2, review3, review4].map((reviewNum) => (
               <div key={reviewNum} className="group cursor-pointer">
                 <img
                   src={`/images/reviews/review${reviewNum}.jpg`}
