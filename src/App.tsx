@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
+import InstaEmbed from "./components/InstaEmbed"; // ⬅️ новый компонент Instagram
 
 // TODO: вставь свою ссылку Stripe
 const STRIPE_URL = "https://buy.stripe.com/...";
+
+// Публичные ссылки на Reels/Posts Instagram (перемести сюда свои, если уже есть)
+const INSTAGRAM_REELS: string[] = [
+  "https://www.instagram.com/reel/DJjUiEnM-A_,
+  "https://www.instagram.com/reel/DJSHB73ogs1,
+  "https://www.instagram.com/reel/DJmUkiNsZe1,
+  "https://www.instagram.com/reel/DJoAXfKs6tu,
+  "https://www.instagram.com/reel/DFX57cQobmS,
+];
 
 // Простой таймер «ограниченного времени» (по умолчанию ~12 часов)
 function useCountdown(hours = 12) {
@@ -141,63 +151,50 @@ export default function App() {
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="pt-24 pb-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="animate-fade-in">
-              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
-                Скрипты, которые превращают{" "}
-                <span className="text-blue-600 font-extrabold">сообщения в деньги</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed text-center lg:text-left">
-                Проверенная система общения с клиентами для бьюти-мастеров.
-                Результат: <span className="text-blue-600 font-semibold">закрытые возражения</span>, <span className="text-blue-600 font-semibold">увеличенный средний чек</span>,
-                экономия времени на переписке.
-              </p>
-              <div className="mb-6 text-center lg:text-left">
-                <a
-                  href={STRIPE_URL}
-                  target="_blank"
-                  rel="noopener"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl transform"
-                >
-                  Купить <span className="inline-block ml-2 transition-transform hover:translate-x-1">→</span>
-                </a>
-              </div>
-              <div className="flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
-                <span className="flex items-center gap-2 hover:text-green-600 transition-colors">
-                  <span className="w-4 h-4 text-green-500">✓</span>
-                  Доступ сразу
-                </span>
-                <div className="flex items-center gap-2">
-                  <div className="px-2 py-1 bg-black text-white rounded text-xs font-medium hover:scale-105 transition-transform">
-                    Apple Pay
-                  </div>
-                  <div className="px-2 py-1 bg-blue-600 text-white rounded text-xs font-medium hover:scale-105 transition-transform">
-                    Google Pay
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* HERO — фото как фон + мягкий градиент слева */}
+      <section
+        className="relative min-h-[88vh] pt-28 flex items-center justify-start bg-cover bg-right"
+        style={{ backgroundImage: "url('/images/hero.jpg')" }}
+      >
+        {/* Градиент для читаемости текста */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent"></div>
 
-            <div className="animate-slide-in-right">
-              <div className="relative group">
-                <div 
-                  className="w-full h-96 bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-105 relative overflow-hidden"
-                  style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/images/hero.jpg')`
-                  }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-2xl" />
-                </div>
-                <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
-                  <div className="text-2xl font-bold text-gray-900">19€</div>
-                  <div className="text-sm text-gray-500">Полный доступ</div>
-                </div>
-              </div>
+        <div className="relative z-10 max-w-2xl px-6 lg:px-12">
+          <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6 text-gray-900">
+            Скрипты, которые превращают{" "}
+            <span className="text-blue-600">сообщения в деньги</span>
+          </h1>
+          <p className="text-lg lg:text-xl text-gray-700 mb-8 leading-relaxed">
+            Проверенная система общения с клиентами для бьюти-мастеров. Результат:{" "}
+            <span className="text-red-600 font-semibold">закрытые возражения</span>,{" "}
+            <span className="text-blue-600 font-semibold">увеличенный средний чек</span>,{" "}
+            <span className="text-red-600 font-semibold">экономия времени</span>.
+          </p>
+          <div className="mb-6">
+            <a
+              href={STRIPE_URL}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl transform"
+            >
+              Купить <span className="inline-block ml-2 transition-transform group-hover:translate-x-1">→</span>
+            </a>
+          </div>
+          <div className="flex items-center gap-6 text-sm text-gray-600">
+            <span className="flex items-center gap-2">
+              <span className="w-4 h-4 text-green-500">✓</span> Доступ сразу
+            </span>
+            <div className="flex items-center gap-2">
+              <div className="px-2 py-1 bg-black text-white rounded text-xs font-medium">Apple Pay</div>
+              <div className="px-2 py-1 bg-blue-600 text-white rounded text-xs font-medium">Google Pay</div>
             </div>
           </div>
+        </div>
+
+        {/* Плашка с ценой */}
+        <div className="absolute top-28 right-6 lg:right-12 bg-white p-4 rounded-xl shadow-lg">
+          <div className="text-2xl font-bold text-gray-900">19€</div>
+          <div className="text-sm text-gray-500">Полный доступ</div>
         </div>
       </section>
 
@@ -556,98 +553,11 @@ export default function App() {
             ))}
           </div>
 
-          {/* Видео отзывы в один ряд (формат рилсов) */}
-          <div className="flex gap-4 justify-center items-end mb-8 overflow-x-auto pb-4">
-            {/* Боковые видео (меньше) */}
-            <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden flex-shrink-0">
-              <div className="relative bg-black">
-                <video 
-                  className="w-32 h-56 object-cover"
-                  controls
-                  poster="/images/video-poster-1.jpg"
-                  preload="metadata"
-                >
-                  <source src="/videos/review1.mp4" type="video/mp4" />
-                  Ваш браузер не поддерживает видео.
-                </video>
-              </div>
-              <div className="p-2">
-                <div className="text-xs font-medium text-gray-800">Отзыв #1</div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden flex-shrink-0">
-              <div className="relative bg-black">
-                <video 
-                  className="w-32 h-56 object-cover"
-                  controls
-                  poster="/images/video-poster-2.jpg"
-                  preload="metadata"
-                >
-                  <source src="/videos/review2.mp4" type="video/mp4" />
-                  Ваш браузер не поддерживает видео.
-                </video>
-              </div>
-              <div className="p-2">
-                <div className="text-xs font-medium text-gray-800">Отзыв #2</div>
-              </div>
-            </div>
-
-            {/* Главное видео (больше) */}
-            <div className="bg-white rounded-2xl border-2 border-blue-500 p-2 hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden flex-shrink-0">
-              <div className="relative bg-black rounded-xl">
-                <video 
-                  className="w-48 h-80 object-cover rounded-xl"
-                  controls
-                  poster="/images/video-poster.jpg"
-                  preload="metadata"
-                >
-                  <source src="/videos/main-review.mp4" type="video/mp4" />
-                  Ваш браузер не поддерживает видео.
-                </video>
-              </div>
-              <div className="p-4">
-                <div className="text-lg font-bold text-blue-600 mb-2">
-                  🎥 Как работают скрипты
-                </div>
-                <p className="text-gray-600 text-sm">Реальные результаты</p>
-              </div>
-            </div>
-
-            {/* Боковые видео (меньше) */}
-            <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden flex-shrink-0">
-              <div className="relative bg-black">
-                <video 
-                  className="w-32 h-56 object-cover"
-                  controls
-                  poster="/images/video-poster-3.jpg"
-                  preload="metadata"
-                >
-                  <source src="/videos/review3.mp4" type="video/mp4" />
-                  Ваш браузер не поддерживает видео.
-                </video>
-              </div>
-              <div className="p-2">
-                <div className="text-xs font-medium text-gray-800">Отзыв #3</div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden flex-shrink-0">
-              <div className="relative bg-black">
-                <video 
-                  className="w-32 h-56 object-cover"
-                  controls
-                  poster="/images/video-poster-4.jpg"
-                  preload="metadata"
-                >
-                  <source src="/videos/review4.mp4" type="video/mp4" />
-                  Ваш браузер не поддерживает видео.
-                </video>
-              </div>
-              <div className="p-2">
-                <div className="text-xs font-medium text-gray-800">Отзыв #4</div>
-              </div>
-            </div>
+          {/* Видео отзывы — Instagram embed */}
+          <div className="flex gap-6 justify-center items-start flex-wrap">
+            {INSTAGRAM_REELS.map((url, i) => (
+              <InstaEmbed key={i} url={url} />
+            ))}
           </div>
         </div>
       </section>
