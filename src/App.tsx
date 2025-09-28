@@ -7,7 +7,7 @@ const STRIPE_URL = "https://buy.stripe.com/...";
 // Публичные ссылки на Reels/Posts Instagram (перемести сюда свои, если уже есть)
 const INSTAGRAM_REELS: string[] = [
   "https://www.instagram.com/reel/DJjUiEnM-A_,
-  "https://www.instagram.com/reel/DJSHB73ogs1,
+  "https://www.instagram.com/reel/DJSHB73ogs1/?utm_source=ig_web_copy_link,
   "https://www.instagram.com/reel/DJmUkiNsZe1,
   "https://www.instagram.com/reel/DJoAXfKs6tu,
   "https://www.instagram.com/reel/DFX57cQobmS,
