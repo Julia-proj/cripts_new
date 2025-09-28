@@ -18,27 +18,131 @@ function useCountdown(hours = 12) {
   return { h, m, s, finished: total <= 0 };
 }
 
+// Lightbox для отзывов
+function ReviewLightbox({ isOpen, onClose, imageSrc, reviewNumber }) {
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 animate-fadeIn" 
+      onClick={onClose}
+    >
+      <div className="max-w-2xl max-h-[90vh] relative animate-zoomIn" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={onClose}
+          className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300 transition-colors"
+        >
+          ✕
+        </button>
+        <img
+          src={imageSrc}
+          alt={`Отзыв ${reviewNumber}`}
+          className="w-full h-auto rounded-lg shadow-2xl"
+        />
+      </div>
+    </div>
+  );
+}
+
+// Hook для прогресс-бара
+function useScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const updateProgress = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollTop / docHeight;
+      setProgress(progress * 100);
+    };
+
+    window.addEventListener('scroll', updateProgress);
+    return () => window.removeEventListener('scroll', updateProgress);
+  }, []);
+
+  return progress;
+}
+
 export default function App() {
   const [openFaq, setOpenFaq] = useState(null);
-  const [viewersCount, setViewersCount] = useState(47);
+  const [viewersCount, setViewersCount] = useState(9);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState("");
+  const [lightboxReviewNumber, setLightboxReviewNumber] = useState(1);
+  
   const toggleFaq = (i) => setOpenFaq(openFaq === i ? null : i);
   const { h, m, s, finished } = useCountdown(12);
+  const scrollProgress = useScrollProgress();
 
-  // Анимация счетчика посетителей
+  // Динамический счетчик посетителей (4-15 человек)
   useEffect(() => {
     const interval = setInterval(() => {
       setViewersCount(prev => {
-        const change = Math.random() > 0.5 ? 1 : -1;
+        const change = Math.random() > 0.6 ? 1 : -1;
         const newCount = prev + change;
-        return Math.max(35, Math.min(67, newCount));
+        return Math.max(4, Math.min(15, newCount));
       });
-    }, 8000 + Math.random() * 4000);
+    }, 15000 + Math.random() * 10000); // Каждые 15-25 секунд
     
     return () => clearInterval(interval);
   }, []);
 
+  const openLightbox = (imageSrc, reviewNumber) => {
+    setLightboxImage(imageSrc);
+    setLightboxReviewNumber(reviewNumber);
+    setLightboxOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-white">
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes zoomIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200px 0; }
+          100% { background-position: calc(200px + 100%) 0; }
+        }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+        .animate-zoomIn { animation: zoomIn 0.3s ease-out; }
+        .animate-slideUp { animation: slideUp 0.6s ease-out; }
+        .animate-shimmer {
+          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background-size: 200px 100%;
+          animation: shimmer 2s infinite;
+        }
+        .group:hover .group-hover\\:shimmer {
+          background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.3) 50%, transparent 75%);
+          background-size: 200px 100%;
+          animation: shimmer 1.5s infinite;
+        }
+      `}</style>
+
+      {/* Lightbox */}
+      <ReviewLightbox 
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        imageSrc={lightboxImage}
+        reviewNumber={lightboxReviewNumber}
+      />
+
+      {/* Progress bar */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+        <div 
+          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
+          style={{ width: `${Math.min(100, scrollProgress)}%` }}
+        />
+      </div>
+
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -67,7 +171,7 @@ export default function App() {
       <section className="pt-24 pb-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="animate-slideUp">
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
                 Скрипты, которые превращают{" "}
                 <span className="text-blue-600 font-extrabold">сообщения в деньги</span>
@@ -103,14 +207,18 @@ export default function App() {
               </div>
             </div>
 
-            <div>
+            <div className="animate-slideUp">
               <div className="relative group">
-                <img
-                  src="/images/hero.jpg"
-                  alt="Beauty Scripts Hero"
-                  className="w-full h-auto rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+                <div 
+                  className="w-full h-96 bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl transition-transform duration-500 group-hover:scale-105 relative overflow-hidden"
+                  style={{
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/images/hero.jpg')`
+                  }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-2xl group-hover:from-blue-600/20 group-hover:to-purple-600/20 transition-all duration-500" />
+                  <div className="absolute inset-0 group-hover:shimmer transition-all duration-500" />
+                </div>
+                <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
                   <div className="text-2xl font-bold text-gray-900">19€</div>
                   <div className="text-sm text-gray-500">Полный доступ</div>
                 </div>
@@ -123,7 +231,7 @@ export default function App() {
       {/* СРАВНЕНИЕ */}
       <section id="comparison" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-2">
+          <div className="text-center mb-2 animate-slideUp">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Как изменится ваша{" "}
               <span className="text-blue-600">работа с клиентами</span>
@@ -134,7 +242,7 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,11 +254,11 @@ export default function App() {
               <ul className="space-y-4 text-gray-800">
                 {[
                   "«Сколько стоит?» → Отвечаете только ценой и тишина.",
-                  "«Подумаю» → Не знаете, что ответить — клиент уходит.",
-                  "«Переписка 30+ минут» → Клиент остывает — теряете заявку.",
-                  "«10 заявок» → Долгие диалоги — только 2–3 записи.",
+                  "«Подумаю» → Не знаете, что ответить: клиент уходит.",
+                  "«Переписка 30+ минут» → Клиент остывает, теряете заявку.",
+                  "«10 заявок» → Долгие диалоги приводят только к 2–3 записям.",
                 ].map((t, i) => (
-                  <li key={i} className="flex gap-3">
+                  <li key={i} className="flex gap-3 hover:bg-red-50 p-2 rounded-lg transition-colors">
                     <svg className="w-5 h-5 mt-1 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -160,7 +268,7 @@ export default function App() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,12 +279,12 @@ export default function App() {
               </div>
               <ul className="space-y-4 text-gray-800">
                 {[
-                  "«Сколько стоит?» → Презентуете ценность → запись.",
-                  "«Подумаю» → Мягкое возражение → возвращаете к записи.",
-                  "«Переписка 5 минут» → Готовые фразы → быстрая запись.",
-                  "«10 заявок» → Чёткие диалоги → 6–7 записей.",
+                  "«Сколько стоит?» → Презентуете ценность, получаете запись.",
+                  "«Подумаю» → Мягкое возражение возвращает к записи.",
+                  "«Переписка 5 минут» → Готовые фразы ведут к быстрой записи.",
+                  "«10 заявок» → Чёткие диалоги дают 6–7 записей.",
                 ].map((t, i) => (
-                  <li key={i} className="flex gap-3">
+                  <li key={i} className="flex gap-3 hover:bg-green-50 p-2 rounded-lg transition-colors">
                     <svg className="w-5 h-5 mt-1 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
@@ -192,44 +300,44 @@ export default function App() {
       {/* ПОЧЕМУ ЭТО ВАЖНО */}
       <section id="why" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center animate-slideUp">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
             <p className="mt-3 text-gray-600">
-              Каждая потерянная заявка — это упущенная прибыль
+              Каждая потерянная заявка: это упущенная прибыль
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
               <img
                 src="/images/money.png"
                 alt="Сливаются деньги"
-                className="mx-auto mb-6 w-16 h-16 object-contain"
+                className="mx-auto mb-6 w-16 h-16 object-contain hover:scale-110 transition-transform duration-300"
               />
               <h3 className="font-semibold text-lg">Сливаются деньги на рекламу</h3>
               <p className="mt-2 text-gray-600">
-                Платите за заявки, но конвертируете лишь 20–30%. Остальные —
+                Платите за заявки, но конвертируете лишь 20–30%. Остальные:
                 <span className="text-red-800 font-semibold"> выброшенный бюджет</span>.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
               <img
                 src="/images/clock.png"
                 alt="Тратится время"
-                className="mx-auto mb-6 w-16 h-16 object-contain"
+                className="mx-auto mb-6 w-16 h-16 object-contain hover:scale-110 transition-transform duration-300"
               />
               <h3 className="font-semibold text-lg">Тратится время впустую</h3>
               <p className="mt-2 text-gray-600">
                 По 30–40 минут на переписку с каждым. Уходит <span className="text-red-800 font-semibold">3–4 часа в день</span>.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
               <img
                 src="/images/door.png"
                 alt="Уходят к конкуренту"
-                className="mx-auto mb-6 w-16 h-16 object-contain"
+                className="mx-auto mb-6 w-16 h-16 object-contain hover:scale-110 transition-transform duration-300"
               />
               <h3 className="font-semibold text-lg">Заявки уходят к конкуренту</h3>
               <p className="mt-2 text-gray-600">
@@ -243,7 +351,7 @@ export default function App() {
       {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
       <section id="for" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-slideUp">
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -262,7 +370,7 @@ export default function App() {
               {
                 img: "/images/team.png",
                 title: "Мастерам-универсалам",
-                text: "Ответы на типовые ситуации → быстрее к записи, увереннее в чате.",
+                text: "Ответы на типовые ситуации ведут быстрее к записи, увереннее в чате.",
               },
               {
                 img: "/images/one.png",
@@ -272,13 +380,13 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-slideUp"
               >
                 <div className="flex items-center gap-4">
                   <img
                     src={c.img}
                     alt=""
-                    className="w-12 h-12 object-contain"
+                    className="w-12 h-12 object-contain hover:scale-110 transition-transform duration-300"
                   />
                   <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
                 </div>
@@ -292,7 +400,7 @@ export default function App() {
       {/* ЧТО ВХОДИТ В СИСТЕМУ */}
       <section id="whats-included" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center">
+          <div className="text-center animate-slideUp">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
@@ -306,19 +414,19 @@ export default function App() {
               {
                 img: "/images/xmind.png",
                 title: "Готовые диалоги",
-                desc: "Контакты до оплаты: приветствия, презентация ценности, запись — всё пошагово.",
+                desc: "Контакты до оплаты: приветствия, презентация ценности, запись. Всё пошагово.",
                 highlight: "презентация ценности"
               },
               {
                 img: "/images/target.png",
                 title: "Закрытие возражений",
-                desc: "«Дорого», «Подумаю», «У другого дешевле» — мягкие ответы без давления.",
+                desc: "«Дорого», «Подумаю», «У другого дешевле». Мягкие ответы без давления.",
                 highlight: "мягкие ответы без давления"
               },
               {
                 img: "/images/salons.png",
                 title: "Под каждую услугу",
-                desc: "Маникюр, брови, ресницы, косметология, массаж — учтена специфика каждой ниши.",
+                desc: "Маникюр, брови, ресницы, косметология, массаж. Учтена специфика каждой ниши.",
                 highlight: "учтена специфика каждой ниши"
               },
               {
@@ -330,7 +438,7 @@ export default function App() {
               {
                 img: "/images/phone.png",
                 title: "Гайд по внедрению",
-                desc: "Старт за один день: пошаговый план + стандарты для команды.",
+                desc: "Старт за один день: пошаговый план и стандарты для команды.",
                 highlight: "Старт за один день"
               },
               {
@@ -340,11 +448,11 @@ export default function App() {
                 highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
                 <img
                   src={item.img}
                   alt=""
-                  className="w-12 h-12 object-contain mb-6"
+                  className="w-12 h-12 object-contain mb-6 hover:scale-110 transition-transform duration-300"
                 />
                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                 <p className="mt-2 text-gray-600">
@@ -365,14 +473,18 @@ export default function App() {
       {/* БОНУСЫ */}
       <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-10 left-10 w-32 h-32 bg-yellow-200/20 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-10 right-10 w-24 h-24 bg-pink-200/20 rounded-full animate-pulse"></div>
+        </div>
         <div className="max-w-6xl mx-auto px-6 relative">
-          <div className="text-center">
+          <div className="text-center animate-slideUp">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Бонусы при покупке{" "}
-              <span className="text-2xl align-middle">🎁</span>
+              <span className="text-2xl align-middle animate-bounce inline-block">🎁</span>
             </h2>
             <p className="mt-3 text-gray-600">
-              Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами
+              Суммарная ценность составляет 79€. Сегодня идут бесплатно со скриптами
             </p>
           </div>
 
@@ -381,31 +493,31 @@ export default function App() {
               {
                 image: "/images/bonus1.png",
                 title: "Гайд «Работа с клиентской базой»",
-                desc: "Повторные записи без рекламы → возвращайте старых клиентов.",
+                desc: "Повторные записи без рекламы. Возвращайте старых клиентов.",
                 old: "27€",
               },
               {
                 image: "/images/bonus2.png",
                 title: "Чек-лист «30+ источников клиентов»",
-                desc: "Платные и бесплатные способы → где взять заявки уже сегодня.",
+                desc: "Платные и бесплатные способы. Где взять заявки уже сегодня.",
                 old: "32€",
               },
               {
                 image: "/images/bonus3.png",
                 title: "Гайд «Продажи на консультации»",
-                desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.",
+                desc: "5 этапов продаж. Мягкий апсейл дополнительных услуг.",
                 old: "20€",
               },
             ].map((b, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-slideUp group"
               >
                 <div className="mb-6">
                   <img
                     src={b.image}
                     alt={`Бонус ${i + 1}`}
-                    className="w-32 h-40 mx-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300"
+                    className="w-32 h-40 mx-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300 group-hover:animate-shimmer"
                   />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">{b.title}</h3>
@@ -414,7 +526,7 @@ export default function App() {
                   <span className="text-lg font-bold text-gray-400 line-through">
                     {b.old}
                   </span>
-                  <span className="text-xl font-bold text-green-600">
+                  <span className="text-xl font-bold text-green-600 animate-pulse">
                     0€
                   </span>
                 </div>
@@ -427,7 +539,7 @@ export default function App() {
       {/* ЧТО ИЗМЕНИТСЯ СРАЗУ */}
       <section id="immediate" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-slideUp">
             Что изменится сразу
           </h2>
 
@@ -436,11 +548,11 @@ export default function App() {
               "Перестанешь терять заявки из-за слабых ответов.",
               "Начнёшь закрывать больше записей уже с первого дня.",
               "Повысишь средний чек через правильные предложения.",
-              "Станешь увереннее — на всё есть готовый ответ.",
+              "Станешь увереннее. На всё есть готовый ответ.",
             ].map((t, i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp"
               >
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -457,34 +569,34 @@ export default function App() {
       {/* ОТЗЫВЫ */}
       <section id="reviews" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 animate-slideUp">
             Отзывы клиентов
           </h2>
 
           {/* 4 фото-отзыва */}
-          {/* 4 фото-отзыва */}
-<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-  {[1, 2, 3, 4].map((n) => (
-    <div key={n} className="group cursor-pointer">
-      <img
-        src={`/images/reviews/review${n}.png`}
-        alt={`Отзыв ${n}`}
-        className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-[1.01]"
-      />
-    </div>
-  ))}
-</div>
-
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+            {[1, 2, 3, 4].map((n) => (
+              <div key={n} className="group cursor-pointer animate-slideUp">
+                <img
+                  src={`/images/reviews/review${n}.png`}
+                  alt={`Отзыв ${n}`}
+                  className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02] hover:border-blue-300"
+                  onClick={() => openLightbox(`/images/reviews/review${n}.png`, n)}
+                />
+              </div>
+            ))}
+          </div>
 
           {/* Главное видео по центру */}
           <div className="text-center mb-8">
-            <div className="max-w-md mx-auto">
+            <div className="max-w-md mx-auto animate-slideUp">
               <div className="bg-white rounded-2xl border-2 border-blue-500 p-2 hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden">
                 <div className="relative bg-black rounded-xl">
                   <video 
                     className="w-full h-96 object-cover rounded-xl"
                     controls
                     poster="/images/video-poster.jpg"
+                    preload="metadata"
                   >
                     <source src="/videos/main-review.mp4" type="video/mp4" />
                     Ваш браузер не поддерживает видео.
@@ -492,7 +604,7 @@ export default function App() {
                 </div>
                 <div className="p-4">
                   <div className="text-lg font-bold text-blue-600 mb-2">
-                    🎥 Прогрев скриптов
+                    🎥 Как работают скрипты
                   </div>
                   <p className="text-gray-600">Как работают скрипты в реальности</p>
                 </div>
@@ -503,17 +615,18 @@ export default function App() {
           {/* Остальные видео-отзывы по бокам */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
             {[
-              { src: "/videos/review1.mp4", title: "Отзыв #1" },
-              { src: "/videos/review2.mp4", title: "Отзыв #2" },
-              { src: "/videos/review3.mp4", title: "Отзыв #3" },
-              { src: "/videos/review4.mp4", title: "Отзыв #4" }
+              { src: "/videos/review1.mp4", title: "Отзыв #1", poster: "/images/video-poster-1.jpg" },
+              { src: "/videos/review2.mp4", title: "Отзыв #2", poster: "/images/video-poster-2.jpg" },
+              { src: "/videos/review3.mp4", title: "Отзыв #3", poster: "/images/video-poster-3.jpg" },
+              { src: "/videos/review4.mp4", title: "Отзыв #4", poster: "/images/video-poster-4.jpg" }
             ].map((video, i) => (
-              <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden">
+              <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden animate-slideUp">
                 <div className="relative bg-black">
                   <video 
                     className="w-full h-48 object-cover"
                     controls
-                    poster={`/images/video-poster-${i + 1}.jpg`}
+                    poster={video.poster}
+                    preload="metadata"
                   >
                     <source src={video.src} type="video/mp4" />
                     Ваш браузер не поддерживает видео.
@@ -533,19 +646,19 @@ export default function App() {
       {/* ОФФЕР */}
       <section id="offer" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-slideUp">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
               Полная система со скидкой{" "}
               <span className="text-blue-600">70%</span>
             </h2>
             <p className="mt-2 text-sm text-gray-500">
-              Специальное предложение на этой неделе · Предложение действует
+              Специальное предложение на этой неделе • Предложение действует
               ограниченное время
             </p>
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105">
+            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-slideUp">
               {/* Декоративные элементы */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
@@ -593,7 +706,7 @@ export default function App() {
                   </a>
 
                   <div className="text-xs text-gray-300 mb-6">
-                    Без скрытых платежей · Пожизненный доступ · Обновления включены
+                    Без скрытых платежей • Пожизненный доступ • Обновления включены
                   </div>
 
                   {/* Что входит */}
@@ -643,7 +756,7 @@ export default function App() {
       {/* FAQ */}
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-slideUp">
             Частые вопросы
           </h2>
 
@@ -651,11 +764,11 @@ export default function App() {
             {[
               {
                 q: "Сработает в моей нише?",
-                a: "Да. База универсальная + блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
+                a: "Да. База универсальная плюс блоки под ногти/брови/ресницы/волосы/косметологию/перманент.",
               },
               {
                 q: "Не будет ли звучать «по-скриптовому»?",
-                a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму.",
+                a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное: следовать алгоритму.",
               },
               {
                 q: "Зачем это админам?",
@@ -663,12 +776,12 @@ export default function App() {
               },
               {
                 q: "Когда будут результаты?",
-                a: "Часто — в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
+                a: "Часто в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
               },
             ].map((f, i) => (
               <div
                 key={i}
-                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300"
+                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 animate-slideUp"
               >
                 <button
                   onClick={() => toggleFaq(i)}
@@ -682,7 +795,7 @@ export default function App() {
                     }`}>⌄</span>
                 </button>
                 {openFaq === i && (
-                  <div className="px-8 py-6 border-t border-gray-200">
+                  <div className="px-8 py-6 border-t border-gray-200 animate-slideUp">
                     <p className="text-gray-700 leading-relaxed">{f.a}</p>
                   </div>
                 )}
@@ -710,7 +823,7 @@ export default function App() {
           rel="noopener"
           className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-all hover:scale-105"
         >
-          Готовые скрипты — 19€ • Купить сейчас
+          Готовые скрипты: 19€ • Купить сейчас
         </a>
       </div>
     </div>
