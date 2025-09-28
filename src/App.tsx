@@ -466,7 +466,7 @@ export default function App() {
             {[review1, review2, review3, review4].map((reviewNum) => (
               <div key={reviewNum} className="group cursor-pointer">
                 <img
-                  src={`/images/reviews/review${reviewNum}.jpg`}
+                  src={`/images/reviews/review${reviewNum}.png`}
                   alt={`Отзыв ${reviewNum}`}
                   className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-105"
                 />
