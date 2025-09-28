@@ -23,11 +23,8 @@ function ReviewLightbox({ isOpen, onClose, imageSrc, reviewNumber }) {
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 animate-fadeIn" 
-      onClick={onClose}
-    >
-      <div className="max-w-2xl max-h-[90vh] relative animate-zoomIn" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="max-w-2xl max-h-[90vh] relative" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={onClose}
           className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300 transition-colors"
@@ -44,16 +41,15 @@ function ReviewLightbox({ isOpen, onClose, imageSrc, reviewNumber }) {
   );
 }
 
-// Hook для прогресс-бара
+// Hook для отслеживания скролла
 function useScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const updateProgress = () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = scrollTop / docHeight;
-      setProgress(progress * 100);
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const currentProgress = (window.scrollY / totalHeight) * 100;
+      setProgress(Math.min(100, Math.max(0, currentProgress)));
     };
 
     window.addEventListener('scroll', updateProgress);
@@ -65,7 +61,7 @@ function useScrollProgress() {
 
 export default function App() {
   const [openFaq, setOpenFaq] = useState(null);
-  const [viewersCount, setViewersCount] = useState(9);
+  const [viewersCount, setViewersCount] = useState(8);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImage, setLightboxImage] = useState("");
   const [lightboxReviewNumber, setLightboxReviewNumber] = useState(1);
@@ -78,7 +74,7 @@ export default function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       setViewersCount(prev => {
-        const change = Math.random() > 0.6 ? 1 : -1;
+        const change = Math.random() > 0.5 ? 1 : -1;
         const newCount = prev + change;
         return Math.max(4, Math.min(15, newCount));
       });
@@ -95,38 +91,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes zoomIn {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shimmer {
-          0% { background-position: -200px 0; }
-          100% { background-position: calc(200px + 100%) 0; }
-        }
-        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-        .animate-zoomIn { animation: zoomIn 0.3s ease-out; }
-        .animate-slideUp { animation: slideUp 0.6s ease-out; }
-        .animate-shimmer {
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200px 100%;
-          animation: shimmer 2s infinite;
-        }
-        .group:hover .group-hover\\:shimmer {
-          background: linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.3) 50%, transparent 75%);
-          background-size: 200px 100%;
-          animation: shimmer 1.5s infinite;
-        }
-      `}</style>
-
       {/* Lightbox */}
       <ReviewLightbox 
         isOpen={lightboxOpen}
@@ -139,20 +103,15 @@ export default function App() {
       <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
         <div 
           className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
-          style={{ width: `${Math.min(100, scrollProgress)}%` }}
+          style={{ width: `${scrollProgress}%` }}
         />
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+      <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-40 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
           <div className="flex items-center gap-4">
-            {/* Счетчик посетителей */}
-            <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-3 py-1.5 rounded-full hover:bg-green-100 transition-all duration-300 hover:scale-105">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="font-medium">{viewersCount} человек на сайте</span>
-            </div>
             <a
               href={STRIPE_URL}
               target="_blank"
@@ -171,7 +130,7 @@ export default function App() {
       <section className="pt-24 pb-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="animate-slideUp">
+            <div className="animate-fade-in">
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-gray-900 text-center lg:text-left">
                 Скрипты, которые превращают{" "}
                 <span className="text-blue-600 font-extrabold">сообщения в деньги</span>
@@ -207,16 +166,15 @@ export default function App() {
               </div>
             </div>
 
-            <div className="animate-slideUp">
+            <div className="animate-fade-in">
               <div className="relative group">
                 <div 
-                  className="w-full h-96 bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl transition-transform duration-500 group-hover:scale-105 relative overflow-hidden"
+                  className="w-full h-96 bg-cover bg-center bg-no-repeat rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-105 relative overflow-hidden"
                   style={{
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url('/images/hero.jpg')`
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-2xl group-hover:from-blue-600/20 group-hover:to-purple-600/20 transition-all duration-500" />
-                  <div className="absolute inset-0 group-hover:shimmer transition-all duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 rounded-2xl" />
                 </div>
                 <div className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-pulse">
                   <div className="text-2xl font-bold text-gray-900">19€</div>
@@ -231,7 +189,7 @@ export default function App() {
       {/* СРАВНЕНИЕ */}
       <section id="comparison" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-2 animate-slideUp">
+          <div className="text-center mb-2 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Как изменится ваша{" "}
               <span className="text-blue-600">работа с клиентами</span>
@@ -242,7 +200,7 @@ export default function App() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -268,7 +226,7 @@ export default function App() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,21 +258,21 @@ export default function App() {
       {/* ПОЧЕМУ ЭТО ВАЖНО */}
       <section id="why" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center animate-slideUp">
+          <div className="text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
             <p className="mt-3 text-gray-600">
-              Каждая потерянная заявка: это упущенная прибыль
+              Каждая потерянная заявка это упущенная прибыль
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <img
                 src="/images/money.png"
                 alt="Сливаются деньги"
-                className="mx-auto mb-6 w-16 h-16 object-contain hover:scale-110 transition-transform duration-300"
+                className="mx-auto mb-6 w-16 h-16 object-contain"
               />
               <h3 className="font-semibold text-lg">Сливаются деньги на рекламу</h3>
               <p className="mt-2 text-gray-600">
@@ -322,22 +280,22 @@ export default function App() {
                 <span className="text-red-800 font-semibold"> выброшенный бюджет</span>.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <img
                 src="/images/clock.png"
                 alt="Тратится время"
-                className="mx-auto mb-6 w-16 h-16 object-contain hover:scale-110 transition-transform duration-300"
+                className="mx-auto mb-6 w-16 h-16 object-contain"
               />
               <h3 className="font-semibold text-lg">Тратится время впустую</h3>
               <p className="mt-2 text-gray-600">
                 По 30–40 минут на переписку с каждым. Уходит <span className="text-red-800 font-semibold">3–4 часа в день</span>.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
               <img
                 src="/images/door.png"
                 alt="Уходят к конкуренту"
-                className="mx-auto mb-6 w-16 h-16 object-contain hover:scale-110 transition-transform duration-300"
+                className="mx-auto mb-6 w-16 h-16 object-contain"
               />
               <h3 className="font-semibold text-lg">Заявки уходят к конкуренту</h3>
               <p className="mt-2 text-gray-600">
@@ -351,7 +309,7 @@ export default function App() {
       {/* КОМУ ПОДХОДЯТ СКРИПТЫ */}
       <section id="for" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-slideUp">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -380,13 +338,13 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-slideUp"
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
               >
                 <div className="flex items-center gap-4">
                   <img
                     src={c.img}
                     alt=""
-                    className="w-12 h-12 object-contain hover:scale-110 transition-transform duration-300"
+                    className="w-12 h-12 object-contain"
                   />
                   <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
                 </div>
@@ -400,7 +358,7 @@ export default function App() {
       {/* ЧТО ВХОДИТ В СИСТЕМУ */}
       <section id="whats-included" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center animate-slideUp">
+          <div className="text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
@@ -448,11 +406,11 @@ export default function App() {
                 highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp">
+              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <img
                   src={item.img}
                   alt=""
-                  className="w-12 h-12 object-contain mb-6 hover:scale-110 transition-transform duration-300"
+                  className="w-12 h-12 object-contain mb-6"
                 />
                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                 <p className="mt-2 text-gray-600">
@@ -473,18 +431,14 @@ export default function App() {
       {/* БОНУСЫ */}
       <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-yellow-200/20 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-10 right-10 w-24 h-24 bg-pink-200/20 rounded-full animate-pulse"></div>
-        </div>
         <div className="max-w-6xl mx-auto px-6 relative">
-          <div className="text-center animate-slideUp">
+          <div className="text-center">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Бонусы при покупке{" "}
               <span className="text-2xl align-middle animate-bounce inline-block">🎁</span>
             </h2>
             <p className="mt-3 text-gray-600">
-              Суммарная ценность составляет 79€. Сегодня идут бесплатно со скриптами
+              Суммарная ценность 79€. Сегодня идут бесплатно со скриптами
             </p>
           </div>
 
@@ -493,31 +447,31 @@ export default function App() {
               {
                 image: "/images/bonus1.png",
                 title: "Гайд «Работа с клиентской базой»",
-                desc: "Повторные записи без рекламы. Возвращайте старых клиентов.",
+                desc: "Повторные записи без рекламы: возвращайте старых клиентов.",
                 old: "27€",
               },
               {
                 image: "/images/bonus2.png",
                 title: "Чек-лист «30+ источников клиентов»",
-                desc: "Платные и бесплатные способы. Где взять заявки уже сегодня.",
+                desc: "Платные и бесплатные способы: где взять заявки уже сегодня.",
                 old: "32€",
               },
               {
                 image: "/images/bonus3.png",
                 title: "Гайд «Продажи на консультации»",
-                desc: "5 этапов продаж. Мягкий апсейл дополнительных услуг.",
+                desc: "5 этапов продаж: мягкий апсейл дополнительных услуг.",
                 old: "20€",
               },
             ].map((b, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-slideUp group"
+                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group"
               >
                 <div className="mb-6">
                   <img
                     src={b.image}
                     alt={`Бонус ${i + 1}`}
-                    className="w-32 h-40 mx-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300 group-hover:animate-shimmer"
+                    className="w-32 h-40 mx-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300"
                   />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">{b.title}</h3>
@@ -539,7 +493,7 @@ export default function App() {
       {/* ЧТО ИЗМЕНИТСЯ СРАЗУ */}
       <section id="immediate" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-slideUp">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
             Что изменится сразу
           </h2>
 
@@ -548,11 +502,11 @@ export default function App() {
               "Перестанешь терять заявки из-за слабых ответов.",
               "Начнёшь закрывать больше записей уже с первого дня.",
               "Повысишь средний чек через правильные предложения.",
-              "Станешь увереннее. На всё есть готовый ответ.",
+              "Станешь увереннее: на всё есть готовый ответ.",
             ].map((t, i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slideUp"
+                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -569,14 +523,14 @@ export default function App() {
       {/* ОТЗЫВЫ */}
       <section id="reviews" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 animate-slideUp">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
             Отзывы клиентов
           </h2>
 
           {/* 4 фото-отзыва */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="group cursor-pointer animate-slideUp">
+              <div key={n} className="group cursor-pointer">
                 <img
                   src={`/images/reviews/review${n}.png`}
                   alt={`Отзыв ${n}`}
@@ -587,13 +541,41 @@ export default function App() {
             ))}
           </div>
 
-          {/* Главное видео по центру */}
-          <div className="text-center mb-8">
-            <div className="max-w-md mx-auto animate-slideUp">
+          {/* Новое расположение видео */}
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-8 max-w-6xl mx-auto">
+            {/* Левые видео */}
+            <div className="flex flex-col gap-4 w-full lg:w-1/4">
+              {[
+                { src: "/videos/review1.mp4", title: "Отзыв #1", poster: "/images/video-poster-1.jpg" },
+                { src: "/videos/review2.mp4", title: "Отзыв #2", poster: "/images/video-poster-2.jpg" }
+              ].map((video, i) => (
+                <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden">
+                  <div className="relative bg-black">
+                    <video 
+                      className="w-full h-32 object-cover"
+                      controls
+                      poster={video.poster}
+                      preload="metadata"
+                    >
+                      <source src={video.src} type="video/mp4" />
+                      Ваш браузер не поддерживает видео.
+                    </video>
+                  </div>
+                  <div className="p-3">
+                    <div className="text-sm font-medium text-gray-800">
+                      {video.title}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Главное видео по центру */}
+            <div className="w-full lg:w-1/2">
               <div className="bg-white rounded-2xl border-2 border-blue-500 p-2 hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden">
                 <div className="relative bg-black rounded-xl">
                   <video 
-                    className="w-full h-96 object-cover rounded-xl"
+                    className="w-full h-64 lg:h-80 object-cover rounded-xl"
                     controls
                     poster="/images/video-poster.jpg"
                     preload="metadata"
@@ -610,35 +592,33 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Остальные видео-отзывы по бокам */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {[
-              { src: "/videos/review1.mp4", title: "Отзыв #1", poster: "/images/video-poster-1.jpg" },
-              { src: "/videos/review2.mp4", title: "Отзыв #2", poster: "/images/video-poster-2.jpg" },
-              { src: "/videos/review3.mp4", title: "Отзыв #3", poster: "/images/video-poster-3.jpg" },
-              { src: "/videos/review4.mp4", title: "Отзыв #4", poster: "/images/video-poster-4.jpg" }
-            ].map((video, i) => (
-              <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden animate-slideUp">
-                <div className="relative bg-black">
-                  <video 
-                    className="w-full h-48 object-cover"
-                    controls
-                    poster={video.poster}
-                    preload="metadata"
-                  >
-                    <source src={video.src} type="video/mp4" />
-                    Ваш браузер не поддерживает видео.
-                  </video>
-                </div>
-                <div className="p-3">
-                  <div className="text-sm font-medium text-gray-800">
-                    {video.title}
+            {/* Правые видео */}
+            <div className="flex flex-col gap-4 w-full lg:w-1/4">
+              {[
+                { src: "/videos/review3.mp4", title: "Отзыв #3", poster: "/images/video-poster-3.jpg" },
+                { src: "/videos/review4.mp4", title: "Отзыв #4", poster: "/images/video-poster-4.jpg" }
+              ].map((video, i) => (
+                <div key={i} className="bg-white rounded-xl border hover:shadow-lg transition-all duration-300 hover:scale-105 overflow-hidden">
+                  <div className="relative bg-black">
+                    <video 
+                      className="w-full h-32 object-cover"
+                      controls
+                      poster={video.poster}
+                      preload="metadata"
+                    >
+                      <source src={video.src} type="video/mp4" />
+                      Ваш браузер не поддерживает видео.
+                    </video>
+                  </div>
+                  <div className="p-3">
+                    <div className="text-sm font-medium text-gray-800">
+                      {video.title}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -646,7 +626,7 @@ export default function App() {
       {/* ОФФЕР */}
       <section id="offer" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12 animate-slideUp">
+          <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
               Полная система со скидкой{" "}
               <span className="text-blue-600">70%</span>
@@ -658,7 +638,7 @@ export default function App() {
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-slideUp">
+            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105">
               {/* Декоративные элементы */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
@@ -756,7 +736,7 @@ export default function App() {
       {/* FAQ */}
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-slideUp">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900">
             Частые вопросы
           </h2>
 
@@ -781,7 +761,7 @@ export default function App() {
             ].map((f, i) => (
               <div
                 key={i}
-                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 animate-slideUp"
+                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300"
               >
                 <button
                   onClick={() => toggleFaq(i)}
@@ -795,7 +775,7 @@ export default function App() {
                     }`}>⌄</span>
                 </button>
                 {openFaq === i && (
-                  <div className="px-8 py-6 border-t border-gray-200 animate-slideUp">
+                  <div className="px-8 py-6 border-t border-gray-200">
                     <p className="text-gray-700 leading-relaxed">{f.a}</p>
                   </div>
                 )}
@@ -806,12 +786,14 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 bg-white border-t border-gray-200 text-center">
+      <footer className="py-12 bg-white border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-xl font-bold text-gray-900 mb-4">
-            Beauty Scripts
+          <div className="text-center">
+            <div className="text-xl font-bold text-gray-900 mb-4">
+              Beauty Scripts
+            </div>
+            <p className="text-gray-500">© {new Date().getFullYear()} Все права защищены</p>
           </div>
-          <p className="text-gray-500">© {new Date().getFullYear()} Все права защищены</p>
         </div>
       </footer>
 
@@ -823,9 +805,87 @@ export default function App() {
           rel="noopener"
           className="w-full bg-gray-900 text-white py-4 px-6 rounded-xl font-semibold text-center block hover:bg-gray-800 transition-all hover:scale-105"
         >
-          Готовые скрипты: 19€ • Купить сейчас
+          Готовые скрипты — 19€ • Купить сейчас
         </a>
+      </div>
+
+      {/* Динамический счетчик посетителей внизу страницы */}
+      <div className="fixed bottom-20 lg:bottom-6 right-6 z-40">
+        <div className="flex items-center gap-2 text-sm text-gray-600 bg-green-50 px-4 py-2 rounded-full shadow-lg hover:bg-green-100 transition-all duration-300 hover:scale-105 border border-green-200">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span className="font-medium">{viewersCount} человек на сайте</span>
+        </div>
       </div>
     </div>
   );
 }
+
+/* CSS для анимаций */
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+
+  /* Intersection Observer для анимаций при скролле */
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+  }
+
+  .scroll-animate.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hover эффекты */
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+
+  /* Анимация для бонусов */
+  @keyframes sparkle {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+  }
+
+  .bonus-sparkle:hover {
+    animation: sparkle 0.6s ease-in-out;
+  }
+`;
+document.head.appendChild(style);
+
+// Intersection Observer для анимаций при скролле
+useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  // Добавляем класс scroll-animate к элементам
+  const sections = document.querySelectorAll('section');
+  sections.forEach((section) => {
+    section.classList.add('scroll-animate');
+    observer.observe(section);
+  });
+
+  return () => observer.disconnect();
+}, []);
