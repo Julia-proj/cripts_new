@@ -154,10 +154,8 @@ export default function App() {
       {/* ===== HERO c фото-фоном и «синими» акцентами ===== */}
       <section
         className="relative min-h-[88vh] flex items-center"
-        style={{ backgroundImage: "url('/images/hero.jpg')", backgroundSize: "cover", backgroundPosition: "right center" }}
+        style={{ backgroundImage: "url('/images/hero3.jpg')", backgroundSize: "cover", backgroundPosition: "right center" }}
       >
-        {/* мягкий белый градиент слева для читабельности */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-transparent"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl">
