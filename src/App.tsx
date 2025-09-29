@@ -171,7 +171,7 @@ export default function App() {
       {/* ===== HERO: фото фоном, без осветления, акценты только синим в H1, подзаголовок без выделений ===== */}
       <section
         className="relative min-h-[88vh] flex items-center pt-24"
-        style={{ backgroundImage: "url('/images/hero.jpg')", backgroundSize: "cover", backgroundPosition: "right center" }}
+        style={{ backgroundImage: "url('/images/hero2.jpg')", backgroundSize: "cover", backgroundPosition: "right center" }}
       >
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
