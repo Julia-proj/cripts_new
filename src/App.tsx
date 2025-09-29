@@ -13,8 +13,6 @@ const INSTAGRAM_REELS: string[] = [
   "https://www.instagram.com/reel/DFX57cQobmS/"
 ];
 
-// ===== Вспомогательные компоненты =====
-
 // Простой таймер «ограниченного времени» (по умолчанию ~12 часов)
 function useCountdown(hours = 12) {
   const [end] = useState(() => Date.now() + hours * 3600 * 1000);
@@ -30,48 +28,40 @@ function useCountdown(hours = 12) {
   return { h, m, s, finished: total <= 0 };
 }
 
-// Маленькая цифра + короткая линия слева от блока (только на десктопе)
-function SectionMarker({ no, top = 0 }: { no: string; top?: number }) {
-  // Контейнер секции должен быть position: relative
+// Мелкая метка блока: цифра + тонкая линия (на десктопе слева)
+function SectionMarker({ n }: { n: string }) {
   return (
-    <div
-      className="hidden lg:flex items-center absolute -left-24 text-gray-400"
-      style={{ top }}
-      aria-hidden="true"
-    >
-      <span className="text-sm tracking-widest tabular-nums">{no}</span>
-      <span className="mx-2 h-px w-12 bg-gray-300 inline-block"></span>
+    <div className="hidden lg:block section-marker" aria-hidden="true">
+      <span className="marker-number">{n}</span>
+      <span className="marker-line" />
+      <style jsx>{`
+        .section-marker{
+          position:absolute; left:0; top:0.25rem;
+          transform: translateX(-48px);
+          display:flex; align-items:center; gap:10px;
+        }
+        .marker-number{
+          font-weight:700; font-size:12px; letter-spacing:.08em;
+          color:#64748b; /* slate-500 */
+        }
+        .marker-line{
+          display:inline-block; width:36px; height:1px; background:#e5e7eb; /* gray-200 */
+        }
+      `}</style>
     </div>
   );
 }
 
-// Лайтбокс для фото-отзывов
-function ReviewLightbox({
-  isOpen,
-  onClose,
-  imageSrc,
-  reviewNumber,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  imageSrc: string;
-  reviewNumber: number;
-}) {
+// Lightbox для отзывов (фото)
+function ReviewLightbox({ isOpen, onClose, imageSrc, reviewNumber }) {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 bg-black/75 flex items-center justify-center z-50 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="max-w-2xl max-h-[90vh] relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="max-w-2xl max-h-[90vh] relative" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={onClose}
           className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300 transition-colors"
-          aria-label="Закрыть"
         >
           ✕
         </button>
@@ -85,24 +75,24 @@ function ReviewLightbox({
   );
 }
 
-// Полоса прогресса скролла
+// Полоска прогресса прокрутки
 function ScrollProgress() {
   const [scrollProgress, setScrollProgress] = useState(0);
+
   useEffect(() => {
     const updateScrollProgress = () => {
       const scrollPx = document.documentElement.scrollTop;
-      const winHeightPx =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
+      const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (scrollPx / winHeightPx) * 100;
       setScrollProgress(scrolled);
     };
-    window.addEventListener("scroll", updateScrollProgress);
-    return () => window.removeEventListener("scroll", updateScrollProgress);
+    window.addEventListener('scroll', updateScrollProgress);
+    return () => window.removeEventListener('scroll', updateScrollProgress);
   }, []);
+
   return (
     <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
-      <div
+      <div 
         className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
         style={{ width: `${scrollProgress}%` }}
       />
@@ -120,10 +110,10 @@ export default function App() {
   const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
   const { h, m, s, finished } = useCountdown(12);
 
-  // Динамический счетчик посетителей (4–15 человек). Только для десктопа, но считать можно всегда.
+  // Динамический счетчик посетителей (4-15 человек) — только визуальный
   useEffect(() => {
     const interval = setInterval(() => {
-      setViewersCount((prev) => {
+      setViewersCount(prev => {
         const change = Math.random() > 0.5 ? 1 : -1;
         const newCount = prev + change;
         return Math.max(4, Math.min(15, newCount));
@@ -140,26 +130,30 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Scroll progress */}
+      {/* Lightbox */}
+      <ReviewLightbox 
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        imageSrc={lightboxImage}
+        reviewNumber={lightboxReviewNumber}
+      />
+
+      {/* Progress bar */}
       <ScrollProgress />
 
       {/* Floating online counter — только на десктопе, слева внизу */}
       <div className="fixed bottom-6 left-6 z-40 hidden lg:block">
-        <div className="flex items-center gap-2 text-sm text-gray-700 bg-white/90 backdrop-blur-md px-4 py-3 rounded-full shadow-lg border border-gray-200">
+        <div className="flex items-center gap-2 text-sm text-gray-600 bg-white/90 backdrop-blur-md px-4 py-3 rounded-full shadow-lg border border-gray-200">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           <span className="font-medium">{viewersCount} онлайн</span>
         </div>
       </div>
-
-      {/* Левый вертикальный «столбец» как визуальный ориентир (только десктоп) */}
-      <div className="hidden lg:block fixed left-8 top-24 bottom-24 w-px bg-gray-200 z-10" aria-hidden="true" />
 
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold text-gray-900">Beauty Scripts</div>
           <div className="flex items-center gap-4">
-            {/* Мобильный индикатор онлайн — УДАЛЁН по требованию (показывать только на компе) */}
             <a
               href={STRIPE_URL}
               target="_blank"
@@ -174,25 +168,18 @@ export default function App() {
         </div>
       </header>
 
-      {/* ===== HERO: фото фоном без осветляющей подложки, акценты только синим в заголовке ===== */}
+      {/* ===== HERO: фото фоном, без осветления, акценты только синим в H1, подзаголовок без выделений ===== */}
       <section
         className="relative min-h-[88vh] flex items-center pt-24"
-        style={{
-          backgroundImage: "url('/images/hero.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "right center",
-        }}
+        style={{ backgroundImage: "url('/images/hero.jpg')", backgroundSize: "cover", backgroundPosition: "right center" }}
       >
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl bg-white/0">
             <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
-              Скрипты, которые превращают{" "}
-              <span className="text-blue-600">сообщения в деньги</span>
+              Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
-            {/* Подзаголовок без выделений */}
             <p className="text-xl text-gray-800 mb-8 leading-relaxed">
-              Проверенная система общения с клиентами для бьюти-мастеров. Результат:
-              закрытые возражения, увеличенный средний чек, экономия времени.
+              Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени.
             </p>
             <div className="flex items-center gap-4">
               <a
@@ -212,9 +199,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 01: СРАВНЕНИЕ (начинаем нумерацию здесь) ====== */}
-      <section id="comparison" className="py-20 bg-gray-50 relative">
-        <SectionMarker no="01" top={0} />
+      {/* ===== 01 — СРАВНЕНИЕ ===== */}
+      <section id="comparison" className="relative py-20 bg-gray-50">
+        <SectionMarker n="01" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-2 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
@@ -281,73 +268,60 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 02: ПОЧЕМУ ЭТО ВАЖНО ====== */}
-      <section id="why" className="py-20 bg-white relative">
-        <SectionMarker no="02" top={0} />
+      {/* ===== 02 — ПОЧЕМУ ЭТО ВАЖНО ===== */}
+      <section id="why" className="relative py-20 bg-white">
+        <SectionMarker n="02" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
-            <p className="mt-3 text-gray-600">Каждая потерянная заявка — это упущенная прибыль</p>
+            <p className="mt-3 text-gray-600">
+              Каждая потерянная заявка — это упущенная прибыль
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            {[
-              {
-                img: "/images/money.png",
-                title: "Сливаются деньги на рекламу",
-                desc: (
-                  <>
-                    Платите за заявки, но конвертируете лишь 20–30%. Остальные:
-                    <span className="text-red-800 font-semibold"> выброшенный бюджет</span>.
-                  </>
-                ),
-              },
-              {
-                img: "/images/clock.png",
-                title: "Тратится время впустую",
-                desc: (
-                  <>
-                    По 30–40 минут на переписку с каждым. Уходит{" "}
-                    <span className="text-red-800 font-semibold">3–4 часа в день</span>.
-                  </>
-                ),
-              },
-              {
-                img: "/images/door.png",
-                title: "Заявки уходят к конкуренту",
-                desc: (
-                  <>
-                    Пока вы думаете, клиент записывается{" "}
-                    <span className="text-red-800 font-semibold">
-                      к тому, кто отвечает быстро и уверенно
-                    </span>
-                    .
-                  </>
-                ),
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in"
-              >
-                <img
-                  src={item.img}
-                  alt=""
-                  className="mx-auto mb-6 w-16 h-16 object-contain"
-                />
-                <h3 className="font-semibold text-lg">{item.title}</h3>
-                <p className="mt-2 text-gray-600">{item.desc}</p>
-              </div>
-            ))}
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+              <img
+                src="/images/money.png"
+                alt="Сливаются деньги"
+                className="mx-auto mb-6 w-16 h-16 object-contain"
+              />
+              <h3 className="font-semibold text-lg">Сливаются деньги на рекламу</h3>
+              <p className="mt-2 text-gray-600">
+                Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.
+              </p>
+            </div>
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+              <img
+                src="/images/clock.png"
+                alt="Тратится время"
+                className="mx-auto mb-6 w-16 h-16 object-contain"
+              />
+              <h3 className="font-semibold text-lg">Тратится время впустую</h3>
+              <p className="mt-2 text-gray-600">
+                По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
+              </p>
+            </div>
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+              <img
+                src="/images/door.png"
+                alt="Уходят к конкуренту"
+                className="mx-auto mb-6 w-16 h-16 object-contain"
+              />
+              <h3 className="font-semibold text-lg">Заявки уходят к конкуренту</h3>
+              <p className="mt-2 text-gray-600">
+                Пока вы думаете, клиент записывается к тем, кто отвечает быстро и уверенно.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ====== 03: КОМУ ПОДХОДЯТ СКРИПТЫ ====== */}
-      <section id="for" className="py-20 bg-gray-50 relative">
-        <SectionMarker no="03" top={0} />
+      {/* ===== 03 — КОМУ ПОДХОДИТ ===== */}
+      <section id="for" className="relative py-20 bg-gray-50">
+        <SectionMarker n="03" />
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             Кому подходят <span className="text-blue-600">скрипты</span>
@@ -381,7 +355,11 @@ export default function App() {
                 className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-slide-up"
               >
                 <div className="flex items-center gap-4">
-                  <img src={c.img} alt="" className="w-12 h-12 object-contain" />
+                  <img
+                    src={c.img}
+                    alt=""
+                    className="w-12 h-12 object-contain"
+                  />
                   <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
                 </div>
                 <p className="mt-4 text-gray-600">{c.text}</p>
@@ -391,9 +369,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 04: ЧТО ВХОДИТ ====== */}
-      <section id="whats-included" className="py-20 bg-white relative">
-        <SectionMarker no="04" top={0} />
+      {/* ===== 04 — ЧТО ВХОДИТ ===== */}
+      <section id="whats-included" className="relative py-20 bg-white">
+        <SectionMarker n="04" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
@@ -408,56 +386,50 @@ export default function App() {
                 img: "/images/xmind.png",
                 title: "Готовые диалоги",
                 desc: "Контакты до оплаты: приветствия, презентация ценности, запись. Всё пошагово.",
-                highlight: "презентация ценности",
+                highlight: "презентация ценности"
               },
               {
                 img: "/images/target.png",
                 title: "Закрытие возражений",
                 desc: "«Дорого», «Подумаю», «У другого дешевле». Мягкие ответы без давления.",
-                highlight: "мягкие ответы без давления",
+                highlight: "мягкие ответы без давления"
               },
               {
                 img: "/images/salons.png",
                 title: "Под каждую услугу",
                 desc: "Маникюр, брови, ресницы, косметология, массаж. Учтена специфика каждой ниши.",
-                highlight: "учтена специфика каждой ниши",
+                highlight: "учтена специфика каждой ниши"
               },
               {
                 img: "/images/bucle.png",
                 title: "Возврат клиентов",
                 desc: "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
-                highlight: "реактивации «спящей» базы без рекламы",
+                highlight: "реактивации «спящей» базы без рекламы"
               },
               {
                 img: "/images/phone.png",
                 title: "Гайд по внедрению",
                 desc: "Старт за один день: пошаговый план и стандарты для команды.",
-                highlight: "Старт за один день",
+                highlight: "Старт за один день"
               },
               {
                 img: "/images/rocket.png",
                 title: "Итог",
                 desc: "Больше записей, выше средний чек, меньше времени в переписке.",
-                highlight: "выше средний чек",
+                highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div
-                key={k}
-                className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in"
-              >
+              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
                 <img src={item.img} alt="" className="w-12 h-12 object-contain mb-6" />
                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                 <p className="mt-2 text-gray-600">
-                  {item.desc.split(item.highlight).map((part, index) =>
-                    index === 0 ? (
-                      part
-                    ) : (
-                      <React.Fragment key={index}>
-                        <span className="text-blue-600 font-semibold">{item.highlight}</span>
-                        {part}
-                      </React.Fragment>
-                    )
-                  )}
+                  {item.desc.split(item.highlight).map((part, index) => (
+                    index === 0 ? part : 
+                    <React.Fragment key={index}>
+                      <span className="text-blue-600 font-semibold">{item.highlight}</span>
+                      {part}
+                    </React.Fragment>
+                  ))}
                 </p>
               </div>
             ))}
@@ -465,9 +437,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 05: БОНУСЫ ====== */}
-      <section id="bonuses" className="py-20 bg-gray-50 relative overflow-hidden">
-        <SectionMarker no="05" top={0} />
+      {/* ===== 05 — БОНУСЫ ===== */}
+      <section id="bonuses" className="relative py-20 bg-gray-50 overflow-hidden">
+        <SectionMarker n="05" />
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center animate-fade-in">
@@ -479,35 +451,13 @@ export default function App() {
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
             {[
-              {
-                image: "/images/bonus1.png",
-                title: "Гайд «Работа с клиентской базой»",
-                desc: "Повторные записи без рекламы → возвращайте старых клиентов.",
-                old: "27€",
-              },
-              {
-                image: "/images/bonus2.png",
-                title: "Чек-лист «30+ источников клиентов»",
-                desc: "Платные и бесплатные способы → где взять заявки уже сегодня.",
-                old: "32€",
-              },
-              {
-                image: "/images/bonus3.png",
-                title: "Гайд «Продажи на консультации»",
-                desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.",
-                old: "20€",
-              },
+              { image: "/images/bonus1.png", title: "Гайд «Работа с клиентской базой»", desc: "Повторные записи без рекламы → возвращайте старых клиентов.", old: "27€" },
+              { image: "/images/bonus2.png", title: "Чек-лист «30+ источников клиентов»", desc: "Платные и бесплатные способы → где взять заявки уже сегодня.", old: "32€" },
+              { image: "/images/bonus3.png", title: "Гайд «Продажи на консультации»", desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.", old: "20€" },
             ].map((b, i) => (
-              <div
-                key={i}
-                className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-zoom-in sparkle-effect"
-              >
+              <div key={i} className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-zoom-in">
                 <div className="mb-6">
-                  <img
-                    src={b.image}
-                    alt={`Бонус ${i + 1}`}
-                    className="w-32 h-40 mx-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300"
-                  />
+                  <img src={b.image} alt={`Бонус ${i + 1}`} className="w-32 h-40 mx-auto object-cover rounded-lg" />
                 </div>
                 <h3 className="text-lg font-bold text-gray-900">{b.title}</h3>
                 <p className="mt-2 text-gray-600">{b.desc}</p>
@@ -521,9 +471,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 06: ЧТО ИЗМЕНИТСЯ СРАЗУ ====== */}
-      <section id="immediate" className="py-20 bg-white relative">
-        <SectionMarker no="06" top={0} />
+      {/* ===== 06 — ЧТО ИЗМЕНИТСЯ СРАЗУ ===== */}
+      <section id="immediate" className="relative py-20 bg-white">
+        <SectionMarker n="06" />
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
             <span className="text-blue-600">Что изменится сразу</span>
@@ -536,10 +486,7 @@ export default function App() {
               "Повысишь средний чек через правильные предложения.",
               "Станешь увереннее — на всё есть готовый ответ.",
             ].map((t, i) => (
-              <div
-                key={i}
-                className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-in-left"
-              >
+              <div key={i} className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-in-left">
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -552,15 +499,15 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 07: ОТЗЫВЫ (фото + Instagram embeds компактно, без растяжений) ====== */}
-      <section id="reviews" className="py-20 bg-gray-50 relative">
-        <SectionMarker no="07" top={0} />
+      {/* ===== 07 — ОТЗЫВЫ (фото + Reels Instagram) ===== */}
+      <section id="reviews" className="relative py-20 bg-gray-50">
+        <SectionMarker n="07" />
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 animate-fade-in">
             Отзывы клиентов
           </h2>
 
-          {/* 4 фото-отзыва */}
+          {/* 4 фото-отзыва (кликабельно в лайтбокс) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {[1, 2, 3, 4].map((n) => (
               <div key={n} className="group cursor-pointer animate-zoom-in">
@@ -574,7 +521,7 @@ export default function App() {
             ))}
           </div>
 
-          {/* Рилсы из инсты: узкие 9:16, без растягивания */}
+          {/* Reels Instagram: узкие, 9:16, без растяжения */}
           <div className="flex gap-4 justify-center items-start mb-8 overflow-x-auto pb-2 reels-row">
             {INSTAGRAM_REELS.map((url) => (
               <div key={url} className="flex-shrink-0">
@@ -585,9 +532,9 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 08: ОФФЕР ====== */}
-      <section id="offer" className="py-20 bg-white relative">
-        <SectionMarker no="08" top={0} />
+      {/* ===== 08 — ОФФЕР ===== */}
+      <section id="offer" className="relative py-20 bg-white">
+        <SectionMarker n="08" />
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
@@ -603,10 +550,13 @@ export default function App() {
               {/* Декор */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
-
+              
               <div className="relative z-10">
                 <div className="text-center">
-                  <div className="text-sm uppercase tracking-wide text-gray-300 mb-3">Полный доступ</div>
+                  <div className="text-sm uppercase tracking-wide text-gray-300 mb-3">
+                    Полный доступ
+                  </div>
+                  
                   <div className="flex items-center justify-center gap-4 mb-6">
                     <span className="text-gray-400 line-through text-2xl">67€</span>
                     <span className="text-5xl font-extrabold text-white">19€</span>
@@ -620,7 +570,9 @@ export default function App() {
                         <>
                           <span className="text-white text-sm font-medium">До конца:</span>
                           <span className="font-bold tabular-nums text-white">
-                            {String(h).padStart(2, "0")}:{String(m).padStart(2, "0")}:{String(s).padStart(2, "0")}
+                            {String(h).padStart(2, "0")}:
+                            {String(m).padStart(2, "0")}:
+                            {String(s).padStart(2, "0")}
                           </span>
                         </>
                       ) : (
@@ -679,42 +631,28 @@ export default function App() {
         </div>
       </section>
 
-      {/* ====== 09: FAQ ====== */}
-      <section id="faq" className="py-20 bg-white relative">
-        <SectionMarker no="09" top={0} />
+      {/* ===== 09 — FAQ ===== */}
+      <section id="faq" className="relative py-20 bg-white">
+        <SectionMarker n="09" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">Частые вопросы</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
+            Частые вопросы
+          </h2>
+
           <div className="space-y-4 mt-12">
             {[
-              {
-                q: "Сработает в моей нише?",
-                a: "Да. База универсальная и блоки под ногти/бровы/ресницы/волосы/косметологию/перманент.",
-              },
-              {
-                q: "Не будет ли звучать «по-скриптовому»?",
-                a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное: следовать алгоритму.",
-              },
-              {
-                q: "Зачем это админам?",
-                a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее.",
-              },
-              {
-                q: "Когда будут результаты?",
-                a: "Часто в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи.",
-              },
+              { q: "Сработает в моей нише?", a: "Да. База универсальная и блоки под ногти/бровы/ресницы/волосы/косметологию/перманент." },
+              { q: "Не будет ли звучать «по-скриптовому»?", a: "Нет. Формулировки живые, адаптируешь под свой тон. Главное — следовать алгоритму." },
+              { q: "Зачем это админам?", a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее." },
+              { q: "Когда будут результаты?", a: "Часто в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи." },
             ].map((f, i) => (
-              <div
-                key={i}
-                className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 animate-slide-up"
-              >
+              <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 animate-slide-up">
                 <button
                   onClick={() => toggleFaq(i)}
                   className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-colors"
                 >
                   <span className="font-semibold text-lg text-gray-900">{f.q}</span>
-                  <span className={`w-5 h-5 text-gray-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`}>
-                    ⌄
-                  </span>
+                  <span className={`w-5 h-5 text-gray-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`}>⌄</span>
                 </button>
                 {openFaq === i && (
                   <div className="px-8 py-6 border-t border-gray-200">
@@ -726,14 +664,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      {/* Лайтбокс (ниже всего, чтобы перекрывал) */}
-      <ReviewLightbox
-        isOpen={lightboxOpen}
-        onClose={() => setLightboxOpen(false)}
-        imageSrc={lightboxImage}
-        reviewNumber={lightboxReviewNumber}
-      />
 
       {/* Footer */}
       <footer className="py-12 bg-white border-t border-gray-200 text-center">
@@ -755,46 +685,18 @@ export default function App() {
         </a>
       </div>
 
-      {/* CSS для анимаций и горизонтального снэпа */}
+      {/* CSS: анимации, горизонтальный snap для reels */}
       <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slide-in-left {
-          from { opacity: 0; transform: translateX(-30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slide-in-right {
-          from { opacity: 0; transform: translateX(30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes slide-up {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes zoom-in {
-          from { opacity: 0; transform: scale(0.9); }
-          to { opacity: 1; transform: scale(1); }
-        }
+        @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slide-in-left { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slide-in-right { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoom-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         .animate-fade-in { animation: fade-in 0.8s ease-out; }
         .animate-slide-in-left { animation: slide-in-left 0.8s ease-out; }
         .animate-slide-in-right { animation: slide-in-right 0.8s ease-out; }
         .animate-slide-up { animation: slide-up 0.6s ease-out; }
         .animate-zoom-in { animation: zoom-in 0.6s ease-out; }
-        .sparkle-effect { position: relative; overflow: hidden; }
-        .sparkle-effect::before {
-          content: '';
-          position: absolute; top: -50%; left: -50%;
-          width: 200%; height: 200%;
-          background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-          animation: sparkle 3s infinite; pointer-events: none;
-        }
-        @keyframes sparkle {
-          0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-          50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-          100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-        }
         .reels-row { scroll-snap-type: x mandatory; }
         .reels-row > * { scroll-snap-align: center; }
       `}</style>
