@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import InstaEmbed from "./components/InstaEmbed";
 
 // TODO: вставь свою ссылку Stripe
-const STRIPE_URL = "https://buy.stripe.com/...";
+const STRIPE_URL = "https://buy.stripe.com/5kQdRb8cbglMf7E7dSdQQ00";
 
 /** публичные рилсы; важен завершающий слэш, без utm */
 const INSTAGRAM_REELS: string[] = [
@@ -100,45 +100,37 @@ function ScrollProgress() {
   );
 }
 
-// Заголовки с «открывающейся» анимацией
-function useRevealTitles() {
-  const ref = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const root = ref.current ?? document;
-    const targets = Array.from(root.querySelectorAll<HTMLElement>(".reveal-title"));
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("reveal-active");
-          }
-        });
-      },
-      { threshold: 0.4 }
-    );
-    targets.forEach(t => io.observe(t));
-    return () => io.disconnect();
-  }, []);
-  return ref;
-}
+/** Хелпер: безопасная подсветка ключевых фраз внутри описаний */
+function HighlightedDesc({
+  text,
+  primaryHighlight,
+  extraPhrases = []
+}: { text: string; primaryHighlight?: string; extraPhrases?: string[]; }) {
+  // Экранируем HTML
+  const escapeHtml = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-// Подсветка ключевых фраз внутри текста
-function HighlightedText({ text, terms }: { text: string; terms: string[] }) {
-  // Экранируем спецсимволы RegExp
-  const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const pattern = new RegExp(`(${terms.map(esc).join("|")})`, "gi");
-  const parts = text.split(pattern);
-  return (
-    <>
-      {parts.map((part, i) =>
-        terms.some(t => t.toLowerCase() === part.toLowerCase()) ? (
-          <span key={i} className="text-blue-600 font-semibold">{part}</span>
-        ) : (
-          <React.Fragment key={i}>{part}</React.Fragment>
-        )
-      )}
-    </>
-  );
+  let html = escapeHtml(text);
+
+  // Основной хайлайт (как раньше)
+  if (primaryHighlight) {
+    const ph = escapeHtml(primaryHighlight);
+    html = html.replace(
+      new RegExp(ph.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      `<span class="text-blue-600 font-semibold">${ph}</span>`
+    );
+  }
+
+  // Доп. фразы: «без давления», «каждой ниши»
+  for (const phrase of extraPhrases) {
+    const p = escapeHtml(phrase);
+    html = html.replace(
+      new RegExp(p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"),
+      `<span class="text-blue-600 font-semibold">${p}</span>`
+    );
+  }
+
+  return <span dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 export default function App() {
@@ -150,7 +142,6 @@ export default function App() {
 
   const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
   const { h, m, s, finished } = useCountdown(12);
-  const titlesRootRef = useRevealTitles();
 
   // Динамический счетчик посетителей (4-15 человек) — только визуальный
   useEffect(() => {
@@ -171,7 +162,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white" ref={titlesRootRef}>
+    <div className="min-h-screen bg-white">
       {/* Lightbox */}
       <ReviewLightbox 
         isOpen={lightboxOpen}
@@ -210,23 +201,21 @@ export default function App() {
         </div>
       </header>
 
-      {/* ===== HERO ===== */}
+      {/* ===== HERO: фото фоном с адаптацией ===== */}
       <section
-        className="hero relative min-h-[88vh] flex items-center pt-24"
+        className="relative min-h-[88vh] flex items-center pt-24 hero-bg"
       >
-        {/* лёгкий градиент слева для читаемости на мобилке */}
-        <div className="absolute inset-0 pointer-events-none lg:hidden"
-          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.65) 35%, rgba(255,255,255,0.15) 65%, rgba(255,255,255,0) 100%)" }}
-        />
+        {/* лёгкая подложка под текст только на мобиле, чтобы не «синить» фото */}
+        <div className="absolute inset-0 lg:hidden bg-gradient-to-b from-white/70 via-white/40 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
-            <h1 className="reveal-title text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900" style={{ animationDelay: "80ms" }}>
+            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900 reveal-up" style={{animationDelay:"80ms"}}>
               Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
-            <p className="reveal-title text-xl text-gray-800 mb-8 leading-relaxed" style={{ animationDelay: "160ms" }}>
+            <p className="text-xl text-gray-800 mb-8 leading-relaxed reveal-up" style={{animationDelay:"160ms"}}>
               Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени.
             </p>
-            <div className="flex items-center gap-4 reveal-title" style={{ animationDelay: "240ms" }}>
+            <div className="flex items-center gap-4 reveal-up" style={{animationDelay:"240ms"}}>
               <a
                 href={STRIPE_URL}
                 target="_blank"
@@ -244,17 +233,14 @@ export default function App() {
         </div>
 
         <style jsx>{`
-          .hero{
-            background-image: url('/images/hero5.jpg');
-            background-repeat: no-repeat;
+          .hero-bg{
+            background-image: url('/images/IMG_6243.png');
             background-size: cover;
-            background-position: right center;
+            background-position: center; /* мобайл — центр */
           }
-          @media (max-width: 640px){
-            .hero{
-              /* Чуть ближе к центру и увеличенный zoom, чтобы лицо не резалось */
-              background-position: center center;
-              background-size: cover;
+          @media (min-width: 1024px){
+            .hero-bg{
+              background-position: right center; /* десктоп — как просили */
             }
           }
         `}</style>
@@ -265,16 +251,16 @@ export default function App() {
         <SectionMarker n="01" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-2">
-            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               Как изменится ваша <span className="text-blue-600">работа с клиентами</span>
             </h2>
-            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>
               Сравните результаты до и после внедрения скриптов
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-in-left">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,7 +286,7 @@ export default function App() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-in-right">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"120ms"}}>
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,16 +320,16 @@ export default function App() {
         <SectionMarker n="02" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
-            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>
               Каждая потерянная заявка — это упущенная прибыль
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up">
               <img
                 src="/images/money.png"
                 alt="Сливаются деньги"
@@ -354,7 +340,7 @@ export default function App() {
                 Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"120ms"}}>
               <img
                 src="/images/clock.png"
                 alt="Тратится время"
@@ -365,7 +351,7 @@ export default function App() {
                 По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"200ms"}}>
               <img
                 src="/images/door.png"
                 alt="Уходят к конкуренту"
@@ -384,7 +370,7 @@ export default function App() {
       <section id="for" className="relative py-20 bg-gray-50">
         <SectionMarker n="03" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900" style={{ animationDelay: "60ms" }}>
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -413,7 +399,8 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-slide-up"
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 reveal-up"
+                style={{animationDelay: `${i*80}ms`}}
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -435,10 +422,10 @@ export default function App() {
         <SectionMarker n="04" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
-            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>Полный набор инструментов для увеличения продаж</p>
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Полный набор инструментов для увеличения продаж</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
@@ -447,44 +434,48 @@ export default function App() {
                 img: "/images/xmind.png",
                 title: "Готовые диалоги",
                 desc: "Контакты до оплаты: приветствия, презентация ценности, запись. Всё пошагово.",
-                terms: ["презентация ценности"]
+                highlight: "презентация ценности"
               },
               {
                 img: "/images/target.png",
                 title: "Закрытие возражений",
                 desc: "«Дорого», «Подумаю», «У другого дешевле». Мягкие ответы без давления.",
-                terms: ["без давления"]
+                highlight: "мягкие ответы без давления"
               },
               {
                 img: "/images/salons.png",
                 title: "Под каждую услугу",
                 desc: "Маникюр, брови, ресницы, косметология, массаж. Учтена специфика каждой ниши.",
-                terms: ["каждой ниши"]
+                highlight: "учтена специфика каждой ниши"
               },
               {
                 img: "/images/bucle.png",
                 title: "Возврат клиентов",
                 desc: "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
-                terms: ["без рекламы"]
+                highlight: "реактивации «спящей» базы без рекламы"
               },
               {
                 img: "/images/phone.png",
                 title: "Гайд по внедрению",
                 desc: "Старт за один день: пошаговый план и стандарты для команды.",
-                terms: ["Старт за один день"]
+                highlight: "Старт за один день"
               },
               {
                 img: "/images/rocket.png",
                 title: "Итог",
                 desc: "Больше записей, выше средний чек, меньше времени в переписке.",
-                terms: ["выше средний чек"]
+                highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
+              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:`${k*80}ms`}}>
                 <img src={item.img} alt="" className="w-12 h-12 object-contain mb-6" />
                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                 <p className="mt-2 text-gray-600">
-                  <HighlightedText text={item.desc} terms={item.terms} />
+                  <HighlightedDesc
+                    text={item.desc}
+                    primaryHighlight={item.highlight}
+                    extraPhrases={["без давления", "каждой ниши"]}
+                  />
                 </p>
               </div>
             ))}
@@ -498,12 +489,10 @@ export default function App() {
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center">
-            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               <span className="text-blue-600">Бонусы</span> при покупке <span className="text-2xl align-middle">🎁</span>
             </h2>
-            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>
-              Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами
-            </p>
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
@@ -512,7 +501,7 @@ export default function App() {
               { image: "/images/bonus2.png", title: "Чек-лист «30+ источников клиентов»", desc: "Платные и бесплатные способы → где взять заявки уже сегодня.", old: "32€" },
               { image: "/images/bonus3.png", title: "Гайд «Продажи на консультации»", desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.", old: "20€" },
             ].map((b, i) => (
-              <div key={i} className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 animate-zoom-in">
+              <div key={i} className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 reveal-up" style={{animationDelay:`${i*100}ms`}}>
                 <div className="mb-6">
                   <img src={b.image} alt={`Бонус ${i + 1}`} className="w-32 h-40 mx-auto object-cover rounded-lg" />
                 </div>
@@ -532,7 +521,7 @@ export default function App() {
       <section id="immediate" className="relative py-20 bg-white">
         <SectionMarker n="06" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900" style={{ animationDelay: "60ms" }}>
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
             <span className="text-blue-600">Что изменится сразу</span>
           </h2>
 
@@ -543,7 +532,7 @@ export default function App() {
               "Повысишь средний чек через правильные предложения.",
               "Станешь увереннее — на всё есть готовый ответ.",
             ].map((t, i) => (
-              <div key={i} className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-slide-in-left">
+              <div key={i} className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:`${i*80}ms`}}>
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -556,39 +545,32 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== 07 — ОТЗЫВЫ ===== */}
+      {/* ===== 07 — ОТЗЫВЫ (фото + Reels Instagram) ===== */}
       <section id="reviews" className="relative py-20 bg-gray-50">
         <SectionMarker n="07" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12" style={{ animationDelay: "60ms" }}>
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 reveal-up">
             Отзывы клиентов
           </h2>
 
           {/* 4 фото-отзыва (кликабельно в лайтбокс) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             {[1, 2, 3, 4].map((n) => (
-              <button
-                key={n}
-                className="group cursor-pointer animate-zoom-in rounded-2xl overflow-hidden border hover:shadow-xl transition-all duration-300 focus:outline-none"
-                onClick={() => openLightbox(`/images/reviews/review${n}.png`, n)}
-                aria-label={`Открыть отзыв ${n}`}
-              >
+              <div key={n} className="group cursor-pointer reveal-up" style={{animationDelay:`${n*60}ms`}}>
                 <img
                   src={`/images/reviews/review${n}.png`}
                   alt={`Отзыв ${n}`}
-                  className="w-full h-64 object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                  className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02] hover:border-blue-300"
+                  onClick={() => openLightbox(`/images/reviews/review${n}.png`, n)}
                 />
-              </button>
+              </div>
             ))}
           </div>
 
-          {/* Reels Instagram: компактные, 9:16, без растяжения */}
-          <div className="flex gap-4 justify-center items-start mb-8 overflow-x-auto pb-2 reels-row">
+          {/* Reels Instagram: карточки 9:16, без растяжения */}
+          <div className="flex gap-3 justify-center items-start mb-8 overflow-x-auto pb-2 reels-row">
             {INSTAGRAM_REELS.map((url) => (
-              <div
-                key={url}
-                className="flex-shrink-0 w-[240px] sm:w-[260px] aspect-[9/16] rounded-xl overflow-hidden border bg-black/5"
-              >
+              <div key={url} className="reel-card rounded-xl overflow-hidden border shadow-sm flex-shrink-0">
                 <InstaEmbed url={url} maxWidth={260} />
               </div>
             ))}
@@ -601,16 +583,16 @@ export default function App() {
         <SectionMarker n="08" />
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="reveal-title text-3xl lg:text-4xl font-extrabold text-gray-900" style={{ animationDelay: "60ms" }}>
+            <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900 reveal-up">
               Полная система со скидкой <span className="text-blue-600">70%</span>
             </h2>
-            <p className="reveal-title mt-2 text-sm text-gray-500" style={{ animationDelay: "140ms" }}>
+            <p className="mt-2 text-sm text-gray-500 reveal-up" style={{animationDelay:"120ms"}}>
               Специальное предложение на этой неделе • Предложение действует ограниченное время
             </p>
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 animate-zoom-in">
+            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 reveal-up">
               {/* Декор */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
@@ -699,7 +681,7 @@ export default function App() {
       <section id="faq" className="relative py-20 bg-white">
         <SectionMarker n="09" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900" style={{ animationDelay: "60ms" }}>
+          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
             Частые вопросы
           </h2>
 
@@ -710,7 +692,7 @@ export default function App() {
               { q: "Зачем это админам?", a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее." },
               { q: "Когда будут результаты?", a: "Часто в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи." },
             ].map((f, i) => (
-              <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 animate-slide-up">
+              <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 reveal-up" style={{animationDelay:`${i*80}ms`}}>
                 <button
                   onClick={() => toggleFaq(i)}
                   className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-colors"
@@ -749,34 +731,35 @@ export default function App() {
         </a>
       </div>
 
-      {/* CSS: анимации, заголовки, reels */}
+      {/* CSS: анимации, snap и Reels-карточки */}
       <style jsx>{`
-        /* базовые анимации карточек */
         @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slide-in-left { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slide-in-right { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoom-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .animate-fade-in { animation: fade-in 0.8s ease-out; }
-        .animate-slide-in-left { animation: slide-in-left 0.8s ease-out; }
-        .animate-slide-in-right { animation: slide-in-right 0.8s ease-out; }
-        .animate-slide-up { animation: slide-up 0.6s ease-out; }
-        .animate-zoom-in { animation: zoom-in 0.6s ease-out; }
 
-        /* заголовки с «открывающейся» маской */
-        @keyframes title-reveal {
-          0% { opacity: 0; transform: translateY(10px); clip-path: inset(0 100% 0 0); }
-          60% { opacity: 1; transform: translateY(0); }
-          100% { clip-path: inset(0 0 0 0); }
-        }
-        .reveal-title { opacity: 0; }
-        .reveal-active { 
-          animation: title-reveal 900ms cubic-bezier(.2,.8,.2,1) forwards;
+        /* Мягкая последовательная подача как у kate/mila */
+        .reveal-up { 
+          opacity: 0; 
+          animation: fade-in 0.8s ease-out forwards;
         }
 
-        /* горизонтальный snap для reels */
         .reels-row { scroll-snap-type: x mandatory; }
         .reels-row > * { scroll-snap-align: center; }
+
+        /* Современные компактные карточки для Reels без растягивания */
+        .reel-card {
+          width: 180px; aspect-ratio: 9 / 16;
+        }
+        @media (min-width: 640px){ .reel-card { width: 220px; } }
+        @media (min-width: 1024px){ .reel-card { width: 260px; } }
+        .reel-card :global(iframe), 
+        .reel-card :global(img), 
+        .reel-card :global(video) {
+          width: 100% !important; height: 100% !important; display:block;
+          object-fit: cover;
+        }
       `}</style>
     </div>
   );
