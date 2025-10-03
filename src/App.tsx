@@ -235,30 +235,32 @@ export default function App() {
             <h1 className="js-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
               Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
-            {/* Подзаголовок с результатами выделен отдельно */}
-            <div className="result-subtitle mb-6">
-              <p className="text-lg lg:text-xl text-gray-800 font-semibold leading-relaxed">
-               Проверенная система общения с клиентами для бьюти-мастеров 
-            </div>
-            <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-              Результат: закрытые возражения, увеличенный средний чек, экономия времени
-            </p>
-            <div className="flex items-center gap-4">
-              <a
-                href={STRIPE_URL}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center gap-3 px-7 py-4 bg-gray-900 text-white rounded-xl text-lg font-semibold hover:bg-gray-800 transition-all hover:-translate-y-0.5 hover:shadow-xl"
-              >
-                Купить <span className="inline-block ml-1">→</span>
-              </a>
-              <div className="hidden sm:flex items-center gap-2 text-sm">
-                <span className="px-2 py-1 bg-black text-white rounded">Apple Pay</span>
-                <span className="px-2 py-1 bg-blue-600 text-white rounded">Google Pay</span>
-              </div>
-            </div>
-          </div>
-        </div>
+ {/* Подзаголовок с результатами выделен отдельно */}
+<div className="result-subtitle mb-6">
+  <p className="text-lg lg:text-xl text-gray-800 font-semibold leading-relaxed">
+    Проверенная система общения с клиентами для бьюти-мастеров
+  </p>
+</div>
+
+<p className="text-lg text-gray-700 mb-8 leading-relaxed">
+  Результат: закрытые возражения, увеличенный средний чек, экономия времени
+</p>
+
+<div className="flex items-center gap-4">
+  <a
+    href={STRIPE_URL}
+    target="_blank"
+    rel="noopener"
+    className="inline-flex items-center gap-3 px-7 py-4 bg-gray-900 text-white rounded-xl text-lg font-medium hover:bg-gray-800 transition"
+  >
+    Купить <span className="inline-block ml-1">💳</span>
+  </a>
+
+  <div className="hidden sm:flex items-center gap-2 text-sm">
+    <span className="px-2 py-1 bg-black text-white rounded">Apple Pay</span>
+    <span className="px-2 py-1 bg-blue-600 text-white rounded">Google Pay</span>
+  </div>
+</div>
 
         <style jsx>{`
           .hero-bg{
