@@ -238,11 +238,10 @@ export default function App() {
             {/* Подзаголовок с результатами выделен отдельно */}
             <div className="result-subtitle mb-6">
               <p className="text-lg lg:text-xl text-gray-800 font-semibold leading-relaxed">
-                Результат: закрытые возражения, увеличенный средний чек, экономия времени
-              </p>
+               Проверенная система общения с клиентами для бьюти-мастеров 
             </div>
             <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-              Проверенная система общения с клиентами для бьюти-мастеров
+              Результат: закрытые возражения, увеличенный средний чек, экономия времени
             </p>
             <div className="flex items-center gap-4">
               <a
