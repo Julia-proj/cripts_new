@@ -41,11 +41,12 @@ function SectionMarker({ n }: { n: string }) {
           display:flex; align-items:center; gap:10px;
         }
         .marker-number{
-          font-weight:700; font-size:12px; letter-spacing:.08em;
-          color:#64748b; /* slate-500 */
+          font-weight:700; font-size:11px; letter-spacing:.12em;
+          color: rgba(148, 163, 184, 0.6);
         }
         .marker-line{
-          display:inline-block; width:36px; height:1px; background:#e5e7eb; /* gray-200 */
+          display:inline-block; width:32px; height:1px;
+          background: linear-gradient(90deg, rgba(203, 213, 225, 0.5) 0%, transparent 100%);
         }
       `}</style>
     </div>
@@ -188,6 +189,14 @@ export default function App() {
       {/* Progress bar */}
       <ScrollProgress />
 
+      <style jsx global>{`
+        @media (max-width: 1023px) {
+          .result-subtitle::before {
+            width: 50px;
+          }
+        }
+      `}</style>
+
       {/* Floating online counter — только на десктопе, слева внизу */}
       <div className="fixed bottom-6 left-6 z-40 hidden lg:block">
         <div className="flex items-center gap-2 text-sm text-gray-600 bg-white/90 backdrop-blur-md px-4 py-3 rounded-full shadow-lg border border-gray-200">
@@ -219,15 +228,21 @@ export default function App() {
       <section
         className="relative min-h-[88vh] flex items-center pt-24 hero-bg"
       >
-        {/* лёгкая подложка под текст только на мобиле, чтобы не «синить» фото */}
-        <div className="absolute inset-0 lg:hidden bg-gradient-to-b from-white/70 via-white/40 to-transparent pointer-events-none" />
+        {/* Затемнение фона 20-25% для лучшей читаемости */}
+        <div className="absolute inset-0 bg-black/20 pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
-            <h1 className="js-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
-              Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
+            <h1 className="js-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-white drop-shadow-lg">
+              Скрипты, которые превращают <span className="text-blue-400">сообщения в деньги</span>
             </h1>
-            <p className="text-xl text-gray-800 mb-8 leading-relaxed">
-              Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени.
+            {/* Подзаголовок с результатами выделен отдельно */}
+            <div className="result-subtitle mb-6">
+              <p className="text-lg lg:text-xl text-white/95 font-semibold leading-relaxed drop-shadow-md">
+                Результат: закрытые возражения, увеличенный средний чек, экономия времени
+              </p>
+            </div>
+            <p className="text-lg text-white/90 mb-8 leading-relaxed drop-shadow-md">
+              Проверенная система общения с клиентами для бьюти-мастеров
             </p>
             <div className="flex items-center gap-4">
               <a
@@ -250,12 +265,26 @@ export default function App() {
           .hero-bg{
             background-image: url('/images/IMG_6243.png');
             background-size: cover;
-            background-position: center; /* мобайл — центр */
+            background-position: center top;
           }
           @media (min-width: 1024px){
             .hero-bg{
-              background-position: right center; /* десктоп — как просили */
+              background-position: 75% 35%;
             }
+          }
+          .result-subtitle {
+            position: relative;
+            padding-top: 12px;
+            margin-top: 8px;
+          }
+          .result-subtitle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(147, 197, 253, 0.8) 0%, transparent 100%);
           }
         `}</style>
       </section>
@@ -342,37 +371,37 @@ export default function App() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up">
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
+            <div className="rounded-2xl border p-6 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up">
               <img
                 src="/images/money.png"
                 alt="Сливаются деньги"
                 className="mx-auto mb-6 w-16 h-16 object-contain"
               />
-              <h3 className="font-semibold text-lg">Сливаются деньги на рекламу</h3>
-              <p className="mt-2 text-gray-600">
+              <h3 className="font-semibold text-base">Сливаются деньги на рекламу</h3>
+              <p className="mt-2 text-gray-600 text-sm leading-relaxed">
                 Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"120ms"}}>
+            <div className="rounded-2xl border p-6 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"120ms"}}>
               <img
                 src="/images/clock.png"
                 alt="Тратится время"
                 className="mx-auto mb-6 w-16 h-16 object-contain"
               />
-              <h3 className="font-semibold text-lg">Тратится время впустую</h3>
-              <p className="mt-2 text-gray-600">
+              <h3 className="font-semibold text-base">Тратится время впустую</h3>
+              <p className="mt-2 text-gray-600 text-sm leading-relaxed">
                 По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"200ms"}}>
+            <div className="rounded-2xl border p-6 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"200ms"}}>
               <img
                 src="/images/door.png"
                 alt="Уходят к конкуренту"
                 className="mx-auto mb-6 w-16 h-16 object-contain"
               />
-              <h3 className="font-semibold text-lg">Заявки уходят к конкуренту</h3>
-              <p className="mt-2 text-gray-600">
+              <h3 className="font-semibold text-base">Заявки уходят к конкуренту</h3>
+              <p className="mt-2 text-gray-600 text-sm leading-relaxed">
                 Пока вы думаете, клиент записывается к тем, кто отвечает быстро и уверенно.
               </p>
             </div>
@@ -388,7 +417,7 @@ export default function App() {
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-8 mt-12">
+          <div className="grid md:grid-cols-2 gap-6 mt-12">
             {[
               {
                 img: "/images/salon.png",
@@ -413,7 +442,7 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 reveal-up"
+                className="who-card bg-white rounded-2xl p-6 border-2 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 reveal-up"
                 style={{animationDelay: `${i*80}ms`}}
               >
                 <div className="flex items-center gap-4">
@@ -422,9 +451,9 @@ export default function App() {
                     alt=""
                     className="w-12 h-12 object-contain"
                   />
-                  <h3 className="text-xl font-bold text-gray-900">{c.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-900">{c.title}</h3>
                 </div>
-                <p className="mt-4 text-gray-600">{c.text}</p>
+                <p className="mt-3 text-gray-600 text-sm leading-relaxed">{c.text}</p>
               </div>
             ))}
           </div>
@@ -442,7 +471,7 @@ export default function App() {
             <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Полный набор инструментов для увеличения продаж</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
             {[
               {
                 img: "/images/xmind.png",
@@ -481,10 +510,10 @@ export default function App() {
                 highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:`${k*80}ms`}}>
-                <img src={item.img} alt="" className="w-12 h-12 object-contain mb-6" />
-                <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
-                <p className="mt-2 text-gray-600">
+              <div key={k} className="rounded-2xl border p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:`${k*80}ms`}}>
+                <img src={item.img} alt="" className="w-10 h-10 object-contain mb-4" />
+                <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
+                <p className="mt-2 text-gray-600 text-sm leading-relaxed">
                   <HighlightedDesc
                     text={item.desc}
                     primaryHighlight={item.highlight}
@@ -500,30 +529,30 @@ export default function App() {
       {/* ===== 05 — БОНУСЫ ===== */}
       <section id="bonuses" className="relative py-20 bg-gray-50 overflow-hidden">
         <SectionMarker n="05" />
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/30 via-rose-50/25 to-amber-50/30" />
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center">
             <h2 className="js-heading text-3xl lg:text-4xl font-bold text-gray-900">
-              <span className="text-blue-600">Бонусы</span> при покупке <span className="text-2xl align-middle">🎁</span>
+              <span className="text-blue-600">Бонусы</span> при покупке
             </h2>
             <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
+          <div className="grid md:grid-cols-3 gap-6 mt-12">
             {[
               { image: "/images/bonus1.png", title: "Гайд «Работа с клиентской базой»", desc: "Повторные записи без рекламы → возвращайте старых клиентов.", old: "27€" },
               { image: "/images/bonus2.png", title: "Чек-лист «30+ источников клиентов»", desc: "Платные и бесплатные способы → где взять заявки уже сегодня.", old: "32€" },
               { image: "/images/bonus3.png", title: "Гайд «Продажи на консультации»", desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.", old: "20€" },
             ].map((b, i) => (
-              <div key={i} className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 reveal-up" style={{animationDelay:`${i*100}ms`}}>
-                <div className="mb-6">
-                  <img src={b.image} alt={`Бонус ${i + 1}`} className="w-32 h-40 mx-auto object-cover rounded-lg" />
+              <div key={i} className="rounded-2xl p-6 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 reveal-up" style={{animationDelay:`${i*100}ms`}}>
+                <div className="mb-4">
+                  <img src={b.image} alt={`Бонус ${i + 1}`} className="w-28 h-36 mx-auto object-cover rounded-lg" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">{b.title}</h3>
-                <p className="mt-2 text-gray-600">{b.desc}</p>
-                <div className="mt-4 flex items-center justify-center gap-2">
-                  <span className="text-lg font-bold text-gray-400 line-through">{b.old}</span>
-                  <span className="text-xl font-bold text-green-600">0€</span>
+                <h3 className="text-base font-bold text-gray-900">{b.title}</h3>
+                <p className="mt-2 text-gray-600 text-sm leading-relaxed">{b.desc}</p>
+                <div className="mt-3 flex items-center justify-center gap-2">
+                  <span className="text-base font-bold text-gray-400 line-through">{b.old}</span>
+                  <span className="text-lg font-bold text-green-600">0€</span>
                 </div>
               </div>
             ))}
@@ -582,9 +611,13 @@ export default function App() {
           </div>
 
           {/* Reels Instagram: карточки 9:16, без растяжения */}
-          <div className="flex gap-3 justify-center items-start mb-8 overflow-x-auto pb-2 reels-row">
-            {INSTAGRAM_REELS.map((url) => (
-              <div key={url} className="reel-card rounded-xl overflow-hidden border shadow-sm flex-shrink-0">
+          <div className="flex gap-4 justify-center items-start mb-8 overflow-x-auto pb-2 reels-row">
+            {INSTAGRAM_REELS.map((url, idx) => (
+              <div
+                key={url}
+                className="reel-card rounded-xl overflow-hidden border-2 border-gray-200 shadow-md flex-shrink-0 hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+                style={{animationDelay:`${idx*100}ms`}}
+              >
                 <InstaEmbed url={url} maxWidth={260} />
               </div>
             ))}
@@ -764,14 +797,31 @@ export default function App() {
 
         /* Современные компактные карточки для Reels без растягивания */
         .reel-card {
-          width: 180px; aspect-ratio: 9 / 16;
+          width: 180px;
+          height: 320px;
         }
-        @media (min-width: 640px){ .reel-card { width: 220px; } }
-        @media (min-width: 1024px){ .reel-card { width: 260px; } }
-        .reel-card :global(iframe), 
-        .reel-card :global(img), 
-        .reel-card :global(video) {
-          width: 100% !important; height: 100% !important; display:block;
+        @media (min-width: 640px){
+          .reel-card {
+            width: 220px;
+            height: 391px;
+          }
+        }
+        @media (min-width: 1024px){
+          .reel-card {
+            width: 260px;
+            height: 462px;
+          }
+        }
+        .reel-card :global(iframe) {
+          width: 100% !important;
+          height: 100% !important;
+          display: block;
+          border: none;
+        }
+        .reel-card :global(img) {
+          width: 100% !important;
+          height: 100% !important;
+          display: block;
           object-fit: cover;
         }
 
