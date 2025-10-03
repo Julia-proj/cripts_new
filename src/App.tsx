@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"; 
 import InstaEmbed from "./components/InstaEmbed";
 
 // TODO: вставь свою ссылку Stripe
@@ -161,17 +161,15 @@ export default function App() {
     setLightboxOpen(true);
   };
 
-  // ---- Анимация заголовков в стиле andreevakate: мягкая маска + подъём ----
+  // ===== Добавлена анимация заголовков «как у andreevakate»: маска + мягкий подъём =====
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("ak-visible");
-          }
+          if (e.isIntersecting) e.target.classList.add("ak-visible");
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.35 }
     );
     document.querySelectorAll<HTMLElement>(".ak-heading").forEach((el) => io.observe(el));
     return () => io.disconnect();
@@ -225,13 +223,13 @@ export default function App() {
         <div className="absolute inset-0 lg:hidden bg-gradient-to-b from-white/70 via-white/40 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
-            <h1 className="ak-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
+            <h1 className="ak-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900 reveal-up" style={{animationDelay:"80ms"}}>
               Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
-            <p className="text-xl text-gray-800 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-800 mb-8 leading-relaxed reveal-up" style={{animationDelay:"160ms"}}>
               Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 reveal-up" style={{animationDelay:"240ms"}}>
               <a
                 href={STRIPE_URL}
                 target="_blank"
@@ -250,7 +248,7 @@ export default function App() {
 
         <style jsx>{`
           .hero-bg{
-            background-image: url('/images/hero5.jpg');
+            background-image: url('/images/IMG_6243.png');
             background-size: cover;
             background-position: center; /* мобайл — центр */
           }
@@ -267,16 +265,16 @@ export default function App() {
         <SectionMarker n="01" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-2">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               Как изменится ваша <span className="text-blue-600">работа с клиентами</span>
             </h2>
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>
               Сравните результаты до и после внедрения скриптов
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up">
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-50 text-red-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -302,7 +300,7 @@ export default function App() {
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"120ms"}}>
               <div className="text-center mb-6">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-green-50 text-green-600 rounded-full font-medium text-sm">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -336,16 +334,16 @@ export default function App() {
         <SectionMarker n="02" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
-            <p className="mt-3 text-gray-600">
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>
               Каждая потерянная заявка — это упущенная прибыль
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up">
               <img
                 src="/images/money.png"
                 alt="Сливаются деньги"
@@ -356,7 +354,7 @@ export default function App() {
                 Платите за заявки, но конвертируете лишь 20–30%. Остальные — выброшенный бюджет.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"120ms"}}>
               <img
                 src="/images/clock.png"
                 alt="Тратится время"
@@ -367,7 +365,7 @@ export default function App() {
                 По 30–40 минут на переписку с каждым. Уходит 3–4 часа в день.
               </p>
             </div>
-            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <div className="rounded-2xl border p-8 text-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:"200ms"}}>
               <img
                 src="/images/door.png"
                 alt="Уходят к конкуренту"
@@ -386,7 +384,7 @@ export default function App() {
       <section id="for" className="relative py-20 bg-gray-50">
         <SectionMarker n="03" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -415,7 +413,8 @@ export default function App() {
             ].map((c, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+                className="bg-white rounded-2xl p-8 border hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 reveal-up"
+                style={{animationDelay: `${i*80}ms`}}
               >
                 <div className="flex items-center gap-4">
                   <img
@@ -437,10 +436,10 @@ export default function App() {
         <SectionMarker n="04" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
-            <p className="mt-3 text-gray-600">Полный набор инструментов для увеличения продаж</p>
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Полный набор инструментов для увеличения продаж</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
@@ -482,7 +481,7 @@ export default function App() {
                 highlight: "выше средний чек"
               },
             ].map((item, k) => (
-              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:`${k*80}ms`}}>
                 <img src={item.img} alt="" className="w-12 h-12 object-contain mb-6" />
                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                 <p className="mt-2 text-gray-600">
@@ -504,10 +503,10 @@ export default function App() {
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
               <span className="text-blue-600">Бонусы</span> при покупке <span className="text-2xl align-middle">🎁</span>
             </h2>
-            <p className="mt-3 text-gray-600">Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами</p>
+            <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
@@ -516,7 +515,7 @@ export default function App() {
               { image: "/images/bonus2.png", title: "Чек-лист «30+ источников клиентов»", desc: "Платные и бесплатные способы → где взять заявки уже сегодня.", old: "32€" },
               { image: "/images/bonus3.png", title: "Гайд «Продажи на консультации»", desc: "5 этапов продаж → мягкий апсейл дополнительных услуг.", old: "20€" },
             ].map((b, i) => (
-              <div key={i} className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+              <div key={i} className="rounded-2xl p-8 text-center bg-white shadow-sm border hover:shadow-xl hover:-translate-y-2 transition-all duration-300 reveal-up" style={{animationDelay:`${i*100}ms`}}>
                 <div className="mb-6">
                   <img src={b.image} alt={`Бонус ${i + 1}`} className="w-32 h-40 mx-auto object-cover rounded-lg" />
                 </div>
@@ -536,7 +535,7 @@ export default function App() {
       <section id="immediate" className="relative py-20 bg-white">
         <SectionMarker n="06" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
             <span className="text-blue-600">Что изменится сразу</span>
           </h2>
 
@@ -547,7 +546,7 @@ export default function App() {
               "Повысишь средний чек через правильные предложения.",
               "Станешь увереннее — на всё есть готовый ответ.",
             ].map((t, i) => (
-              <div key={i} className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+              <div key={i} className="flex items-start gap-4 bg-gray-50 p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 reveal-up" style={{animationDelay:`${i*80}ms`}}>
                 <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                   <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -564,14 +563,14 @@ export default function App() {
       <section id="reviews" className="relative py-20 bg-gray-50">
         <SectionMarker n="07" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 reveal-up">
             Отзывы клиентов
           </h2>
 
           {/* 4 фото-отзыва (кликабельно в лайтбокс) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="group cursor-pointer">
+              <div key={n} className="group cursor-pointer reveal-up" style={{animationDelay:`${n*60}ms`}}>
                 <img
                   src={`/images/reviews/review${n}.png`}
                   alt={`Отзыв ${n}`}
@@ -598,16 +597,16 @@ export default function App() {
         <SectionMarker n="08" />
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-extrabold text-gray-900">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-extrabold text-gray-900 reveal-up">
               Полная система со скидкой <span className="text-blue-600">70%</span>
             </h2>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-500 reveal-up" style={{animationDelay:"120ms"}}>
               Специальное предложение на этой неделе • Предложение действует ограниченное время
             </p>
           </div>
 
           <div className="max-w-lg mx-auto">
-            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105">
+            <div className="rounded-3xl p-8 bg-slate-800 text-white shadow-2xl relative overflow-hidden hover:shadow-3xl transition-all duration-300 hover:scale-105 reveal-up">
               {/* Декор */}
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-rose-400/10 rounded-full translate-y-12 -translate-x-12"></div>
@@ -696,7 +695,7 @@ export default function App() {
       <section id="faq" className="relative py-20 bg-white">
         <SectionMarker n="09" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
             Частые вопросы
           </h2>
 
@@ -707,7 +706,7 @@ export default function App() {
               { q: "Зачем это админам?", a: "Единый стандарт повышает конверсию, скорость и управляемость. Новички включаются быстрее." },
               { q: "Когда будут результаты?", a: "Часто в первые 24 часа: готовые фразы экономят время и быстрее ведут к записи." },
             ].map((f, i) => (
-              <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300">
+              <div key={i} className="border border-gray-200 rounded-2xl overflow-hidden bg-gray-50 hover:shadow-lg transition-all duration-300 reveal-up" style={{animationDelay:`${i*80}ms`}}>
                 <button
                   onClick={() => toggleFaq(i)}
                   className="w-full px-8 py-6 text-left hover:bg-gray-100 flex justify-between items-center transition-colors"
@@ -746,7 +745,7 @@ export default function App() {
         </a>
       </div>
 
-      {/* CSS: анимации, snap и Reels-карточки + заголовки andreevakate */}
+      {/* CSS: анимации, snap и Reels-карточки + kate-style для заголовков */}
       <style jsx>{`
         @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slide-in-left { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
@@ -754,25 +753,29 @@ export default function App() {
         @keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoom-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
+        /* Мягкая последовательная подача */
+        .reveal-up { 
+          opacity: 0; 
+          animation: fade-in 0.8s ease-out forwards;
+        }
+
         .reels-row { scroll-snap-type: x mandatory; }
         .reels-row > * { scroll-snap-align: center; }
 
         /* Современные компактные карточки для Reels без растягивания */
-        .reel-card { width: 180px; aspect-ratio: 9 / 16; }
+        .reel-card {
+          width: 180px; aspect-ratio: 9 / 16;
+        }
         @media (min-width: 640px){ .reel-card { width: 220px; } }
         @media (min-width: 1024px){ .reel-card { width: 260px; } }
-        .reel-card :global(iframe),
-        .reel-card :global(img),
+        .reel-card :global(iframe), 
+        .reel-card :global(img), 
         .reel-card :global(video) {
           width: 100% !important; height: 100% !important; display:block;
           object-fit: cover;
         }
 
-        /* ===== Анимация заголовков в духе andreevakate/milatormasova =====
-           - старт: лёгкая прозрачность, небольшой подъём
-           - маска снизу вверх (без подчёркиваний/доп. выделений текста)
-           - плавное схлопывание letter-spacing для премиум-ощущения
-        */
+        /* ===== kate-like headings: маска + подъём, без подчёркиваний/доп. выделений ===== */
         .ak-heading{
           position: relative;
           display: inline-block;
@@ -780,9 +783,8 @@ export default function App() {
           transform: translateY(16px);
           letter-spacing: .02em;
           transition: opacity .9s ease, transform .9s ease, letter-spacing 1s ease;
-          /* маска «из-под линии» */
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.02) 20%, rgba(0,0,0,1) 60%);
-                  mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.02) 20%, rgba(0,0,0,1) 60%);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.03) 22%, rgba(0,0,0,1) 60%);
+                  mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.03) 22%, rgba(0,0,0,1) 60%);
           -webkit-mask-size: 100% 300%;
                   mask-size: 100% 300%;
           -webkit-mask-position: 0 100%;
@@ -794,11 +796,8 @@ export default function App() {
           letter-spacing: 0;
           -webkit-mask-position: 0 0%;
                   mask-position: 0 0%;
-          transition: opacity .9s ease, transform .9s ease, letter-spacing 1s ease, -webkit-mask-position 1.1s ease;
-          transition: opacity .9s ease, transform .9s ease, letter-spacing 1s ease, mask-position 1.1s ease;
-          transition: opacity .9s ease, transform .9s ease, letter-spacing 1s ease, mask-position 1.1s ease, -webkit-mask-position 1.1s ease;
+          transition: opacity .9s ease, transform .9s ease, letter-spacing 1s ease, -webkit-mask-position 1.1s ease, mask-position 1.1s ease;
         }
-        /* На десктопе эффект немного спокойнее */
         @media (min-width:1024px){
           .ak-heading{ transform: translateY(12px); }
         }
