@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import InstaEmbed from "./components/InstaEmbed";
 
 // TODO: вставь свою ссылку Stripe
@@ -100,6 +100,47 @@ function ScrollProgress() {
   );
 }
 
+// Заголовки с «открывающейся» анимацией
+function useRevealTitles() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const root = ref.current ?? document;
+    const targets = Array.from(root.querySelectorAll<HTMLElement>(".reveal-title"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("reveal-active");
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    targets.forEach(t => io.observe(t));
+    return () => io.disconnect();
+  }, []);
+  return ref;
+}
+
+// Подсветка ключевых фраз внутри текста
+function HighlightedText({ text, terms }: { text: string; terms: string[] }) {
+  // Экранируем спецсимволы RegExp
+  const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`(${terms.map(esc).join("|")})`, "gi");
+  const parts = text.split(pattern);
+  return (
+    <>
+      {parts.map((part, i) =>
+        terms.some(t => t.toLowerCase() === part.toLowerCase()) ? (
+          <span key={i} className="text-blue-600 font-semibold">{part}</span>
+        ) : (
+          <React.Fragment key={i}>{part}</React.Fragment>
+        )
+      )}
+    </>
+  );
+}
+
 export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [viewersCount, setViewersCount] = useState(8);
@@ -109,6 +150,7 @@ export default function App() {
 
   const toggleFaq = (i: number) => setOpenFaq(openFaq === i ? null : i);
   const { h, m, s, finished } = useCountdown(12);
+  const titlesRootRef = useRevealTitles();
 
   // Динамический счетчик посетителей (4-15 человек) — только визуальный
   useEffect(() => {
@@ -129,7 +171,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" ref={titlesRootRef}>
       {/* Lightbox */}
       <ReviewLightbox 
         isOpen={lightboxOpen}
@@ -168,20 +210,23 @@ export default function App() {
         </div>
       </header>
 
-      {/* ===== HERO: фото фоном, без осветления, акценты только синим в H1, подзаголовок без выделений ===== */}
+      {/* ===== HERO ===== */}
       <section
-        className="relative min-h-[88vh] flex items-center pt-24"
-        style={{ backgroundImage: "url('/images/hero5.jpg')", backgroundSize: "cover", backgroundPosition: "right center" }}
+        className="hero relative min-h-[88vh] flex items-center pt-24"
       >
+        {/* лёгкий градиент слева для читаемости на мобилке */}
+        <div className="absolute inset-0 pointer-events-none lg:hidden"
+          style={{ background: "linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.65) 35%, rgba(255,255,255,0.15) 65%, rgba(255,255,255,0) 100%)" }}
+        />
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
+            <h1 className="reveal-title text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900" style={{ animationDelay: "80ms" }}>
               Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
-            <p className="text-xl text-gray-800 mb-8 leading-relaxed">
+            <p className="reveal-title text-xl text-gray-800 mb-8 leading-relaxed" style={{ animationDelay: "160ms" }}>
               Проверенная система общения с клиентами для бьюти-мастеров. Результат: закрытые возражения, увеличенный средний чек, экономия времени.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 reveal-title" style={{ animationDelay: "240ms" }}>
               <a
                 href={STRIPE_URL}
                 target="_blank"
@@ -197,17 +242,33 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        <style jsx>{`
+          .hero{
+            background-image: url('/images/hero5.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: right center;
+          }
+          @media (max-width: 640px){
+            .hero{
+              /* Чуть ближе к центру и увеличенный zoom, чтобы лицо не резалось */
+              background-position: center center;
+              background-size: cover;
+            }
+          }
+        `}</style>
       </section>
 
       {/* ===== 01 — СРАВНЕНИЕ ===== */}
       <section id="comparison" className="relative py-20 bg-gray-50">
         <SectionMarker n="01" />
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-2 animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center mb-2">
+            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
               Как изменится ваша <span className="text-blue-600">работа с клиентами</span>
             </h2>
-            <p className="mt-3 text-gray-600">
+            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>
               Сравните результаты до и после внедрения скриптов
             </p>
           </div>
@@ -272,11 +333,11 @@ export default function App() {
       <section id="why" className="relative py-20 bg-white">
         <SectionMarker n="02" />
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center">
+            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
               Почему это <span className="text-blue-600">важно</span>
             </h2>
-            <p className="mt-3 text-gray-600">
+            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>
               Каждая потерянная заявка — это упущенная прибыль
             </p>
           </div>
@@ -323,7 +384,7 @@ export default function App() {
       <section id="for" className="relative py-20 bg-gray-50">
         <SectionMarker n="03" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
+          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900" style={{ animationDelay: "60ms" }}>
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -373,11 +434,11 @@ export default function App() {
       <section id="whats-included" className="relative py-20 bg-white">
         <SectionMarker n="04" />
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center">
+            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
-            <p className="mt-3 text-gray-600">Полный набор инструментов для увеличения продаж</p>
+            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>Полный набор инструментов для увеличения продаж</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
@@ -386,50 +447,44 @@ export default function App() {
                 img: "/images/xmind.png",
                 title: "Готовые диалоги",
                 desc: "Контакты до оплаты: приветствия, презентация ценности, запись. Всё пошагово.",
-                highlight: "презентация ценности"
+                terms: ["презентация ценности"]
               },
               {
                 img: "/images/target.png",
                 title: "Закрытие возражений",
                 desc: "«Дорого», «Подумаю», «У другого дешевле». Мягкие ответы без давления.",
-                highlight: "мягкие ответы без давления"
+                terms: ["без давления"]
               },
               {
                 img: "/images/salons.png",
                 title: "Под каждую услугу",
                 desc: "Маникюр, брови, ресницы, косметология, массаж. Учтена специфика каждой ниши.",
-                highlight: "учтена специфика каждой ниши"
+                terms: ["каждой ниши"]
               },
               {
                 img: "/images/bucle.png",
                 title: "Возврат клиентов",
                 desc: "Сценарии повторных записей и реактивации «спящей» базы без рекламы.",
-                highlight: "реактивации «спящей» базы без рекламы"
+                terms: ["без рекламы"]
               },
               {
                 img: "/images/phone.png",
                 title: "Гайд по внедрению",
                 desc: "Старт за один день: пошаговый план и стандарты для команды.",
-                highlight: "Старт за один день"
+                terms: ["Старт за один день"]
               },
               {
                 img: "/images/rocket.png",
                 title: "Итог",
                 desc: "Больше записей, выше средний чек, меньше времени в переписке.",
-                highlight: "выше средний чек"
+                terms: ["выше средний чек"]
               },
             ].map((item, k) => (
               <div key={k} className="rounded-2xl border p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-zoom-in">
                 <img src={item.img} alt="" className="w-12 h-12 object-contain mb-6" />
                 <h3 className="text-xl font-bold text-gray-900">{item.title}</h3>
                 <p className="mt-2 text-gray-600">
-                  {item.desc.split(item.highlight).map((part, index) => (
-                    index === 0 ? part : 
-                    <React.Fragment key={index}>
-                      <span className="text-blue-600 font-semibold">{item.highlight}</span>
-                      {part}
-                    </React.Fragment>
-                  ))}
+                  <HighlightedText text={item.desc} terms={item.terms} />
                 </p>
               </div>
             ))}
@@ -442,11 +497,13 @@ export default function App() {
         <SectionMarker n="05" />
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
-          <div className="text-center animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
+          <div className="text-center">
+            <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-gray-900" style={{ animationDelay: "60ms" }}>
               <span className="text-blue-600">Бонусы</span> при покупке <span className="text-2xl align-middle">🎁</span>
             </h2>
-            <p className="mt-3 text-gray-600">Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами</p>
+            <p className="reveal-title mt-3 text-gray-600" style={{ animationDelay: "140ms" }}>
+              Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mt-12">
@@ -475,7 +532,7 @@ export default function App() {
       <section id="immediate" className="relative py-20 bg-white">
         <SectionMarker n="06" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
+          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900" style={{ animationDelay: "60ms" }}>
             <span className="text-blue-600">Что изменится сразу</span>
           </h2>
 
@@ -499,32 +556,39 @@ export default function App() {
         </div>
       </section>
 
-      {/* ===== 07 — ОТЗЫВЫ (фото + Reels Instagram) ===== */}
+      {/* ===== 07 — ОТЗЫВЫ ===== */}
       <section id="reviews" className="relative py-20 bg-gray-50">
         <SectionMarker n="07" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 animate-fade-in">
+          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12" style={{ animationDelay: "60ms" }}>
             Отзывы клиентов
           </h2>
 
           {/* 4 фото-отзыва (кликабельно в лайтбокс) */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="group cursor-pointer animate-zoom-in">
+              <button
+                key={n}
+                className="group cursor-pointer animate-zoom-in rounded-2xl overflow-hidden border hover:shadow-xl transition-all duration-300 focus:outline-none"
+                onClick={() => openLightbox(`/images/reviews/review${n}.png`, n)}
+                aria-label={`Открыть отзыв ${n}`}
+              >
                 <img
                   src={`/images/reviews/review${n}.png`}
                   alt={`Отзыв ${n}`}
-                  className="w-full h-64 object-cover rounded-2xl border hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02] hover:border-blue-300"
-                  onClick={() => openLightbox(`/images/reviews/review${n}.png`, n)}
+                  className="w-full h-64 object-cover group-hover:scale-[1.02] transition-transform duration-300"
                 />
-              </div>
+              </button>
             ))}
           </div>
 
-          {/* Reels Instagram: узкие, 9:16, без растяжения */}
+          {/* Reels Instagram: компактные, 9:16, без растяжения */}
           <div className="flex gap-4 justify-center items-start mb-8 overflow-x-auto pb-2 reels-row">
             {INSTAGRAM_REELS.map((url) => (
-              <div key={url} className="flex-shrink-0">
+              <div
+                key={url}
+                className="flex-shrink-0 w-[240px] sm:w-[260px] aspect-[9/16] rounded-xl overflow-hidden border bg-black/5"
+              >
                 <InstaEmbed url={url} maxWidth={260} />
               </div>
             ))}
@@ -536,11 +600,11 @@ export default function App() {
       <section id="offer" className="relative py-20 bg-white">
         <SectionMarker n="08" />
         <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-900">
+          <div className="text-center mb-12">
+            <h2 className="reveal-title text-3xl lg:text-4xl font-extrabold text-gray-900" style={{ animationDelay: "60ms" }}>
               Полная система со скидкой <span className="text-blue-600">70%</span>
             </h2>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="reveal-title mt-2 text-sm text-gray-500" style={{ animationDelay: "140ms" }}>
               Специальное предложение на этой неделе • Предложение действует ограниченное время
             </p>
           </div>
@@ -635,7 +699,7 @@ export default function App() {
       <section id="faq" className="relative py-20 bg-white">
         <SectionMarker n="09" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl lg:text-4xl font-bold text-center text-gray-900 animate-fade-in">
+          <h2 className="reveal-title text-3xl lg:text-4xl font-bold text-center text-gray-900" style={{ animationDelay: "60ms" }}>
             Частые вопросы
           </h2>
 
@@ -685,8 +749,9 @@ export default function App() {
         </a>
       </div>
 
-      {/* CSS: анимации, горизонтальный snap для reels */}
+      {/* CSS: анимации, заголовки, reels */}
       <style jsx>{`
+        /* базовые анимации карточек */
         @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slide-in-left { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slide-in-right { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
@@ -697,6 +762,19 @@ export default function App() {
         .animate-slide-in-right { animation: slide-in-right 0.8s ease-out; }
         .animate-slide-up { animation: slide-up 0.6s ease-out; }
         .animate-zoom-in { animation: zoom-in 0.6s ease-out; }
+
+        /* заголовки с «открывающейся» маской */
+        @keyframes title-reveal {
+          0% { opacity: 0; transform: translateY(10px); clip-path: inset(0 100% 0 0); }
+          60% { opacity: 1; transform: translateY(0); }
+          100% { clip-path: inset(0 0 0 0); }
+        }
+        .reveal-title { opacity: 0; }
+        .reveal-active { 
+          animation: title-reveal 900ms cubic-bezier(.2,.8,.2,1) forwards;
+        }
+
+        /* горизонтальный snap для reels */
         .reels-row { scroll-snap-type: x mandatory; }
         .reels-row > * { scroll-snap-align: center; }
       `}</style>
