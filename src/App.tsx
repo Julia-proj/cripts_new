@@ -248,7 +248,7 @@ export default function App() {
 
         <style jsx>{`
           .hero-bg{
-            background-image: url('/images/hero5.jpg');
+            background-image: url('/images/IMG_6243.png');
             background-size: cover;
             background-position: center; /* мобайл — центр */
           }
