@@ -161,7 +161,7 @@ export default function App() {
     setLightboxOpen(true);
   };
 
-  // ===== Добавлена анимация заголовков «как у andreevakate»: маска + мягкий подъём =====
+  // === ДОБАВЛЕНО: Интерсекшн-обсервер для плавной анимации заголовков в стиле andreevakate ===
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
@@ -219,11 +219,11 @@ export default function App() {
       <section
         className="relative min-h-[88vh] flex items-center pt-24 hero-bg"
       >
-        {/* лёгкая подложка под текст только на мобиле, чтобы не «синить» фото */}
+        {/* лёгкая подложка под текст только на мобиле */}
         <div className="absolute inset-0 lg:hidden bg-gradient-to-b from-white/70 via-white/40 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
-            <h1 className="ak-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900 reveal-up" style={{animationDelay:"80ms"}}>
+            <h1 className="ak-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
               Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
             <p className="text-xl text-gray-800 mb-8 leading-relaxed reveal-up" style={{animationDelay:"160ms"}}>
@@ -248,7 +248,7 @@ export default function App() {
 
         <style jsx>{`
           .hero-bg{
-            background-image: url('/images/IMG_6243.png');
+            background-image: url('/images/hero5.jpg');
             background-size: cover;
             background-position: center; /* мобайл — центр */
           }
@@ -265,7 +265,7 @@ export default function App() {
         <SectionMarker n="01" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-2">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
               Как изменится ваша <span className="text-blue-600">работа с клиентами</span>
             </h2>
             <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>
@@ -334,7 +334,7 @@ export default function App() {
         <SectionMarker n="02" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
               Почему это <span className="text-blue-600">важно</span>
             </h2>
             <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>
@@ -384,7 +384,7 @@ export default function App() {
       <section id="for" className="relative py-20 bg-gray-50">
         <SectionMarker n="03" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900">
             Кому подходят <span className="text-blue-600">скрипты</span>
           </h2>
 
@@ -436,7 +436,7 @@ export default function App() {
         <SectionMarker n="04" />
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
               Что входит в <span className="text-blue-600">систему скриптов</span>
             </h2>
             <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Полный набор инструментов для увеличения продаж</p>
@@ -503,7 +503,7 @@ export default function App() {
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-50/40 via-pink-50/40 to-purple-50/40" />
         <div className="max-w-6xl mx-auto px-6 relative">
           <div className="text-center">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900 reveal-up">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-gray-900">
               <span className="text-blue-600">Бонусы</span> при покупке <span className="text-2xl align-middle">🎁</span>
             </h2>
             <p className="mt-3 text-gray-600 reveal-up" style={{animationDelay:"120ms"}}>Суммарная ценность — 79€. Сегодня идут бесплатно со скриптами</p>
@@ -535,7 +535,7 @@ export default function App() {
       <section id="immediate" className="relative py-20 bg-white">
         <SectionMarker n="06" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900">
             <span className="text-blue-600">Что изменится сразу</span>
           </h2>
 
@@ -563,7 +563,7 @@ export default function App() {
       <section id="reviews" className="relative py-20 bg-gray-50">
         <SectionMarker n="07" />
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12 reveal-up">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-12">
             Отзывы клиентов
           </h2>
 
@@ -597,7 +597,7 @@ export default function App() {
         <SectionMarker n="08" />
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="ak-heading text-3xl lg:text-4xl font-extrabold text-gray-900 reveal-up">
+            <h2 className="ak-heading text-3xl lg:text-4xl font-extrabold text-gray-900">
               Полная система со скидкой <span className="text-blue-600">70%</span>
             </h2>
             <p className="mt-2 text-sm text-gray-500 reveal-up" style={{animationDelay:"120ms"}}>
@@ -695,7 +695,7 @@ export default function App() {
       <section id="faq" className="relative py-20 bg-white">
         <SectionMarker n="09" />
         <div className="max-w-4xl mx-auto px-6">
-          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900 reveal-up">
+          <h2 className="ak-heading text-3xl lg:text-4xl font-bold text-center text-gray-900">
             Частые вопросы
           </h2>
 
@@ -745,7 +745,7 @@ export default function App() {
         </a>
       </div>
 
-      {/* CSS: анимации, snap и Reels-карточки + kate-style для заголовков */}
+      {/* CSS: анимации, snap и Reels-карточки + анимация заголовков */}
       <style jsx>{`
         @keyframes fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slide-in-left { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
@@ -753,7 +753,7 @@ export default function App() {
         @keyframes slide-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoom-in { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        /* Мягкая последовательная подача */
+        /* Мягкая последовательная подача для остальных элементов */
         .reveal-up { 
           opacity: 0; 
           animation: fade-in 0.8s ease-out forwards;
@@ -775,16 +775,20 @@ export default function App() {
           object-fit: cover;
         }
 
-        /* ===== kate-like headings: маска + подъём, без подчёркиваний/доп. выделений ===== */
+        /* ===== Анимация заголовков в духе andreevakate =====
+           - без подчёркиваний и лишних выделений
+           - лёгкий подъём, плавная прозрачность
+           - маска снизу-вверх для премиального ощущения
+        */
         .ak-heading{
           position: relative;
           display: inline-block;
           opacity: 0;
-          transform: translateY(16px);
-          letter-spacing: .02em;
+          transform: translateY(14px);
+          letter-spacing: .01em;
           transition: opacity .9s ease, transform .9s ease, letter-spacing 1s ease;
-          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.03) 22%, rgba(0,0,0,1) 60%);
-                  mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.03) 22%, rgba(0,0,0,1) 60%);
+          -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.08) 22%, rgba(0,0,0,1) 60%);
+                  mask-image: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.08) 22%, rgba(0,0,0,1) 60%);
           -webkit-mask-size: 100% 300%;
                   mask-size: 100% 300%;
           -webkit-mask-position: 0 100%;
