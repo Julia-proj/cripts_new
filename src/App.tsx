@@ -228,20 +228,20 @@ export default function App() {
       <section
         className="relative min-h-[88vh] flex items-center pt-24 hero-bg"
       >
-        {/* Затемнение фона 20-25% для лучшей читаемости */}
-        <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+        {/* лёгкая подложка под текст только на мобиле, чтобы не «синить» фото */}
+        <div className="absolute inset-0 lg:hidden bg-gradient-to-b from-white/70 via-white/40 to-transparent pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl bg-white/0">
-            <h1 className="js-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-white drop-shadow-lg">
-              Скрипты, которые превращают <span className="text-blue-400">сообщения в деньги</span>
+            <h1 className="js-heading text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-5 text-gray-900">
+              Скрипты, которые превращают <span className="text-blue-600">сообщения в деньги</span>
             </h1>
             {/* Подзаголовок с результатами выделен отдельно */}
             <div className="result-subtitle mb-6">
-              <p className="text-lg lg:text-xl text-white/95 font-semibold leading-relaxed drop-shadow-md">
+              <p className="text-lg lg:text-xl text-gray-800 font-semibold leading-relaxed">
                 Результат: закрытые возражения, увеличенный средний чек, экономия времени
               </p>
             </div>
-            <p className="text-lg text-white/90 mb-8 leading-relaxed drop-shadow-md">
+            <p className="text-lg text-gray-700 mb-8 leading-relaxed">
               Проверенная система общения с клиентами для бьюти-мастеров
             </p>
             <div className="flex items-center gap-4">
@@ -265,11 +265,11 @@ export default function App() {
           .hero-bg{
             background-image: url('/images/IMG_6243.png');
             background-size: cover;
-            background-position: center top;
+            background-position: center;
           }
           @media (min-width: 1024px){
             .hero-bg{
-              background-position: 75% 35%;
+              background-position: right center;
             }
           }
           .result-subtitle {
@@ -284,7 +284,7 @@ export default function App() {
             left: 0;
             width: 60px;
             height: 2px;
-            background: linear-gradient(90deg, rgba(147, 197, 253, 0.8) 0%, transparent 100%);
+            background: linear-gradient(90deg, rgba(96, 165, 250, 0.6) 0%, transparent 100%);
           }
         `}</style>
       </section>
