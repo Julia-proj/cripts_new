@@ -222,7 +222,7 @@ export default function App() {
       <header className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
           <div className="text-lg sm:text-xl font-bold text-gray-900">Beauty Scripts</div>
-          
+          <a
             href={STRIPE_URL}
             target="_blank"
             rel="noopener"
@@ -254,7 +254,7 @@ export default function App() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-4">
-              
+              <a
                 href={STRIPE_URL}
                 target="_blank"
                 rel="noopener"
@@ -686,7 +686,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  
+                  <a
                     href={STRIPE_URL}
                     target="_blank"
                     rel="noopener"
@@ -775,7 +775,7 @@ export default function App() {
 
       {showStickyCTA && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-50 lg:hidden shadow-2xl animate-slide-up">
-          
+          <a
             href={STRIPE_URL}
             target="_blank"
             rel="noopener"
